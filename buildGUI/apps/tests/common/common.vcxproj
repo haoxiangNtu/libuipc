@@ -1,0 +1,694 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0E39603A-A0C9-3DFF-BC2B-CB47CC6C2E57}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>common</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.6.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\libuipc\buildGUI\Debug\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">common.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">uipc_test_common</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\libuipc\buildGUI\Release\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">common.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">uipc_test_common</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\libuipc\buildGUI\apps\tests\common\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">common.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">uipc_test_common</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\libuipc\buildGUI\RelWithDebInfo\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">common.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">uipc_test_common</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;TBB_USE_DEBUG;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;TBB_USE_DEBUG;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/Debug/bin/uipc_test_common.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/debug/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\Debug\app.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\Catch2d.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\manual-link\Catch2Maind.lib;..\..\..\Debug\lib\uipc_constitution.lib;..\..\..\Debug\lib\uipc_sanity_check.lib;..\..\..\Debug\lib\uipc_io.lib;..\..\..\Debug\lib\uipc_geometry.lib;..\..\..\Debug\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\spdlogd.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\fmtd.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\cpptrace.lib;..\..\..\external\tetgen\Debug\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\tbb12_debug.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\Catch2d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/Debug/lib/uipc_test_common.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/Debug/bin/uipc_test_common.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/Release/bin/uipc_test_common.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\Release\app.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;..\..\..\vcpkg_installed\x64-windows\lib\manual-link\Catch2Main.lib;..\..\..\Release\lib\uipc_constitution.lib;..\..\..\Release\lib\uipc_sanity_check.lib;..\..\..\Release\lib\uipc_io.lib;..\..\..\Release\lib\uipc_geometry.lib;..\..\..\Release\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\Release\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/Release/lib/uipc_test_common.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/Release/bin/uipc_test_common.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/apps/tests/common/MinSizeRel/uipc_test_common.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\MinSizeRel\app.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;..\..\..\vcpkg_installed\x64-windows\lib\manual-link\Catch2Main.lib;..\..\..\src\constitution\MinSizeRel\uipc_constitution.lib;..\..\..\src\sanity_check\MinSizeRel\uipc_sanity_check.lib;..\..\..\src\io\MinSizeRel\uipc_io.lib;..\..\..\src\geometry\MinSizeRel\uipc_geometry.lib;..\..\..\src\core\MinSizeRel\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\MinSizeRel\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/apps/tests/common/MinSizeRel/uipc_test_common.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/apps/tests/common/MinSizeRel/uipc_test_common.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/RelWithDebInfo/bin/uipc_test_common.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\RelWithDebInfo\app.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;..\..\..\vcpkg_installed\x64-windows\lib\manual-link\Catch2Main.lib;..\..\..\RelWithDebInfo\lib\uipc_constitution.lib;..\..\..\RelWithDebInfo\lib\uipc_sanity_check.lib;..\..\..\RelWithDebInfo\lib\uipc_io.lib;..\..\..\RelWithDebInfo\lib\uipc_geometry.lib;..\..\..\RelWithDebInfo\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\RelWithDebInfo\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/RelWithDebInfo/lib/uipc_test_common.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/RelWithDebInfo/bin/uipc_test_common.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\libuipc\apps\tests\common\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Programming/libuipc/apps/tests/common/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/tests/common/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\libuipc\buildGUI\apps\tests\common\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Programming/libuipc/apps/tests/common/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/tests/common/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\libuipc\buildGUI\apps\tests\common\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Programming/libuipc/apps/tests/common/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/tests/common/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\libuipc\buildGUI\apps\tests\common\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Programming/libuipc/apps/tests/common/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/tests/common/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\libuipc\buildGUI\apps\tests\common\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\libuipc\apps\tests\common\range.cpp" />
+    <ClCompile Include="D:\Programming\libuipc\apps\tests\common\run_length_encode.cpp" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer_view.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\engine_create_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\macro.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\module_init_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\type_define.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\animator_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\contact_tabular_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\diff_sim_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\geometry_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\sanity_check_message_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\scene_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\subscene_tabular_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\world_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\attribute_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_type.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_auto_register.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\attribute_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\backend_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\factory_keyword.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\geometry_type.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_auto_register.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_register.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\abort.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\algorithm\run_length_encode.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\allocator.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\buffer_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\config.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\const_string_map.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\demangle.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\eigen_json.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\smart_pointer.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\dllexport.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\enumerate.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\exception.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\fmt_eigen.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\format.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\future.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json_eigen.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\list.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log_pattern_guard.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\macro.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\magic_enum.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\map.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\range.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\readable_type_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\resident_thread.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\set.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\smart_pointer.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span_as_eigen.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\stack.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\string.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\timer.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_define.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_traits.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\uipc.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_map.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_set.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\vector.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\zip.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_driving_revolute_joint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_revolute_joint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\arap.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\baraff_witkin_shell.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constraint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\conversion.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\discrete_shell_bending.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\elastic_moduli.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\empty.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_extra_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\hookean_spring.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_affine_body_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_primitive_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\kirchhoff_rod_bending.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\neo_hookean_shell.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\particle.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_position_constraint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_transform_constraint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_vertex_stitch.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\stable_neo_hookean.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\strain_limiting_baraff_witkin.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animation.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animator.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\constitution_tabular.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_element.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_system_feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_tabular.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\details\object.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\diff_sim.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine_status.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_engine.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_sanity_checker.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\engine.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\scene.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\world.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_snapshot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\sanity_checker.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_archieve.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_snapshot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_element.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_tabular.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\world.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\adjoint_method_feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\enable_grad_feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\parameter_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\sparse_coo_view.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\abstract_simplicial_complex.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_commit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_copy.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_debug_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_friend.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_collection.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_copy.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_export_types.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_slot.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_collection.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_export_types.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplex_slot.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplices.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplicial_complex.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_atlas.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection_commit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_commit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_friend.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\shared_attribute_context.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_attributes.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_body_force.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_dyadic_mass.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_region.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_transform.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\bvh.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\closure.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_instance_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_mesh_d_hat.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_vertex_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\constitution_type.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\distance.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\extract_surface.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\flip_inward_triangles.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\intersection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\is_trimesh_closed.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_connected_vertices.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_region.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_surface.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_triangle_orient.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\merge.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\mesh_partition.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\octree.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\optimal_transform.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\points_from_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\simplex_utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\tetrahedralize.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\attribute_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\gltf_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\scene_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\simplicial_complex_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\spread_sheet_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\urdf_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\uipc.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\dll_export.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\points_from_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc_gui\common\platform_handle.h" />
+    <Natvis Include="D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis">
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\ZERO_CHECK.vcxproj">
+      <Project>{4AE76370-8D53-376B-8296-D0BBC73D91C2}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\apps\app\app.vcxproj">
+      <Project>{81A36780-D580-3389-A737-92602D9DDA75}</Project>
+      <Name>app</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\backends\cuda\cuda.vcxproj">
+      <Project>{502429AA-FFB8-3558-9094-F99E5E5D7095}</Project>
+      <Name>cuda</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\backends\none\none.vcxproj">
+      <Project>{744F63BE-F16B-327A-BA64-8220EF98CDB0}</Project>
+      <Name>none</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\external\tetgen\tetgen.vcxproj">
+      <Project>{12EC9CEE-2F89-3394-95CF-8B9D78FB5C43}</Project>
+      <Name>tetgen</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\constitution\uipc_constitution.vcxproj">
+      <Project>{7718F193-F077-3F4A-8265-7A6CACC32280}</Project>
+      <Name>uipc_constitution</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\core\uipc_core.vcxproj">
+      <Project>{FBD95F36-9872-32AB-B23B-E99FCFDED1FD}</Project>
+      <Name>uipc_core</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\geometry\uipc_geometry.vcxproj">
+      <Project>{07EC82C8-D3F7-3300-A8D3-208E908DE13D}</Project>
+      <Name>uipc_geometry</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\io\uipc_io.vcxproj">
+      <Project>{21DB2C93-357B-3A12-B8D3-E35C71125BA6}</Project>
+      <Name>uipc_io</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\sanity_check\uipc_sanity_check.vcxproj">
+      <Project>{2D5E866B-1A4A-3365-90FA-F5CC73B0C0A3}</Project>
+      <Name>uipc_sanity_check</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.6.targets" />
+  </ImportGroup>
+</Project>

@@ -12,6 +12,7 @@ PyTimer::PyTimer(py::module& m)
     class_Timer.def_static("enable_all", &Timer::enable_all);
     class_Timer.def_static("disable_all", &Timer::disable_all);
     class_Timer.def_static("report", []() { Timer::report(); });
+    class_Timer.def_static("report_all", []() { Timer::report_all(); });
     class_Timer.def_static("report_as_json", Timer::report_as_json);
 }
 }  // namespace pyuipc

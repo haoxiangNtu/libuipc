@@ -75,6 +75,18 @@ void Timer::report(std::ostream& o)
     GlobalTimer::current()->clear();
 }
 
+void Timer::report_all(std::ostream& o)
+{
+    if(!GlobalTimer::current())
+    {
+        spdlog::warn("No timing information to report.");
+        return;
+    }
+
+    GlobalTimer::current()->print_timings(o);
+    GlobalTimer::current()->clear();
+}
+
 Json Timer::report_as_json()
 {
     if(!GlobalTimer::current())

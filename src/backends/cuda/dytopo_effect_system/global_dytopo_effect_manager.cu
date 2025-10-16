@@ -77,9 +77,22 @@ void GlobalDyTopoEffectManager::Impl::init(WorldVisitor& world)
 
 void GlobalDyTopoEffectManager::Impl::compute_dytopo_effect()
 {
-    _assemble();
-    _convert_matrix();
-    _distribute();
+    {
+        Timer timer{"_assemble"};
+        _assemble();
+    }
+    {
+        Timer timer{"_convert_matrix"};
+        _convert_matrix();
+    }
+    {
+        Timer timer{"_distribute"};
+        _distribute();
+    }
+    //Timer timer{"build_tree"};
+    //_assemble();
+    //_convert_matrix();
+    //_distribute();
 }
 
 void GlobalDyTopoEffectManager::Impl::_assemble()

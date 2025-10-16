@@ -72,6 +72,7 @@ class UIPC_CORE_API Timer
     static void set_sync_func(std::function<void()> sync) { m_sync = sync; }
 
     static void report(std::ostream& o = std::cout);
+    static void report_all(std::ostream& o = std::cout);
     static Json report_as_json();
 
   private:

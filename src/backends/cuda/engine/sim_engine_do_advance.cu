@@ -230,7 +230,7 @@ void SimEngine::do_advance()
     // Abort on exception if the runtime check is enabled for debugging
     constexpr bool AbortOnException = uipc::RUNTIME_CHECK;
 
-    auto pipeline = [&]() noexcept(AbortOnException)
+    auto pipeline_ipc = [&]() noexcept(AbortOnException)
     {
         Timer timer{"Pipeline"};
 
@@ -395,9 +395,301 @@ void SimEngine::do_advance()
         spdlog::info("<<< End Frame: {}", m_current_frame);
     };
 
+
+    auto pipeline_vbd = [&]() noexcept(AbortOnException)
+    {
+        Timer timer{"Pipeline"};
+
+        ++m_current_frame;
+
+        spdlog::info(R"(>>> Begin Frame: {})", m_current_frame);
+
+        // Rebuild Scene
+        {
+            Timer timer{"Rebuild Scene"};
+            // Trigger the rebuild_scene event, systems register their actions will be called here
+            m_state = SimEngineState::RebuildScene;
+            {
+                event_rebuild_scene();
+
+                // TODO: rebuild the vertex and surface info
+                // m_global_vertex_manager->rebuild_vertex_info();
+                // m_global_surface_manager->rebuild_surface_info();
+            }
+
+            // After the rebuild_scene event, the pending creation or deletion can be solved
+            world().scene().solve_pending();
+
+            // Update the diff parms
+            update_diff_parm();
+        }
+
+        // Simulation:
+        {
+            Timer timer{"Simulation"};
+            // 1. Adaptive Parameter Calculation
+            AABB vertex_bounding_box =
+                m_global_vertex_manager->compute_vertex_bounding_box();
+            detect_dcd_candidates();
+            compute_adaptive_kappa();
+
+            // 2. Record Friction Candidates at the beginning of the frame
+            record_friction_candidates();
+            m_global_vertex_manager->record_prev_positions();
+
+            // 3. Predict Motion => x_tilde = x + v * dt
+            m_state = SimEngineState::PredictMotion;
+            m_time_integrator_manager->predict_dof();
+            step_animation();
+
+            // 4. Nonlinear-Newton Iteration
+            Float box_size = vertex_bounding_box.diagonal().norm();
+            Float tol      = m_newton_scene_tol * box_size;
+            m_newton_tolerance_manager->pre_newton(m_current_frame);
+
+
+            // parallel for vbd process 
+
+            //
+            auto   newton_max_iter = m_newton_max_iter->view()[0];
+            auto   newton_min_iter = m_newton_min_iter->view()[0];
+            IndexT newton_iter     = 0;
+            for(; newton_iter < newton_max_iter; ++newton_iter)
+            {
+                Timer timer{"Newton Iteration"};
+
+                // 1) Compute animation substep ratio
+                compute_animation_substep_ratio(newton_iter);
+
+                // 2) Build Collision Pairs
+                if(newton_iter > 0)
+                    detect_dcd_candidates();
+
+                // 3) Compute Dynamic Topo Effect Gradient and Hessian => G:Vector3, H:Matrix3x3
+                //    Including Contact Effect
+                m_state = SimEngineState::ComputeDyTopoEffect;
+                compute_dytopo_effect();
+
+                // 4) Solve Global Linear System => dx = A^-1 * b
+                m_state = SimEngineState::SolveGlobalLinearSystem;
+                {
+                    Timer timer{"Solve Global Linear System"};
+                    m_global_linear_system->solve();
+                }
+
+
+                // 5) Collect Vertex Displacements Globally
+                m_global_vertex_manager->collect_vertex_displacements();
+
+
+                // 6) Check Termination Condition
+                bool converged  = convergence_check(newton_iter);
+                bool terminated = converged && (newton_iter >= newton_min_iter);
+                if(terminated)
+                    break;
+
+
+                // 7) Begin Line Search
+                m_state = SimEngineState::LineSearch;
+                {
+                    Timer timer{"Line Search"};
+
+                    // Reset Alpha
+                    alpha = 1.0;
+
+                    // Record Current State x to x_0
+                    m_line_searcher->record_start_point();
+                    m_global_vertex_manager->record_start_point();
+                    detect_trajectory_candidates(alpha);
+
+                    // Compute Current Energy => E_0
+                    Float E0 = m_line_searcher->compute_energy(true);  // initial energy
+                    // spdlog::info("Initial Energy: {}", E0);
+
+                    // CCD filter
+                    alpha = filter_toi(alpha);
+
+                    // CFL Condition
+                    alpha = cfl_condition(alpha);
+
+                    // * Step Forward => x = x_0 + alpha * dx
+                    // Compute Test Energy => E
+                    Float E = compute_energy(alpha);
+
+                    if(!converged)
+                    {
+                        SizeT line_search_iter = 0;
+                        while(line_search_iter < m_line_searcher->max_iter())
+                        {
+                            Timer timer{"Line Search Iteration"};
+
+                            // Check Energy Decrease
+                            // TODO: maybe better condition like Wolfe condition/Armijo condition in the future
+                            bool energy_decrease = (E <= E0);
+
+                            // Check Inversion
+                            // TODO: Inversion check if needed
+                            bool no_inversion = true;
+
+                            bool success = energy_decrease && no_inversion;
+
+                            if(success)
+                                break;
+
+                            // If not success, then shrink alpha
+                            alpha /= 2;
+                            E = compute_energy(alpha);
+
+                            line_search_iter++;
+                        }
+
+                        // Check Line Search Iteration
+                        // report warnings or throw exceptions if needed
+                        check_line_search_iter(line_search_iter);
+                    }
+                }
+            }
+            //SizeT AnimatorVisitor::substep() noexcept
+            //{
+            //    return m_animator.substep();
+            //}
+          // namespace uipc::backend
+            ////////////###########now you need to test a coloring graph on a mesh level#############////////////
+            auto substep_Num = world().animator().substep();
+
+            for(int substep = 0; substep < int(substep_Num); substep++)
+            {
+                //world().animator().
+                //curTime += physicsParams().dt;
+                //debugOperation(
+                //    DEBUG_LVL_DEBUG,
+                //    [&]()
+                //    { std::cout << "Substep step: " << substep << std::endl; });
+
+                //dcd();
+                //################################################################
+                detect_dcd_candidates();
+                //################################################################
+                //cpu_parallel_for(0,
+                //                 numTetMeshes(),
+                //                 [&](int iMesh)
+                //                 {
+                //                     if(tMeshes[iMesh]->activeForMaterialSolve)
+                //                     {
+                //                         tMeshes[iMesh]->evaluateExternalForce();
+                //                         tMeshes[iMesh]->applyInitialStep();
+                //                     }
+                //                 });
+                //applyDeformers();
+
+                //ccd();
+                //################################################################
+                // Reset Alpha
+                alpha = 1.0;
+
+                // Record Current State x to x_0
+                m_line_searcher->record_start_point();
+                m_global_vertex_manager->record_start_point();
+                detect_trajectory_candidates(alpha);
+
+                // Compute Current Energy => E_0
+                Float E0 = m_line_searcher->compute_energy(true);  // initial energy
+                // spdlog::info("Initial Energy: {}", E0);
+
+                // CCD filter
+                alpha = filter_toi(alpha);
+                //################################################################
+                int iterations = 20;
+                for(int iIter = 0; iIter < iterations; iIter++)
+                {
+                    bool apply_friction = true;
+                    //bool apply_friction = iIter >= physicsParams().frictionStartIter;
+                    // apply_friction = true;
+                    //debugOperation(
+                    //    DEBUG_LVL_DEBUG_VEBOSE,
+                    //    [&]() { std::cout << "iIter: " << iIter << std::endl; });
+                    //debugOperation(DEBUG_LVL_DEBUG_VEBOSE,
+                    //               std::bind(&VBDPhysics::outputPosVel, this));
+                    //debugOperation(DEBUG_LVL_DEBUG_VEBOSE,
+                    //               std::bind(&VBDPhysics::clearForces, this));
+                    std::vector<std::vector<int32_t>> vertexParallelGroups;
+                    for(size_t iGroup = 0; iGroup < vertexParallelGroups.size(); iGroup++)
+                    {
+                        const std::vector<int32_t>& parallelGroup = vertexParallelGroups[iGroup];
+
+                        size_t numVertices = parallelGroup.size() / 2;
+                        //size_t numCollisionParallelGroup =
+                        //    activeColllisionList.numActiveCollisionsEachParallelGroup[iGroup];
+                        //// update collision info for parallel group
+                        //cpu_parallel_for(
+                        //    0,
+                        //    numCollisionParallelGroup,
+                        //    [&](int iCollision)
+                        //    {
+                        //        IdType iMesh =
+                        //            activeColllisionList.activeCollisionsEachParallelGroup[iGroup][iCollision * 2];
+                        //        int vId =
+                        //            activeColllisionList.activeCollisionsEachParallelGroup[iGroup][2 * iCollision + 1];
+                        //        updateCollisionInfo(
+                        //            getCollisionDetectionResultFromTetMeshId(iMesh, vId));
+                        //    });
+
+                        //cpu_parallel_for(
+                        //    0,
+                        //    numVertices,
+                        //    [&](int iV)
+                        //    {
+                        //        IdType iMesh = parallelGroup[iV * 2];
+                        //        int    vId   = parallelGroup[2 * iV + 1];
+
+                        //        VBDTetMeshNeoHookean* pMesh =
+                        //            (VBDTetMeshNeoHookean*)tMeshes[iMesh].get();
+                        //        if(!pMesh->fixedMask[vId] && pMesh->activeForMaterialSolve)
+                        //        //if (!pMesh->fixedMask[vId])
+                        //        {
+                        //            //pMesh->VBDStep(vId);
+                        //            VBDStepWithCollision(pMesh, iMesh, vId, apply_friction);
+                        //        }
+                        //    });
+
+
+                        // VBDTetMeshNeoHookean* pMesh = (VBDTetMeshNeoHookean*)tMeshes[0].get();
+                        //int sum = checksum(reinterpret_cast<int*>(pMesh->mVertPos.data()), sizeof(FloatingType) / sizeof(int) * pMesh->mVertPos.size());
+                        //std::cout << "substep: " << substep << "iteration: " << iteration << "iGroup: " << iGroup << ", checksum: " << sum << std::endl;
+                    }
+                    //debugOperation(DEBUG_LVL_DEBUG_VEBOSE,
+                    //               std::bind(&VBDPhysics::outputForces, this));
+                    //if(physicsParams().intermediateCollisionIterations > 0
+                    //   && iIter % physicsParams().intermediateCollisionIterations
+                    //          == physicsParams().intermediateCollisionIterations - 1)
+                    //{
+                    //    intermediateCollisionDetection();
+                    //}
+                }  // iteration
+
+                //updateVelocities();
+            }  // substep
+
+            ////////////////////////////////////
+            // 5. Update Velocity => v = (x - x_0) / dt
+            m_state = SimEngineState::UpdateVelocity;
+            {
+                Timer timer{"Update Velocity"};
+                m_time_integrator_manager->update_state();
+            }
+
+            // Check Newton Iteration
+            // report warnings or throw exceptions if needed
+            check_newton_iter(newton_iter);
+        }
+
+        spdlog::info("<<< End Frame: {}", m_current_frame);
+    };
+
     try
     {
-        pipeline();
+        pipeline_ipc();
+        //pipeline_vbd();
         m_last_solved_frame = m_current_frame;
     }
     catch(const SimEngineException& e)

@@ -1,0 +1,702 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\libuipc\apps\tests\sanity_check\half_plane_vertex_distance_check.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\apps\tests\sanity_check\simplicial_surface_distance_check.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\apps\tests\sanity_check\simplicial_surface_intersection_check.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer_view.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\engine_create_info.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\macro.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\module_init_info.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\type_define.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\animator_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\contact_tabular_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\diff_sim_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\geometry_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\sanity_check_message_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\scene_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\subscene_tabular_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\world_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\attribute_name.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_type.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_auto_register.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_collection.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\attribute_name.h">
+      <Filter>include\uipc\builtin\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\backend_name.h">
+      <Filter>include\uipc\builtin\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\factory_keyword.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\geometry_type.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_auto_register.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_collection.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_info.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_register.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\abort.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\algorithm\run_length_encode.h">
+      <Filter>include\uipc\common\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\allocator.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\buffer_info.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\config.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\const_string_map.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\demangle.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\eigen_json.inl">
+      <Filter>include\uipc\common\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\smart_pointer.inl">
+      <Filter>include\uipc\common\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\dllexport.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\enumerate.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\exception.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\fmt_eigen.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\format.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\future.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json_eigen.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\list.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log_pattern_guard.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\macro.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\magic_enum.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\map.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\range.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\readable_type_name.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\resident_thread.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\set.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\smart_pointer.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span_as_eigen.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\stack.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\string.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\timer.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_define.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_traits.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\uipc.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unit.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_map.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_set.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\vector.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\zip.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_driving_revolute_joint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_revolute_joint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\arap.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\baraff_witkin_shell.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constraint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\conversion.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\discrete_shell_bending.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\elastic_moduli.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\empty.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_extra_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\hookean_spring.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_affine_body_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_primitive_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\kirchhoff_rod_bending.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\neo_hookean_shell.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\particle.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_position_constraint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_transform_constraint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_vertex_stitch.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\stable_neo_hookean.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\strain_limiting_baraff_witkin.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animation.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animator.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\constitution_tabular.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_element.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_system_feature.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_tabular.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\details\object.inl">
+      <Filter>include\uipc\core\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\diff_sim.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine_status.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_engine.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_sanity_checker.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\engine.h">
+      <Filter>include\uipc\core\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\scene.h">
+      <Filter>include\uipc\core\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\world.h">
+      <Filter>include\uipc\core\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_snapshot.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\sanity_checker.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_archieve.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_factory.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_snapshot.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_element.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_tabular.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\world.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\adjoint_method_feature.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\enable_grad_feature.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\parameter_collection.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\sparse_coo_view.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\abstract_simplicial_complex.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_commit.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_factory.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_copy.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_debug_info.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_factory.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_friend.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_collection.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_copy.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_export_types.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_slot.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_collection.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_export_types.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplex_slot.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplices.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplicial_complex.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_atlas.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection_commit.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_commit.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_factory.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_friend.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\shared_attribute_context.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_attributes.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_body_force.h">
+      <Filter>include\uipc\geometry\utils\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_dyadic_mass.h">
+      <Filter>include\uipc\geometry\utils\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_region.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_transform.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\bvh.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\closure.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_instance_volume.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_mesh_d_hat.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_vertex_volume.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\constitution_type.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\distance.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\extract_surface.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\factory.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\flip_inward_triangles.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\intersection.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\is_trimesh_closed.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_connected_vertices.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_region.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_surface.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_triangle_orient.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\merge.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\mesh_partition.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\octree.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\optimal_transform.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\points_from_volume.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\simplex_utils.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\tetrahedralize.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\attribute_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\gltf_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\scene_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\simplicial_complex_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\spread_sheet_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\urdf_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\uipc.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\dll_export.h">
+      <Filter>include\uipc\vdb</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\points_from_volume.h">
+      <Filter>include\uipc\vdb</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc_gui\common\platform_handle.h">
+      <Filter>include\uipc_gui\common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\libuipc\apps\tests\sanity_check\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A1BF4E01-186A-3D43-B7D4-2A9DBAEF2DF9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{DE0009ED-0956-398F-9853-FB6A33B628E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc">
+      <UniqueIdentifier>{6C0EEFE7-D58A-3D56-A76F-06E4EA7EDF72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\backend">
+      <UniqueIdentifier>{B3EBC320-A83B-31DD-953B-8488B7C0E054}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\backend\visitors">
+      <UniqueIdentifier>{A7AA7AFA-C6A7-304F-84B4-123E034983B0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\builtin">
+      <UniqueIdentifier>{587F6910-A38C-384C-A2DB-EB7F8E97F282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\builtin\details">
+      <UniqueIdentifier>{286B7D3B-228B-3550-AED1-23A1FF912B66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\common">
+      <UniqueIdentifier>{F935B003-E424-3CA0-AB37-B527F4FBCDFB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\common\algorithm">
+      <UniqueIdentifier>{F85786B9-5DC5-36DA-A065-D6F429E1274A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\common\details">
+      <UniqueIdentifier>{40322B55-152D-3CF0-9E15-093AE3578E2E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\constitution">
+      <UniqueIdentifier>{71AE22A5-747F-32B2-8DC6-9E5BC3F317F6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\core">
+      <UniqueIdentifier>{DA8B5B67-A25C-37E6-BC37-2BA2B3802476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\core\details">
+      <UniqueIdentifier>{71FAAE32-6C34-3611-BC68-E5583A9440E4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\core\internal">
+      <UniqueIdentifier>{DD2FB1E0-2660-30BE-84DA-09FD0967275B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\diff_sim">
+      <UniqueIdentifier>{340113BF-CCF7-3AE6-9B5F-90AA1C53A24E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry">
+      <UniqueIdentifier>{ACAC0327-53E5-3FAA-9088-33CDC5F8C01C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry\details">
+      <UniqueIdentifier>{1C038890-D4D1-3D60-B5B8-F3631BBCD5FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry\utils">
+      <UniqueIdentifier>{936002BF-CE66-3167-A650-57AD0C0BD448}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry\utils\affine_body">
+      <UniqueIdentifier>{ADA8CEE2-9BB6-3E4D-B77C-99780C4700AF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\io">
+      <UniqueIdentifier>{0638AE99-50F9-3F9A-A65B-A3970B787C13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\vdb">
+      <UniqueIdentifier>{B5892348-D741-3271-A199-87AD6A439D78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc_gui">
+      <UniqueIdentifier>{BBE264E4-059A-3C5F-A48F-22FBDC4D62E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc_gui\common">
+      <UniqueIdentifier>{3114B154-FD32-3DCD-A6DC-E4571E526689}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

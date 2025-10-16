@@ -1,0 +1,490 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4A746064-34A6-3B20-85CE-EF2A8A77AA16}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>basic</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.6.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\libuipc\buildGUI\Debug\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">basic.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">uipc_benchmark_basic</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\libuipc\buildGUI\Release\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">basic.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">uipc_benchmark_basic</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\libuipc\buildGUI\apps\benchmarks\basic\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">basic.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">uipc_benchmark_basic</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\libuipc\buildGUI\RelWithDebInfo\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">basic.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">uipc_benchmark_basic</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;TBB_USE_DEBUG;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;TBB_USE_DEBUG;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/Debug/bin/uipc_benchmark_basic.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/debug/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\Debug\app.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\Catch2d.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\manual-link\Catch2Maind.lib;..\..\..\Debug\lib\uipc_constitution.lib;..\..\..\Debug\lib\uipc_sanity_check.lib;..\..\..\Debug\lib\uipc_io.lib;..\..\..\Debug\lib\uipc_geometry.lib;..\..\..\Debug\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\spdlogd.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\fmtd.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\cpptrace.lib;..\..\..\external\tetgen\Debug\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\tbb12_debug.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\Catch2d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/Debug/lib/uipc_benchmark_basic.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/Debug/bin/uipc_benchmark_basic.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/Release/bin/uipc_benchmark_basic.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\Release\app.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;..\..\..\vcpkg_installed\x64-windows\lib\manual-link\Catch2Main.lib;..\..\..\Release\lib\uipc_constitution.lib;..\..\..\Release\lib\uipc_sanity_check.lib;..\..\..\Release\lib\uipc_io.lib;..\..\..\Release\lib\uipc_geometry.lib;..\..\..\Release\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\Release\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/Release/lib/uipc_benchmark_basic.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/Release/bin/uipc_benchmark_basic.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/apps/benchmarks/basic/MinSizeRel/uipc_benchmark_basic.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\MinSizeRel\app.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;..\..\..\vcpkg_installed\x64-windows\lib\manual-link\Catch2Main.lib;..\..\..\src\constitution\MinSizeRel\uipc_constitution.lib;..\..\..\src\sanity_check\MinSizeRel\uipc_sanity_check.lib;..\..\..\src\io\MinSizeRel\uipc_io.lib;..\..\..\src\geometry\MinSizeRel\uipc_geometry.lib;..\..\..\src\core\MinSizeRel\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\MinSizeRel\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/apps/benchmarks/basic/MinSizeRel/uipc_benchmark_basic.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/apps/benchmarks/basic/MinSizeRel/uipc_benchmark_basic.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;NOMINMAX;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\src\sanity_check;D:\Programming\libuipc\apps\app\..;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/RelWithDebInfo/bin/uipc_benchmark_basic.exe -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>..\..\app\RelWithDebInfo\app.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;..\..\..\vcpkg_installed\x64-windows\lib\manual-link\Catch2Main.lib;..\..\..\RelWithDebInfo\lib\uipc_constitution.lib;..\..\..\RelWithDebInfo\lib\uipc_sanity_check.lib;..\..\..\RelWithDebInfo\lib\uipc_io.lib;..\..\..\RelWithDebInfo\lib\uipc_geometry.lib;..\..\..\RelWithDebInfo\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\RelWithDebInfo\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;..\..\..\vcpkg_installed\x64-windows\lib\Catch2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/RelWithDebInfo/lib/uipc_benchmark_basic.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/RelWithDebInfo/bin/uipc_benchmark_basic.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions></AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\libuipc\apps\benchmarks\basic\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Programming/libuipc/apps/benchmarks/basic/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/benchmarks/basic/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\libuipc\buildGUI\apps\benchmarks\basic\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Programming/libuipc/apps/benchmarks/basic/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/benchmarks/basic/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\libuipc\buildGUI\apps\benchmarks\basic\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Programming/libuipc/apps/benchmarks/basic/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/benchmarks/basic/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\libuipc\buildGUI\apps\benchmarks\basic\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Programming/libuipc/apps/benchmarks/basic/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/apps/benchmarks/basic/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\libuipc\buildGUI\apps\benchmarks\basic\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\libuipc\apps\benchmarks\basic\basic.cpp" />
+    <Natvis Include="D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis">
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\ZERO_CHECK.vcxproj">
+      <Project>{4AE76370-8D53-376B-8296-D0BBC73D91C2}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\apps\app\app.vcxproj">
+      <Project>{81A36780-D580-3389-A737-92602D9DDA75}</Project>
+      <Name>app</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\backends\cuda\cuda.vcxproj">
+      <Project>{502429AA-FFB8-3558-9094-F99E5E5D7095}</Project>
+      <Name>cuda</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\backends\none\none.vcxproj">
+      <Project>{744F63BE-F16B-327A-BA64-8220EF98CDB0}</Project>
+      <Name>none</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\external\tetgen\tetgen.vcxproj">
+      <Project>{12EC9CEE-2F89-3394-95CF-8B9D78FB5C43}</Project>
+      <Name>tetgen</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\constitution\uipc_constitution.vcxproj">
+      <Project>{7718F193-F077-3F4A-8265-7A6CACC32280}</Project>
+      <Name>uipc_constitution</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\core\uipc_core.vcxproj">
+      <Project>{FBD95F36-9872-32AB-B23B-E99FCFDED1FD}</Project>
+      <Name>uipc_core</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\geometry\uipc_geometry.vcxproj">
+      <Project>{07EC82C8-D3F7-3300-A8D3-208E908DE13D}</Project>
+      <Name>uipc_geometry</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\io\uipc_io.vcxproj">
+      <Project>{21DB2C93-357B-3A12-B8D3-E35C71125BA6}</Project>
+      <Name>uipc_io</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\sanity_check\uipc_sanity_check.vcxproj">
+      <Project>{2D5E866B-1A4A-3365-90FA-F5CC73B0C0A3}</Project>
+      <Name>uipc_sanity_check</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.6.targets" />
+  </ImportGroup>
+</Project>

@@ -1,0 +1,508 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\module.cpp" />
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\pyuipc.cpp" />
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\common\logger.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\common\resident_thread.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\common\timer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\common\transform.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\common\uipc_type.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\common\unit.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\animator.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\constitution_tabular.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\contact_system_feature.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\contact_tabular.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\diff_sim.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\engine.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\feature.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\feature_collection.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\module.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\object.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\pyengine.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\sanity_checker.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene_factory.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene_io.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene_snapshot.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\subscene_tabular.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\core\world.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\attribute_collection.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\attribute_io.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\attribute_slot.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\factory.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\geometry.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\geometry_atlas.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\geometry_slot.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\implicit_geometry.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\implicit_geometry_slot.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\module.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\simplicial_complex.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\simplicial_complex_io.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\simplicial_complex_slot.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\spread_sheet_io.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\urdf_io.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\utils.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\affine_body_constitution.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\affine_body_revolute_joint.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\arap.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\constitution.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\constraint.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\discrete_shell_bending.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\elastic_moduli.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\empty.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\finite_element_constitution.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\finite_element_extra_constitution.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\hookean_spring.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\inter_affine_body_constitution.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\inter_primitive_constitution.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\kirchhoff_rod_bending.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\module.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\neo_hookean_shell.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\particle.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\soft_position_constraint.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\soft_transform_constraint.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\soft_vertex_stitch.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\stable_neo_hookean.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\strain_limiting_baraff_witkin.cpp">
+      <Filter>constitution</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\buffer.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\buffer_view.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\diff_sim_visitor.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\module.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\scene_visitor.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\world_visitor.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\attribute_name.cpp">
+      <Filter>builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\constitution_uid_collection.cpp">
+      <Filter>builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\implicit_geometry_uid_collection.cpp">
+      <Filter>builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\module.cpp">
+      <Filter>builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\uid_register.cpp">
+      <Filter>builtin</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\diff_sim\module.cpp">
+      <Filter>diff_sim</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\diff_sim\parameter_collection.cpp">
+      <Filter>diff_sim</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\pybind\pyuipc\diff_sim\sparse_coo_view.cpp">
+      <Filter>diff_sim</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\as_numpy.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\pyuipc.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\json.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\logger.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\module.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\resident_thread.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\span.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\timer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\transform.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\uipc_type.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\common\unit.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\animator.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\constitution_tabular.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\contact_system_feature.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\contact_tabular.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\diff_sim.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\engine.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\feature.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\feature_collection.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\module.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\object.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\pyengine.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\sanity_checker.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene_factory.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene_io.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\scene_snapshot.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\subscene_tabular.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\core\world.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\attribute_collection.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\attribute_creator.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\attribute_io.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\attribute_slot.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\factory.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\geometry.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\geometry_atlas.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\geometry_slot.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\implicit_geometry.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\implicit_geometry_slot.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\module.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\simplicial_complex.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\simplicial_complex_io.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\simplicial_complex_slot.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\spread_sheet_io.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\urdf_io.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\geometry\utils.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\affine_body_constitution.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\affine_body_revolute_joint.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\arap.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\constitution.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\constraint.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\discrete_shell_bending.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\elastic_moduli.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\empty.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\finite_element_constitution.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\finite_element_extra_constitution.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\hookean_spring.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\inter_affine_body_constitution.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\inter_primitive_constitution.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\kirchhoff_rod_bending.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\module.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\neo_hookean_shell.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\particle.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\soft_position_constraint.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\soft_transform_constraint.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\soft_vertex_stitch.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\stable_neo_hookean.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\constitution\strain_limiting_baraff_witkin.h">
+      <Filter>constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\buffer.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\buffer_view.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\diff_sim_visitor.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\module.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\scene_visitor.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\backend\world_visitor.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\attribute_name.h">
+      <Filter>builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\constitution_uid_collection.h">
+      <Filter>builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\implicit_geometry_uid_collection.h">
+      <Filter>builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\module.h">
+      <Filter>builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\builtin\uid_register.h">
+      <Filter>builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\diff_sim\module.h">
+      <Filter>diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\diff_sim\parameter_collection.h">
+      <Filter>diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\pybind\pyuipc\diff_sim\sparse_coo_view.h">
+      <Filter>diff_sim</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\libuipc\src\pybind\pyuipc\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="backend">
+      <UniqueIdentifier>{A6F48A77-0210-3D86-A293-D1495920DDDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="builtin">
+      <UniqueIdentifier>{0193708C-A5D4-3051-9FEA-312AF7B9593A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{70499102-6D3C-33B7-9E88-515E5E50725C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="constitution">
+      <UniqueIdentifier>{F02C8719-1A0A-3A6C-BE96-8C5C7B8FB140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{48418FC8-595A-32DB-8E65-1704921C7087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="diff_sim">
+      <UniqueIdentifier>{65B3DCA5-AC8E-3102-AA66-5FBDCDE64008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry">
+      <UniqueIdentifier>{E105AFD5-0B66-3D2D-AE6E-1ECCB83F913D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

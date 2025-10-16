@@ -90,4 +90,55 @@ int main()
         world.retrieve();
         sio.write_surface(fmt::format("{}scene_surface{}.obj", this_output_path, i));
     }
+
+
+    ///////
+    //auto config                             = Scene::default_config();
+    //config['contact']['friction']['enable'] = true;
+    //... auto scene                          = Scene(config);
+    //...
+
+    //    AffineBodyConstitution abd;
+    //RotatingMotor              rm;
+
+    //// create object
+    //auto cube_object = scene.objects().create("cube");
+    //{
+    //    // apply the constitution and constraint
+    //    abd.apply_to(cube_mesh, 10.0_MPa);
+    //    rm.apply_to(cube_mesh,
+    //                100.0,                    // constraint strength ratio
+    //                Vector3::UnitX(),         // rotation axis
+    //                std::numbers::pi / 1.0_s  // rotation speed
+    //    );
+
+    //    // move the cube up by 2 units
+    //    auto trans_view = view(cube_mesh.transforms());
+    //    {
+    //        Transform t = Transform::Identity();
+    //        t.translate(Vector3::UnitY() * 2);
+    //        trans_view[0] = t.matrix();
+    //    }
+
+    //    cube_object->geometries().create(cube_mesh);
+    //}
+
+    //auto ground_obj = scene.objects().create("ground");
+    //{
+    //    auto g = ground();
+    //    ground_obj->geometries().create(g);
+    //}
+
+
+    //world.init(scene);
+    //SceneIO sio{scene};
+    //sio.write_surface(fmt::format("scene_surface{}.obj", world.frame()));
+
+    //while(world.frame() < 360)
+    //{
+    //    world.advance();
+    //    world.retrieve();
+    //    sio.write_surface(fmt::format("scene_surface{}.obj", world.frame()));
+    //}
+
 }

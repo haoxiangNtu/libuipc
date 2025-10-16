@@ -2,6 +2,7 @@
 #include <app/asset_dir.h>
 #include <uipc/uipc.h>
 #include <uipc/constitution/affine_body_constitution.h>
+#include <uipc/common/timer.h>
 #include <filesystem>
 #include <fstream>
 #include <numbers>
@@ -13,7 +14,9 @@ int main()
     using namespace uipc::geometry;
     using namespace uipc::constitution;
     namespace fs = std::filesystem;
+    Timer global_timer("main");
 
+    global_timer.enable_all();
     spdlog::set_level(spdlog::level::info);
 
     std::string tetmesh_dir{AssetDir::tetmesh_path()};
@@ -182,15 +185,23 @@ int main()
     SceneIO sio{scene};
     sio.write_surface(fmt::format("{}scene_surface{}.obj", this_output_path, 0));
 
-    // world.recover();
+    auto obj_all = scene.objects().find("balls")[0];
+    auto ids  = obj_all->geometries().ids();
+    auto geo = scene.geometries()
+                   .find(ids[0])
+                   .rest_geometry->geometry()
+                   .as<SimplicialComplex>()
+                   ->vertices();
 
-    while(world.frame() < 1000)
+    while(world.frame() < 300)
     {
         world.advance();
         world.retrieve();
         //world.dump();
+
         sio.write_surface(
             fmt::format("{}scene_surface{}.obj", this_output_path, world.frame()));
         // fmt::println("frame: {}", world.frame());
     }
+    global_timer.report();
 }

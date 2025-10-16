@@ -1,0 +1,1114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{502429AA-FFB8-3558-9094-F99E5E5D7095}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>cuda</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.6.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\libuipc\buildGUI\Debug\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cuda.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">uipc_backend_cuda</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\libuipc\buildGUI\Release\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cuda.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">uipc_backend_cuda</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\libuipc\buildGUI\src\backends\cuda\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">cuda.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">uipc_backend_cuda</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\libuipc\buildGUI\RelWithDebInfo\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">cuda.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">uipc_backend_cuda</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /external:I "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_CHECK_ON=1;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;TBB_USE_DEBUG;CMAKE_INTDIR="Debug";cuda_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UIPC_BACKEND_DIR=R\"(D:/Programming/libuipc/src/backends)\";UIPC_BACKEND_NAME=R\"(cuda)\";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_CHECK_ON=1;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;TBB_USE_DEBUG;CMAKE_INTDIR=\"Debug\";cuda_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_CHECK_ON=1;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;TBB_USE_DEBUG;CMAKE_INTDIR="Debug";cuda_EXPORTS</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++20 -arch=native --diag-suppress=27,174,997,1388,1394,1866 --expt-relaxed-constexpr --extended-lambda -rdc=true -Xcudafe --display_error_number -diag-suppress 20012,20011,20014 -Xcompiler="/EHsc -Ob0 -Zi /wd4819 /wd4068 /wd4996"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <Optimization>Od</Optimization>
+      <Runtime>MDd</Runtime>
+      <RuntimeChecks>RTC1</RuntimeChecks>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <UseHostInclude>false</UseHostInclude>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/Debug/bin/uipc_backend_cuda.dll -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/debug/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>cublas.lib;cusparse.lib;cusolver.lib;..\..\..\Debug\lib\uipc_geometry.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\lib\x64\cudart.lib;..\..\..\Debug\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\spdlogd.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\fmtd.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\cpptrace.lib;..\..\..\external\tetgen\Debug\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\debug\lib\tbb12_debug.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/Debug/lib/uipc_backend_cuda.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/Debug/bin/uipc_backend_cuda.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets -D_WINDOWS -Xcompiler=" /EHsc" -Xcompiler=" -Ob0 -Od /RTC1" -arch=native -Xcompiler=-MDd -Xcompiler=-Zi</AdditionalOptions>
+      <PerformDeviceLink>true</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /external:I "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR="Release";cuda_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R\"(D:/Programming/libuipc/src/backends)\";UIPC_BACKEND_NAME=R\"(cuda)\";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR=\"Release\";cuda_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR="Release";cuda_EXPORTS</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++20 -arch=native --diag-suppress=27,174,997,1388,1394,1866 --expt-relaxed-constexpr --extended-lambda -rdc=true -Xcudafe --display_error_number -diag-suppress 20012,20011,20014 -Xcompiler="/EHsc -Ob2 /wd4819 /wd4068 /wd4996"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <Optimization>O2</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <UseHostInclude>false</UseHostInclude>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/Release/bin/uipc_backend_cuda.dll -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>cublas.lib;cusparse.lib;cusolver.lib;..\..\..\Release\lib\uipc_geometry.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\lib\x64\cudart.lib;..\..\..\Release\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\Release\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/Release/lib/uipc_backend_cuda.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/Release/bin/uipc_backend_cuda.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets -D_WINDOWS -Xcompiler=" /EHsc" -Xcompiler="-O2 -Ob2" -DNDEBUG -arch=native -Xcompiler=-MD</AdditionalOptions>
+      <PerformDeviceLink>true</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /external:I "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR="MinSizeRel";cuda_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R\"(D:/Programming/libuipc/src/backends)\";UIPC_BACKEND_NAME=R\"(cuda)\";UIPC_BACKEND_EXPORT_DLL=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR=\"MinSizeRel\";cuda_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR="MinSizeRel";cuda_EXPORTS</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++20 -arch=native --diag-suppress=27,174,997,1388,1394,1866 --expt-relaxed-constexpr --extended-lambda -rdc=true -Xcudafe --display_error_number -diag-suppress 20012,20011,20014 -Xcompiler="/EHsc -Ob1 /wd4819 /wd4068 /wd4996"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <Optimization>O1</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <UseHostInclude>false</UseHostInclude>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/src/backends/cuda/MinSizeRel/uipc_backend_cuda.dll -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>cublas.lib;cusparse.lib;cusolver.lib;..\..\geometry\MinSizeRel\uipc_geometry.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\lib\x64\cudart.lib;..\..\core\MinSizeRel\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\MinSizeRel\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/src/backends/cuda/MinSizeRel/uipc_backend_cuda.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/src/backends/cuda/MinSizeRel/uipc_backend_cuda.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets -D_WINDOWS -Xcompiler=" /EHsc" -Xcompiler="-O1 -Ob1" -DNDEBUG -arch=native -Xcompiler=-MD</AdditionalOptions>
+      <PerformDeviceLink>true</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include/eigen3" /external:I "D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/include" /external:I "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/include" /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_CHECK_ON=1;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR="RelWithDebInfo";cuda_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R\"(D:/Programming/libuipc/src/backends)\";UIPC_BACKEND_NAME=R\"(cuda)\";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R\"(D:/Programming/libuipc)\";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_CHECK_ON=1;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR=\"RelWithDebInfo\";cuda_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;UIPC_BACKEND_DIR=R"(D:/Programming/libuipc/src/backends)";UIPC_BACKEND_NAME=R"(cuda)";UIPC_BACKEND_EXPORT_DLL=1;UIPC_RUNTIME_CHECK=1;UIPC_PROJECT_DIR=R"(D:/Programming/libuipc)";UIPC_VERSION_MAJOR=0;UIPC_VERSION_MINOR=9;UIPC_VERSION_PATCH=0;SPDLOG_SHARED_LIB;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;FMT_SHARED;MUDA_CHECK_ON=1;MUDA_COMPUTE_GRAPH_ON=0;MUDA_NVTX3_ON=0;NOMINMAX;CMAKE_INTDIR="RelWithDebInfo";cuda_EXPORTS</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++20 -arch=native --diag-suppress=27,174,997,1388,1394,1866 --expt-relaxed-constexpr --extended-lambda -rdc=true -Xcudafe --display_error_number -diag-suppress 20012,20011,20014 -Xcompiler="/EHsc -Ob1 -Zi /wd4819 /wd4068 /wd4996"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <Optimization>O2</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <UseHostInclude>false</UseHostInclude>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\libuipc\include;D:\Programming\libuipc\src;D:\Programming\libuipc\src\backends\cuda;D:\Programming\libuipc\external\tetgen;D:\Programming\libuipc\external\octree;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include\eigen3;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/haoxiang/Toolchain/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Programming/libuipc/buildGUI/RelWithDebInfo/bin/uipc_backend_cuda.dll -installedDir D:/Programming/libuipc/buildGUI/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>cublas.lib;cusparse.lib;cusolver.lib;..\..\..\RelWithDebInfo\lib\uipc_geometry.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\lib\x64\cudart.lib;..\..\..\RelWithDebInfo\lib\uipc_core.lib;..\..\..\vcpkg_installed\x64-windows\lib\spdlog.lib;..\..\..\vcpkg_installed\x64-windows\lib\fmt.lib;..\..\..\vcpkg_installed\x64-windows\lib\cpptrace.lib;..\..\..\external\tetgen\RelWithDebInfo\tetgen.lib;..\..\..\vcpkg_installed\x64-windows\lib\tbb12.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.6/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/Programming/libuipc/buildGUI/RelWithDebInfo/lib/uipc_backend_cuda.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/Programming/libuipc/buildGUI/RelWithDebInfo/bin/uipc_backend_cuda.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem></SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets -D_WINDOWS -Xcompiler=" /EHsc" -Xcompiler=" -O2 -Ob1" -DNDEBUG -arch=native -Xcompiler=-MD -Xcompiler=-Zi</AdditionalOptions>
+      <PerformDeviceLink>true</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\libuipc\src\backends\cuda\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Programming/libuipc/src/backends/cuda/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/src/backends/cuda/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompiler.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompilerABI.cu;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDAInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerSupport.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseLibraryArchitecture.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CrayClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Diab-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVHPC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OrangeC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Renesas-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TIClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Tasking-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindCUDAToolkit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesAll.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesNative.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesValidate.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAFilterImplicitLibs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDALinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeDetermineLinkerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeInspectCUDALinker.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCFilterImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCParseImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\Programming\libuipc\buildGUI\CMakeFiles\4.1.1\CMakeCUDACompiler.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\muda-config.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\mudaTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\libuipc\buildGUI\src\backends\cuda\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Programming/libuipc/src/backends/cuda/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/src/backends/cuda/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompiler.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompilerABI.cu;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDAInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerSupport.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseLibraryArchitecture.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CrayClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Diab-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVHPC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OrangeC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Renesas-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TIClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Tasking-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindCUDAToolkit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesAll.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesNative.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesValidate.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAFilterImplicitLibs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDALinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeDetermineLinkerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeInspectCUDALinker.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCFilterImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCParseImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\Programming\libuipc\buildGUI\CMakeFiles\4.1.1\CMakeCUDACompiler.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\muda-config.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\mudaTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\libuipc\buildGUI\src\backends\cuda\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Programming/libuipc/src/backends/cuda/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/src/backends/cuda/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompiler.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompilerABI.cu;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDAInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerSupport.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseLibraryArchitecture.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CrayClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Diab-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVHPC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OrangeC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Renesas-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TIClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Tasking-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindCUDAToolkit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesAll.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesNative.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesValidate.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAFilterImplicitLibs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDALinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeDetermineLinkerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeInspectCUDALinker.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCFilterImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCParseImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\Programming\libuipc\buildGUI\CMakeFiles\4.1.1\CMakeCUDACompiler.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\muda-config.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\mudaTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\libuipc\buildGUI\src\backends\cuda\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Programming/libuipc/src/backends/cuda/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/libuipc -BD:/Programming/libuipc/buildGUI --check-stamp-file D:/Programming/libuipc/buildGUI/src/backends/cuda/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompiler.cmake.in;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDACompilerABI.cu;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCUDAInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeDetermineCompilerSupport.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeParseLibraryArchitecture.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCUDACompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CrayClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Diab-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVHPC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\NVIDIA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\OrangeC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Renesas-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TIClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Tasking-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-4.1\Modules\FindCUDAToolkit.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesAll.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesNative.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAArchitecturesValidate.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDAFilterImplicitLibs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCUDALinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeDetermineLinkerId.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeInspectCUDALinker.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCFilterImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeNVCCParseImplicitInfo.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CUDA.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\Programming\libuipc\buildGUI\CMakeFiles\4.1.1\CMakeCUDACompiler.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\muda-config.cmake;D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\muda\mudaTargets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\libuipc\buildGUI\src\backends\cuda\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer_view.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\engine_create_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\macro.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\module_init_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\type_define.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\animator_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\contact_tabular_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\diff_sim_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\geometry_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\sanity_check_message_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\scene_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\subscene_tabular_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\world_visitor.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\attribute_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_type.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_auto_register.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\attribute_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\backend_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\factory_keyword.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\geometry_type.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_auto_register.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_register.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\abort.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\algorithm\run_length_encode.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\allocator.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\buffer_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\config.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\const_string_map.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\demangle.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\eigen_json.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\smart_pointer.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\dllexport.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\enumerate.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\exception.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\fmt_eigen.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\format.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\future.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json_eigen.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\list.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log_pattern_guard.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\macro.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\magic_enum.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\map.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\range.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\readable_type_name.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\resident_thread.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\set.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\smart_pointer.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span_as_eigen.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\stack.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\string.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\timer.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_define.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_traits.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\uipc.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_map.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_set.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\vector.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\zip.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_driving_revolute_joint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_revolute_joint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\arap.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\baraff_witkin_shell.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constraint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\conversion.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\discrete_shell_bending.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\elastic_moduli.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\empty.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_extra_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\hookean_spring.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_affine_body_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_primitive_constitution.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\kirchhoff_rod_bending.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\neo_hookean_shell.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\particle.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_position_constraint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_transform_constraint.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_vertex_stitch.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\stable_neo_hookean.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\strain_limiting_baraff_witkin.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animation.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animator.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\constitution_tabular.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_element.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_system_feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_tabular.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\details\object.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\diff_sim.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine_status.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_engine.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_sanity_checker.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\engine.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\scene.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\world.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_snapshot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\sanity_checker.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_archieve.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_snapshot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_element.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_tabular.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\world.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\adjoint_method_feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\enable_grad_feature.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\parameter_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\sparse_coo_view.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\abstract_simplicial_complex.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_commit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_copy.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_debug_info.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_friend.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_collection.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_copy.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_export_types.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_slot.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_collection.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_export_types.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplex_slot.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplices.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplicial_complex.inl" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_atlas.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection_commit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_commit.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_friend.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\shared_attribute_context.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_attributes.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_slot.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_body_force.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_dyadic_mass.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_region.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_transform.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\bvh.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\closure.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_instance_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_mesh_d_hat.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_vertex_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\constitution_type.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\distance.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\extract_surface.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\factory.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\flip_inward_triangles.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\intersection.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\is_trimesh_closed.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_connected_vertices.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_region.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_surface.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_triangle_orient.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\merge.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\mesh_partition.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\octree.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\optimal_transform.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\points_from_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\simplex_utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\tetrahedralize.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\attribute_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\gltf_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\scene_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\simplicial_complex_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\spread_sheet_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\urdf_io.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\uipc.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\dll_export.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\points_from_volume.h" />
+    <ClInclude Include="D:\Programming\libuipc\include\uipc_gui\common\platform_handle.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\backend_path_tool.cpp" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\backend_path_tool.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_action.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_action_collection.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_engine.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_system.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_system_collection.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_system_slot.inl" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\i_sim_system.cpp" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\i_sim_system.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\module.cpp" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\module.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_action.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_action_collection.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_engine.cpp">
+      <ObjectFileName>$(IntDir)/__/common/sim_engine.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_engine.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_system.cpp">
+      <ObjectFileName>$(IntDir)/__/common/sim_system.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_system_auto_register.cpp" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system_auto_register.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_system_collection.cpp" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system_slot.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_diag_preconditioner.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_dytopo_effect_receiver.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_dytopo_effect_receiver.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_energy.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_energy.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_jacobi_matrix.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_jacobi_matrix.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_line_search_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_line_search_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_line_search_subreporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_line_search_subreporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_linear_subsystem.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_linear_subsystem.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_linear_subsystem_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_linear_subsystem_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_time_integrator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_time_integrator.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_tolerance_checker.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_animator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_animator.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_body_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_body_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_constraint.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_constraint.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_dynamics.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_dynamics.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_kinetic.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_kinetic.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_surface_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_surface_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_vertex_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_vertex_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\bdf\abd_bdf1_time_integrator.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\bdf\affine_body_bdf1_kinetic.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constitutions\affine_body_revolute_joint.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\affine_body_revolute_joint_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constitutions\arap.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\arap_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constitutions\ortho_potential.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\ortho_potential_function.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\sym\affine_body_revolute_joint.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\sym\ortho_potential.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constraints\soft_transform_constraint.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\abd_jacobi_matrix.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\affine_body_animator.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\affine_body_dynamics.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\inter_affine_body_animator.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\inter_affine_body_constitution_manager.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_animator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_animator.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_constitution_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_constitution_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_constraint.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_constraint.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\matrix_converter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\matrix_converter.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\type_define.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\utils.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\details\fast_segmental_reduce.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\details\matrix_converter.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\fast_segmental_reduce.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\geometry_instance_flattener.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\givens.hpp" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\matrix_converter.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\qr_svd.hpp" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\animator\animator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\animator\animator.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\animator\global_animator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\animator\global_animator.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\animator\utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\aabb.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\atomic_counting_lbvh.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\atomic_counting_lbvh.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\details\atomic_counting_lbvh.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\details\linear_bvh.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\filters\easy_vertex_half_plane_trajectory_filter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\filters\easy_vertex_half_plane_trajectory_filter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\filters\lbvh_simplex_trajectory_filter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\filters\lbvh_simplex_trajectory_filter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\global_trajectory_filter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\global_trajectory_filter.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\linear_bvh.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\simplex_trajectory_filter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\simplex_trajectory_filter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\trajectory_filter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\trajectory_filter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\vertex_half_plane_trajectory_filter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\vertex_half_plane_trajectory_filter.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_coeff.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_exporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_exporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_exporter_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_exporter_manager.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\analytical_barrier_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_EE_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_PE_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_PP_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_PT_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_parallel_EE_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_parallel_PE_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_parallel_PP_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_EE_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_PE_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_PP_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_PT_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_parallel_EE_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_parallel_PE_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_parallel_PP_contact.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\codim_ipc_contact_function.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\codim_ipc_simplex_frictional_contact_function.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\codim_ipc_simplex_normal_contact_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_simplex_frictional_contact.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\ipc_simplex_frictional_contact_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_simplex_normal_contact.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\ipc_vertex_half_plane_contact_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_vertex_half_plane_frictional_contact.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_vertex_half_plane_normal_contact.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\sym\codim_ipc_contact.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\sym\vertex_half_plane_distance.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_system_feature.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_system_feature.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\global_contact_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\global_contact_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\simplex_frictional_contact.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\simplex_frictional_contact.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\simplex_normal_contact.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\simplex_normal_contact.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\vertex_half_plane_frictional_contact.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\vertex_half_plane_frictional_contact.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\vertex_half_plane_normal_contact.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\vertex_half_plane_normal_contact.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\coupling_system\abd_fem_dytopo_effect_receiver.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\coupling_system\abd_fem_dytopo_effect_receiver.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\coupling_system\abd_fem_linear_subsystem.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\coupling_system\fem_abd_dytopo_effect_receiver.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\coupling_system\fem_abd_dytopo_effect_receiver.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\cuda_device\bit_operation.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\cuda_device\detail\bit_operation.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\diff_dof_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\diff_dof_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\diff_sim_subsystem.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\diff_sim_subsystem.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\global_diff_sim_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\global_diff_sim_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_classify_info.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_classify_info.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_effect_line_search_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_effect_line_search_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_effect_receiver.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_effect_receiver.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_effect_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_effect_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\global_dytopo_effect_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\global_dytopo_effect_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine.cu">
+      <CompileOut>$(IntDir)/engine/sim_engine.cu.obj</CompileOut>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_advance.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_backward.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_init.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_retrieve.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_sync.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\bdf\fem_bdf1_time_integrator.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\bdf\finite_element_bdf1_kinetic.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_0d_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_0d_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_0d_constitution_diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_0d_constitution_diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_1d_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_1d_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_1d_constitution_diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_1d_constitution_diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_2d_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_2d_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_2d_constitution_diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_2d_constitution_diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\arap_3d.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\arap_function.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\detail\stable_neo_hookean_3d.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\discrete_shell_bending.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\discrete_shell_bending_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_0d.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_1d.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_2d.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_3d.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\hookean_spring_1d.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\hookean_spring_1d_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\kirchhoff_rod_bending.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\kirchhoff_rod_bending_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\neo_hookean_shell_2d.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\neo_hookean_shell_2d_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\particle_0d.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\stable_neo_hookean_3d.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\stable_neo_hookean_3d_function.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\strain_limiting_baraff_witkin_shell_2d.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\strain_limiting_baraff_witkin_shell_2d.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\discrete_shell_bending.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\hookean_spring_1d.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\kirchhoff_rod_bending.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\shell_neo_hookean_2d.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\simplified_stable_neo_hookean_3d.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constraints\soft_position_constraint.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\details\finite_element_animator.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\details\finite_element_extra_constitution.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\details\finite_element_method.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_3d_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_3d_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_3d_constitution_diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_3d_constitution_diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_diag_preconditioner.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_dytopo_effect_receiver.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_dytopo_effect_receiver.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_line_search_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_line_search_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_linear_subsystem.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_linear_subsystem.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_time_integrator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_time_integrator.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_utils.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_utils.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_animator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_animator.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_body_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_body_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_constitution_diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_constitution_diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_constraint.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_constraint.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_diff_dof_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_diff_dof_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_energy_producer.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_energy_producer.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_extra_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_extra_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_extra_constitution_diff_parm_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_extra_constitution_diff_parm_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_kinetic.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_kinetic.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_method.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_method.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_surface_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_surface_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_vertex_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_vertex_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\matrix_utils.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\matrix_utils.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\shell_utils.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\shell_utils.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\body_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\body_reporter.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\details\global_body_manager.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\details\global_vertex_manager.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\global_body_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\global_body_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\global_simplicial_surface_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\global_simplicial_surface_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\global_vertex_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\global_vertex_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\simplicial_surface_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\simplicial_surface_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\vertex_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\vertex_reporter.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\details\half_plane.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\implicit_geometry\half_plane.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\half_plane.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\implicit_geometry\half_plane_body_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\half_plane_body_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\implicit_geometry\half_plane_vertex_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\half_plane_vertex_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\inter_primitive_effect_system\constitutions\soft_vertex_stitch.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\inter_primitive_effect_system\details\inter_primitive_constitution_manager.inl" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution_manager.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\kernel_cout.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\kernel_cout.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\line_search\line_search_reporter.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\line_search\line_search_reporter.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\line_search\line_searcher.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\line_search\line_searcher.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\current_frame_diff_dof_reporter.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\diag_linear_subsystem.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\diag_linear_subsystem.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\global_linear_system.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\global_linear_system.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\global_preconditioner.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\global_preconditioner.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\iterative_solver.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\iterative_solver.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\linear_pcg.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\linear_pcg.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\local_preconditioner.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\local_preconditioner.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\off_diag_linear_subsystem.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\off_diag_linear_subsystem.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\spmv.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\spmv.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\newton_tolerance\max_translation_checker.cu" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\newton_tolerance\newton_tolerance_checker.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\newton_tolerance\newton_tolerance_checker.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\newton_tolerance\newton_tolerance_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\newton_tolerance\newton_tolerance_manager.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_action.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_action_collection.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\cuda\sim_engine.cpp">
+      <ObjectFileName>$(IntDir)/sim_engine.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_engine.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_engine_device_common.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_engine_state.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\cuda\sim_system.cpp">
+      <ObjectFileName>$(IntDir)/sim_system.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_system.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_system_slot.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\time_integrator\bdf1_flag.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\time_integrator\bdf1_flag.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\time_integrator\time_integrator.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\time_integrator\time_integrator.h" />
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\time_integrator\time_integrator_manager.cu" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\time_integrator\time_integrator_manager.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\type_define.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\codim_thickness.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\dihedral_angle.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\ccd.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\ccd.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\edge_edge.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\edge_edge_mollifier.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\point_edge.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\point_point.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\point_triangle.inl" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\distance_flagged.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\edge_edge.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\edge_edge_mollifier.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\point_edge.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\point_point.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\point_triangle.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\dump_utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\friction_utils.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\make_spd.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\matrix_assembler.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\matrix_unpacker.h" />
+    <ClCompile Include="D:\Programming\libuipc\src\backends\cuda\utils\offset_count_collection.cpp" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\offset_count_collection.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\primitive_d_hat.h" />
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\simplex_contact_mask_utils.h" />
+    <Natvis Include="D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis">
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\ZERO_CHECK.vcxproj">
+      <Project>{4AE76370-8D53-376B-8296-D0BBC73D91C2}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\external\tetgen\tetgen.vcxproj">
+      <Project>{12EC9CEE-2F89-3394-95CF-8B9D78FB5C43}</Project>
+      <Name>tetgen</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\core\uipc_core.vcxproj">
+      <Project>{FBD95F36-9872-32AB-B23B-E99FCFDED1FD}</Project>
+      <Name>uipc_core</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\libuipc\buildGUI\src\geometry\uipc_geometry.vcxproj">
+      <Project>{07EC82C8-D3F7-3300-A8D3-208E908DE13D}</Project>
+      <Name>uipc_geometry</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.6.targets" />
+  </ImportGroup>
+</Project>

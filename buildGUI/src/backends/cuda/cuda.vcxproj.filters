@@ -1,0 +1,1967 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\backend_path_tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\i_sim_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_system_auto_register.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\common\sim_system_collection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\cuda\sim_engine.cpp">
+      <Filter>cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\cuda\sim_system.cpp">
+      <Filter>cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\libuipc\src\backends\cuda\utils\offset_count_collection.cpp">
+      <Filter>cuda\utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\buffer_view.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\engine_create_info.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\macro.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\module_init_info.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\type_define.h">
+      <Filter>include\uipc\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\animator_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\contact_tabular_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\diff_sim_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\geometry_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\sanity_check_message_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\scene_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\subscene_tabular_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\backend\visitors\world_visitor.h">
+      <Filter>include\uipc\backend\visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\attribute_name.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_type.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_auto_register.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\constitution_uid_collection.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\attribute_name.h">
+      <Filter>include\uipc\builtin\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\details\backend_name.h">
+      <Filter>include\uipc\builtin\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\factory_keyword.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\geometry_type.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_auto_register.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\implicit_geometry_uid_collection.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_info.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\builtin\uid_register.h">
+      <Filter>include\uipc\builtin</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\abort.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\algorithm\run_length_encode.h">
+      <Filter>include\uipc\common\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\allocator.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\buffer_info.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\config.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\const_string_map.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\demangle.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\eigen_json.inl">
+      <Filter>include\uipc\common\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\details\smart_pointer.inl">
+      <Filter>include\uipc\common\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\dllexport.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\enumerate.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\exception.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\fmt_eigen.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\format.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\future.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\json_eigen.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\list.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\log_pattern_guard.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\macro.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\magic_enum.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\map.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\range.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\readable_type_name.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\resident_thread.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\set.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\smart_pointer.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\span_as_eigen.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\stack.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\string.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\timer.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_define.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\type_traits.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\uipc.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unit.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_map.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\unordered_set.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\vector.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\common\zip.h">
+      <Filter>include\uipc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_driving_revolute_joint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\affine_body_revolute_joint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\arap.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\baraff_witkin_shell.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\constraint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\conversion.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\discrete_shell_bending.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\elastic_moduli.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\empty.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\finite_element_extra_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\hookean_spring.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_affine_body_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\inter_primitive_constitution.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\kirchhoff_rod_bending.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\neo_hookean_shell.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\particle.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_position_constraint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_transform_constraint.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\soft_vertex_stitch.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\stable_neo_hookean.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\constitution\strain_limiting_baraff_witkin.h">
+      <Filter>include\uipc\constitution</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animation.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\animator.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\constitution_tabular.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_element.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_model_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_system_feature.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\contact_tabular.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\details\object.inl">
+      <Filter>include\uipc\core\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\diff_sim.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\engine_status.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\feature_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_engine.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\i_sanity_checker.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\engine.h">
+      <Filter>include\uipc\core\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\scene.h">
+      <Filter>include\uipc\core\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\internal\world.h">
+      <Filter>include\uipc\core\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\object_snapshot.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\sanity_checker.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_archieve.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_factory.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\scene_snapshot.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_element.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_model_collection.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\subscene_tabular.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\core\world.h">
+      <Filter>include\uipc\core</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\adjoint_method_feature.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\enable_grad_feature.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\parameter_collection.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\diff_sim\sparse_coo_view.h">
+      <Filter>include\uipc\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\abstract_simplicial_complex.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_commit.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_collection_factory.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_copy.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_debug_info.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_factory.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_friend.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\attribute_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_collection.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_copy.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_export_types.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\attribute_slot.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_collection.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\geometry_export_types.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplex_slot.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplices.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\details\simplicial_complex.inl">
+      <Filter>include\uipc\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_atlas.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_collection_commit.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_commit.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_factory.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_friend.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\geometry_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\implicit_geometry_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\shared_attribute_context.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_attributes.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\simplicial_complex_slot.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils.h">
+      <Filter>include\uipc\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_body_force.h">
+      <Filter>include\uipc\geometry\utils\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\affine_body\compute_dyadic_mass.h">
+      <Filter>include\uipc\geometry\utils\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_region.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\apply_transform.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\bvh.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\closure.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_instance_volume.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_mesh_d_hat.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\compute_vertex_volume.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\constitution_type.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\distance.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\extract_surface.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\factory.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\flip_inward_triangles.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\intersection.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\is_trimesh_closed.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_connected_vertices.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_region.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_surface.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\label_triangle_orient.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\merge.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\mesh_partition.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\octree.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\optimal_transform.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\points_from_volume.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\simplex_utils.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\geometry\utils\tetrahedralize.h">
+      <Filter>include\uipc\geometry\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\attribute_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\gltf_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\scene_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\simplicial_complex_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\spread_sheet_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\io\urdf_io.h">
+      <Filter>include\uipc\io</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\uipc.h">
+      <Filter>include\uipc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\dll_export.h">
+      <Filter>include\uipc\vdb</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc\vdb\points_from_volume.h">
+      <Filter>include\uipc\vdb</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\include\uipc_gui\common\platform_handle.h">
+      <Filter>include\uipc_gui\common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\backend_path_tool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_action.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_action_collection.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_engine.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_system.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_system_collection.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\details\sim_system_slot.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\i_sim_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_action.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_action_collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system_auto_register.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system_collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\common\sim_system_slot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_dytopo_effect_receiver.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_energy.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_jacobi_matrix.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_line_search_reporter.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_line_search_subreporter.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_linear_subsystem.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_linear_subsystem_reporter.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\abd_time_integrator.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_animator.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_body_reporter.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_constitution.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_constraint.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_dynamics.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_kinetic.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_surface_reporter.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\affine_body_vertex_reporter.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\affine_body_revolute_joint_function.h">
+      <Filter>cuda\affine_body\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\arap_function.h">
+      <Filter>cuda\affine_body\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\ortho_potential_function.h">
+      <Filter>cuda\affine_body\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\sym\affine_body_revolute_joint.inl">
+      <Filter>cuda\affine_body\constitutions\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\constitutions\sym\ortho_potential.inl">
+      <Filter>cuda\affine_body\constitutions\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\abd_jacobi_matrix.inl">
+      <Filter>cuda\affine_body\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\affine_body_animator.inl">
+      <Filter>cuda\affine_body\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\affine_body_dynamics.inl">
+      <Filter>cuda\affine_body\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\inter_affine_body_animator.inl">
+      <Filter>cuda\affine_body\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\details\inter_affine_body_constitution_manager.inl">
+      <Filter>cuda\affine_body\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_animator.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_constitution.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_constitution_manager.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\inter_affine_body_constraint.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\matrix_converter.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\type_define.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\affine_body\utils.h">
+      <Filter>cuda\affine_body</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\details\fast_segmental_reduce.inl">
+      <Filter>cuda\algorithm\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\details\matrix_converter.inl">
+      <Filter>cuda\algorithm\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\fast_segmental_reduce.h">
+      <Filter>cuda\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\geometry_instance_flattener.h">
+      <Filter>cuda\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\givens.hpp">
+      <Filter>cuda\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\matrix_converter.h">
+      <Filter>cuda\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\algorithm\qr_svd.hpp">
+      <Filter>cuda\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\animator\animator.h">
+      <Filter>cuda\animator</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\animator\global_animator.h">
+      <Filter>cuda\animator</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\animator\utils.h">
+      <Filter>cuda\animator</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\aabb.h">
+      <Filter>cuda\collision_detection</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\atomic_counting_lbvh.h">
+      <Filter>cuda\collision_detection</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\details\atomic_counting_lbvh.inl">
+      <Filter>cuda\collision_detection\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\details\linear_bvh.inl">
+      <Filter>cuda\collision_detection\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\filters\easy_vertex_half_plane_trajectory_filter.h">
+      <Filter>cuda\collision_detection\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\filters\lbvh_simplex_trajectory_filter.h">
+      <Filter>cuda\collision_detection\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\global_trajectory_filter.h">
+      <Filter>cuda\collision_detection</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\linear_bvh.h">
+      <Filter>cuda\collision_detection</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\simplex_trajectory_filter.h">
+      <Filter>cuda\collision_detection</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\trajectory_filter.h">
+      <Filter>cuda\collision_detection</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\collision_detection\vertex_half_plane_trajectory_filter.h">
+      <Filter>cuda\collision_detection</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_coeff.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_exporter.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_exporter_manager.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\analytical_barrier_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_EE_contact.inl">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_PE_contact.inl">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_PP_contact.inl">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_PT_contact.inl">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_parallel_EE_contact.inl">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_parallel_PE_contact.inl">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\details\pFpx_parallel_PP_contact.inl">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_EE_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_PE_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_PP_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_PT_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_parallel_EE_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_parallel_PE_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\analytical_barrier_pFpx\pFpx_parallel_PP_contact.h">
+      <Filter>cuda\contact_system\contact_models\analytical_barrier_pFpx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\codim_ipc_contact_function.h">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\codim_ipc_simplex_frictional_contact_function.h">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\codim_ipc_simplex_normal_contact_function.h">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\ipc_simplex_frictional_contact_function.h">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\ipc_vertex_half_plane_contact_function.h">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\sym\codim_ipc_contact.inl">
+      <Filter>cuda\contact_system\contact_models\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_models\sym\vertex_half_plane_distance.inl">
+      <Filter>cuda\contact_system\contact_models\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_reporter.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\contact_system_feature.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\global_contact_manager.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\simplex_frictional_contact.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\simplex_normal_contact.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\vertex_half_plane_frictional_contact.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\contact_system\vertex_half_plane_normal_contact.h">
+      <Filter>cuda\contact_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\coupling_system\abd_fem_dytopo_effect_receiver.h">
+      <Filter>cuda\coupling_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\coupling_system\fem_abd_dytopo_effect_receiver.h">
+      <Filter>cuda\coupling_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\cuda_device\bit_operation.h">
+      <Filter>cuda\cuda_device</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\cuda_device\detail\bit_operation.inl">
+      <Filter>cuda\cuda_device\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\diff_dof_reporter.h">
+      <Filter>cuda\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\diff_parm_reporter.h">
+      <Filter>cuda\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\diff_sim_subsystem.h">
+      <Filter>cuda\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\diff_sim\global_diff_sim_manager.h">
+      <Filter>cuda\diff_sim</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_classify_info.h">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_effect_line_search_reporter.h">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_effect_receiver.h">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\dytopo_effect_reporter.h">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\dytopo_effect_system\global_dytopo_effect_manager.h">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_0d_constitution.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_0d_constitution_diff_parm_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_1d_constitution.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_1d_constitution_diff_parm_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_2d_constitution.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\codim_2d_constitution_diff_parm_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\arap_function.h">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\detail\stable_neo_hookean_3d.inl">
+      <Filter>cuda\finite_element\constitutions\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\discrete_shell_bending_function.h">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\hookean_spring_1d_function.h">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\kirchhoff_rod_bending_function.h">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\neo_hookean_shell_2d_function.h">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\stable_neo_hookean_3d_function.h">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\strain_limiting_baraff_witkin_shell_2d.h">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\discrete_shell_bending.inl">
+      <Filter>cuda\finite_element\constitutions\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\hookean_spring_1d.inl">
+      <Filter>cuda\finite_element\constitutions\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\kirchhoff_rod_bending.inl">
+      <Filter>cuda\finite_element\constitutions\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\shell_neo_hookean_2d.inl">
+      <Filter>cuda\finite_element\constitutions\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\constitutions\sym\simplified_stable_neo_hookean_3d.inl">
+      <Filter>cuda\finite_element\constitutions\sym</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\details\finite_element_animator.inl">
+      <Filter>cuda\finite_element\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\details\finite_element_extra_constitution.inl">
+      <Filter>cuda\finite_element\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\details\finite_element_method.inl">
+      <Filter>cuda\finite_element\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_3d_constitution.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_3d_constitution_diff_parm_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_dytopo_effect_receiver.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_line_search_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_linear_subsystem.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_time_integrator.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\fem_utils.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_animator.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_body_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_constitution.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_constitution_diff_parm_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_constraint.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_diff_dof_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_diff_parm_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_energy_producer.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_extra_constitution.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_extra_constitution_diff_parm_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_kinetic.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_method.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_surface_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\finite_element_vertex_reporter.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\matrix_utils.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\finite_element\shell_utils.h">
+      <Filter>cuda\finite_element</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\body_reporter.h">
+      <Filter>cuda\global_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\details\global_body_manager.inl">
+      <Filter>cuda\global_geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\details\global_vertex_manager.inl">
+      <Filter>cuda\global_geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\global_body_manager.h">
+      <Filter>cuda\global_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\global_simplicial_surface_manager.h">
+      <Filter>cuda\global_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\global_vertex_manager.h">
+      <Filter>cuda\global_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\simplicial_surface_reporter.h">
+      <Filter>cuda\global_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\global_geometry\vertex_reporter.h">
+      <Filter>cuda\global_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\details\half_plane.inl">
+      <Filter>cuda\implicit_geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\half_plane.h">
+      <Filter>cuda\implicit_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\half_plane_body_reporter.h">
+      <Filter>cuda\implicit_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\implicit_geometry\half_plane_vertex_reporter.h">
+      <Filter>cuda\implicit_geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\inter_primitive_effect_system\details\inter_primitive_constitution_manager.inl">
+      <Filter>cuda\inter_primitive_effect_system\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution.h">
+      <Filter>cuda\inter_primitive_effect_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution_manager.h">
+      <Filter>cuda\inter_primitive_effect_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\kernel_cout.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\line_search\line_search_reporter.h">
+      <Filter>cuda\line_search</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\line_search\line_searcher.h">
+      <Filter>cuda\line_search</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\diag_linear_subsystem.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\global_linear_system.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\global_preconditioner.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\iterative_solver.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\linear_pcg.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\local_preconditioner.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\off_diag_linear_subsystem.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\linear_system\spmv.h">
+      <Filter>cuda\linear_system</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\newton_tolerance\newton_tolerance_checker.h">
+      <Filter>cuda\newton_tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\newton_tolerance\newton_tolerance_manager.h">
+      <Filter>cuda\newton_tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_action.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_action_collection.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_engine.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_engine_device_common.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_engine_state.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_system.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\sim_system_slot.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\time_integrator\bdf1_flag.h">
+      <Filter>cuda\time_integrator</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\time_integrator\time_integrator.h">
+      <Filter>cuda\time_integrator</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\time_integrator\time_integrator_manager.h">
+      <Filter>cuda\time_integrator</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\type_define.h">
+      <Filter>cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\codim_thickness.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\dihedral_angle.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\ccd.h">
+      <Filter>cuda\utils\distance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\ccd.inl">
+      <Filter>cuda\utils\distance\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\edge_edge.inl">
+      <Filter>cuda\utils\distance\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\edge_edge_mollifier.inl">
+      <Filter>cuda\utils\distance\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\point_edge.inl">
+      <Filter>cuda\utils\distance\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\point_point.inl">
+      <Filter>cuda\utils\distance\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\details\point_triangle.inl">
+      <Filter>cuda\utils\distance\details</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\distance_flagged.h">
+      <Filter>cuda\utils\distance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\edge_edge.h">
+      <Filter>cuda\utils\distance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\edge_edge_mollifier.h">
+      <Filter>cuda\utils\distance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\point_edge.h">
+      <Filter>cuda\utils\distance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\point_point.h">
+      <Filter>cuda\utils\distance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\distance\point_triangle.h">
+      <Filter>cuda\utils\distance</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\dump_utils.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\friction_utils.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\make_spd.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\matrix_assembler.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\matrix_unpacker.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\offset_count_collection.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\primitive_d_hat.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Programming\libuipc\src\backends\cuda\utils\simplex_contact_mask_utils.h">
+      <Filter>cuda\utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_diag_preconditioner.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_dytopo_effect_receiver.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_energy.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_jacobi_matrix.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_line_search_reporter.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_line_search_subreporter.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_linear_subsystem.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_linear_subsystem_reporter.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_time_integrator.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\abd_tolerance_checker.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_animator.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_body_reporter.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_constitution.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_constraint.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_dynamics.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_kinetic.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_surface_reporter.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\affine_body_vertex_reporter.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\bdf\abd_bdf1_time_integrator.cu">
+      <Filter>cuda\affine_body\bdf</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\bdf\affine_body_bdf1_kinetic.cu">
+      <Filter>cuda\affine_body\bdf</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constitutions\affine_body_revolute_joint.cu">
+      <Filter>cuda\affine_body\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constitutions\arap.cu">
+      <Filter>cuda\affine_body\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constitutions\ortho_potential.cu">
+      <Filter>cuda\affine_body\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\constraints\soft_transform_constraint.cu">
+      <Filter>cuda\affine_body\constraints</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_animator.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_constitution.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_constitution_manager.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\inter_affine_body_constraint.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\matrix_converter.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\affine_body\utils.cu">
+      <Filter>cuda\affine_body</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\animator\animator.cu">
+      <Filter>cuda\animator</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\animator\global_animator.cu">
+      <Filter>cuda\animator</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\atomic_counting_lbvh.cu">
+      <Filter>cuda\collision_detection</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\filters\easy_vertex_half_plane_trajectory_filter.cu">
+      <Filter>cuda\collision_detection\filters</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\filters\lbvh_simplex_trajectory_filter.cu">
+      <Filter>cuda\collision_detection\filters</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\global_trajectory_filter.cu">
+      <Filter>cuda\collision_detection</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\simplex_trajectory_filter.cu">
+      <Filter>cuda\collision_detection</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\trajectory_filter.cu">
+      <Filter>cuda\collision_detection</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\collision_detection\vertex_half_plane_trajectory_filter.cu">
+      <Filter>cuda\collision_detection</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_exporter.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_exporter_manager.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_simplex_frictional_contact.cu">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_simplex_normal_contact.cu">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_vertex_half_plane_frictional_contact.cu">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_models\ipc_vertex_half_plane_normal_contact.cu">
+      <Filter>cuda\contact_system\contact_models</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_reporter.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\contact_system_feature.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\global_contact_manager.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\simplex_frictional_contact.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\simplex_normal_contact.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\vertex_half_plane_frictional_contact.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\contact_system\vertex_half_plane_normal_contact.cu">
+      <Filter>cuda\contact_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\coupling_system\abd_fem_dytopo_effect_receiver.cu">
+      <Filter>cuda\coupling_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\coupling_system\abd_fem_linear_subsystem.cu">
+      <Filter>cuda\coupling_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\coupling_system\fem_abd_dytopo_effect_receiver.cu">
+      <Filter>cuda\coupling_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\diff_dof_reporter.cu">
+      <Filter>cuda\diff_sim</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\diff_parm_reporter.cu">
+      <Filter>cuda\diff_sim</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\diff_sim_subsystem.cu">
+      <Filter>cuda\diff_sim</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\diff_sim\global_diff_sim_manager.cu">
+      <Filter>cuda\diff_sim</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_classify_info.cu">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_effect_line_search_reporter.cu">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_effect_receiver.cu">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\dytopo_effect_reporter.cu">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\dytopo_effect_system\global_dytopo_effect_manager.cu">
+      <Filter>cuda\dytopo_effect_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine.cu">
+      <Filter>cuda\engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_advance.cu">
+      <Filter>cuda\engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_backward.cu">
+      <Filter>cuda\engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_init.cu">
+      <Filter>cuda\engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_retrieve.cu">
+      <Filter>cuda\engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\engine\sim_engine_do_sync.cu">
+      <Filter>cuda\engine</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\bdf\fem_bdf1_time_integrator.cu">
+      <Filter>cuda\finite_element\bdf</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\bdf\finite_element_bdf1_kinetic.cu">
+      <Filter>cuda\finite_element\bdf</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_0d_constitution.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_0d_constitution_diff_parm_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_1d_constitution.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_1d_constitution_diff_parm_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_2d_constitution.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\codim_2d_constitution_diff_parm_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\arap_3d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\discrete_shell_bending.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_0d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_1d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_2d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\empty_3d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\hookean_spring_1d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\kirchhoff_rod_bending.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\neo_hookean_shell_2d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\particle_0d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\stable_neo_hookean_3d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constitutions\strain_limiting_baraff_witkin_shell_2d.cu">
+      <Filter>cuda\finite_element\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\constraints\soft_position_constraint.cu">
+      <Filter>cuda\finite_element\constraints</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_3d_constitution.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_3d_constitution_diff_parm_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_diag_preconditioner.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_dytopo_effect_receiver.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_line_search_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_linear_subsystem.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_time_integrator.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\fem_utils.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_animator.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_body_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_constitution.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_constitution_diff_parm_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_constraint.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_diff_dof_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_diff_parm_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_energy_producer.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_extra_constitution.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_extra_constitution_diff_parm_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_kinetic.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_method.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_surface_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\finite_element_vertex_reporter.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\matrix_utils.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\finite_element\shell_utils.cu">
+      <Filter>cuda\finite_element</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\body_reporter.cu">
+      <Filter>cuda\global_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\global_body_manager.cu">
+      <Filter>cuda\global_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\global_simplicial_surface_manager.cu">
+      <Filter>cuda\global_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\global_vertex_manager.cu">
+      <Filter>cuda\global_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\simplicial_surface_reporter.cu">
+      <Filter>cuda\global_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\global_geometry\vertex_reporter.cu">
+      <Filter>cuda\global_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\implicit_geometry\half_plane.cu">
+      <Filter>cuda\implicit_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\implicit_geometry\half_plane_body_reporter.cu">
+      <Filter>cuda\implicit_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\implicit_geometry\half_plane_vertex_reporter.cu">
+      <Filter>cuda\implicit_geometry</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\inter_primitive_effect_system\constitutions\soft_vertex_stitch.cu">
+      <Filter>cuda\inter_primitive_effect_system\constitutions</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution.cu">
+      <Filter>cuda\inter_primitive_effect_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\inter_primitive_effect_system\inter_primitive_constitution_manager.cu">
+      <Filter>cuda\inter_primitive_effect_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\kernel_cout.cu">
+      <Filter>cuda</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\line_search\line_search_reporter.cu">
+      <Filter>cuda\line_search</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\line_search\line_searcher.cu">
+      <Filter>cuda\line_search</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\current_frame_diff_dof_reporter.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\diag_linear_subsystem.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\global_linear_system.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\global_preconditioner.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\iterative_solver.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\linear_pcg.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\local_preconditioner.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\off_diag_linear_subsystem.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\linear_system\spmv.cu">
+      <Filter>cuda\linear_system</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\newton_tolerance\max_translation_checker.cu">
+      <Filter>cuda\newton_tolerance</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\newton_tolerance\newton_tolerance_checker.cu">
+      <Filter>cuda\newton_tolerance</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\newton_tolerance\newton_tolerance_manager.cu">
+      <Filter>cuda\newton_tolerance</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\time_integrator\bdf1_flag.cu">
+      <Filter>cuda\time_integrator</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\time_integrator\time_integrator.cu">
+      <Filter>cuda\time_integrator</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\..\src\backends\cuda\time_integrator\time_integrator_manager.cu">
+      <Filter>cuda\time_integrator</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\libuipc\src\backends\cuda\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="D:\Programming\libuipc\buildGUI\vcpkg_installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{67178987-4C38-3F02-8966-581CE587013A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A1BF4E01-186A-3D43-B7D4-2A9DBAEF2DF9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda">
+      <UniqueIdentifier>{A15C95DF-3310-33C6-98A1-8C003F6F7263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\affine_body">
+      <UniqueIdentifier>{6EC4E7D7-9719-3202-97C9-22969DFF6727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\affine_body\bdf">
+      <UniqueIdentifier>{D9AD8333-7A55-30F5-BF1E-E65C3BD31CDB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\affine_body\constitutions">
+      <UniqueIdentifier>{2E5D4D27-3E87-3C64-8409-C1613FC80C9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\affine_body\constitutions\sym">
+      <UniqueIdentifier>{94058F3E-0B30-314B-9126-FFF358006FD1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\affine_body\constraints">
+      <UniqueIdentifier>{ADC4ACC6-009D-3DA6-9FC4-EC54B12A0880}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\affine_body\details">
+      <UniqueIdentifier>{32424F74-29A4-35C4-9958-2C2C9031B21C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\algorithm">
+      <UniqueIdentifier>{13997352-BD7F-3180-B7C8-51D2F655A6DF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\algorithm\details">
+      <UniqueIdentifier>{2B85CFDA-8505-3827-A411-DDF7CD005A79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\animator">
+      <UniqueIdentifier>{D37CF36E-845F-3987-8D4F-CDA106A08D48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\collision_detection">
+      <UniqueIdentifier>{1F76E286-3A97-3F8D-BDFF-55BD1E4ED808}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\collision_detection\details">
+      <UniqueIdentifier>{91CA3B66-0F61-3DC1-8ED2-A2BA5C6ED9EC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\collision_detection\filters">
+      <UniqueIdentifier>{C0721328-2530-32E5-A052-4238B6516695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\contact_system">
+      <UniqueIdentifier>{47E1B388-D0A3-398D-8638-CBFB69FFBC36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\contact_system\contact_models">
+      <UniqueIdentifier>{0B6D59D8-5771-3F75-96CD-BA3FBD2787A4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\contact_system\contact_models\analytical_barrier_pFpx">
+      <UniqueIdentifier>{1F138CBD-48B2-3AD3-AE49-FCA5B4352A66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\contact_system\contact_models\analytical_barrier_pFpx\details">
+      <UniqueIdentifier>{416ECD78-7DB2-38FF-B765-F7BE131D5C3F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\contact_system\contact_models\sym">
+      <UniqueIdentifier>{DEB8FCE3-5F27-3BFE-932D-87750FE6B67C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\coupling_system">
+      <UniqueIdentifier>{521C1ABE-9A7E-3F4C-A4AD-EB877FC43906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\cuda_device">
+      <UniqueIdentifier>{274B90D3-08AA-3411-8229-EE8161ED334E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\cuda_device\detail">
+      <UniqueIdentifier>{44A671A6-6E13-31CC-A755-D7A6E7EB387C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\diff_sim">
+      <UniqueIdentifier>{DA80A649-C071-3A74-9B8E-D5B5F04EB764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\dytopo_effect_system">
+      <UniqueIdentifier>{15F22CF6-19EF-370A-8241-1FD2AF351D17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\engine">
+      <UniqueIdentifier>{F974505B-833F-3D46-B7AC-B59FAA9EFFC4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\finite_element">
+      <UniqueIdentifier>{211CCBCC-B115-340A-A579-C2E6CDC03084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\finite_element\bdf">
+      <UniqueIdentifier>{25C56CD7-1D5C-3889-835F-938DC95542DB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\finite_element\constitutions">
+      <UniqueIdentifier>{80AC5586-3053-3EDA-B330-9D26F1833950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\finite_element\constitutions\detail">
+      <UniqueIdentifier>{3455C2C2-2EF9-35F5-BCB0-ED88F2A247B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\finite_element\constitutions\sym">
+      <UniqueIdentifier>{02CC1A43-F154-3C6F-A408-F7CB7B8DFE03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\finite_element\constraints">
+      <UniqueIdentifier>{10A882AD-DFC6-361F-BAFC-84F9D35EDB84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\finite_element\details">
+      <UniqueIdentifier>{EA10D494-A7C7-3690-A908-D6B4503906A4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\global_geometry">
+      <UniqueIdentifier>{3C63A9D9-82C1-3B50-BFF3-B7DC45AA8465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\global_geometry\details">
+      <UniqueIdentifier>{995EAD48-2431-37B3-98F6-D3D99540DAA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\implicit_geometry">
+      <UniqueIdentifier>{77821EF1-357C-348F-AD8D-4EC26AB05A76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\implicit_geometry\details">
+      <UniqueIdentifier>{AEB9EC22-7A86-3D15-9966-574547381C2E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\inter_primitive_effect_system">
+      <UniqueIdentifier>{210EDC84-E0F4-3715-97BD-A7CD965BCCAC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\inter_primitive_effect_system\constitutions">
+      <UniqueIdentifier>{80EEF386-AC7D-3EDF-9F17-36181AB7058B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\inter_primitive_effect_system\details">
+      <UniqueIdentifier>{144378B7-C5CC-3810-863F-8819621DF09D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\line_search">
+      <UniqueIdentifier>{E1DD8B41-97A8-3BDE-AB9D-3216EA61B874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\linear_system">
+      <UniqueIdentifier>{2BDA78F9-B318-3D3C-A716-244921A3C2BE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\newton_tolerance">
+      <UniqueIdentifier>{1D074DD7-09DD-38CC-9D5C-551FD7C5C307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\time_integrator">
+      <UniqueIdentifier>{9C8DE0CC-1A99-345E-8335-005F2CE14AD9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\utils">
+      <UniqueIdentifier>{14C3C24B-A417-31DD-BFBA-9B3828793841}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\utils\distance">
+      <UniqueIdentifier>{25991D48-57C0-3C9F-811D-B7C579DDE143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cuda\utils\distance\details">
+      <UniqueIdentifier>{ACC3312B-2230-34FC-95E0-276F80F7D844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{DE0009ED-0956-398F-9853-FB6A33B628E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc">
+      <UniqueIdentifier>{6C0EEFE7-D58A-3D56-A76F-06E4EA7EDF72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\backend">
+      <UniqueIdentifier>{B3EBC320-A83B-31DD-953B-8488B7C0E054}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\backend\visitors">
+      <UniqueIdentifier>{A7AA7AFA-C6A7-304F-84B4-123E034983B0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\builtin">
+      <UniqueIdentifier>{587F6910-A38C-384C-A2DB-EB7F8E97F282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\builtin\details">
+      <UniqueIdentifier>{286B7D3B-228B-3550-AED1-23A1FF912B66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\common">
+      <UniqueIdentifier>{F935B003-E424-3CA0-AB37-B527F4FBCDFB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\common\algorithm">
+      <UniqueIdentifier>{F85786B9-5DC5-36DA-A065-D6F429E1274A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\common\details">
+      <UniqueIdentifier>{40322B55-152D-3CF0-9E15-093AE3578E2E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\constitution">
+      <UniqueIdentifier>{71AE22A5-747F-32B2-8DC6-9E5BC3F317F6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\core">
+      <UniqueIdentifier>{DA8B5B67-A25C-37E6-BC37-2BA2B3802476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\core\details">
+      <UniqueIdentifier>{71FAAE32-6C34-3611-BC68-E5583A9440E4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\core\internal">
+      <UniqueIdentifier>{DD2FB1E0-2660-30BE-84DA-09FD0967275B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\diff_sim">
+      <UniqueIdentifier>{340113BF-CCF7-3AE6-9B5F-90AA1C53A24E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry">
+      <UniqueIdentifier>{ACAC0327-53E5-3FAA-9088-33CDC5F8C01C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry\details">
+      <UniqueIdentifier>{1C038890-D4D1-3D60-B5B8-F3631BBCD5FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry\utils">
+      <UniqueIdentifier>{936002BF-CE66-3167-A650-57AD0C0BD448}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\geometry\utils\affine_body">
+      <UniqueIdentifier>{ADA8CEE2-9BB6-3E4D-B77C-99780C4700AF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\io">
+      <UniqueIdentifier>{0638AE99-50F9-3F9A-A65B-A3970B787C13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc\vdb">
+      <UniqueIdentifier>{B5892348-D741-3271-A199-87AD6A439D78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc_gui">
+      <UniqueIdentifier>{BBE264E4-059A-3C5F-A48F-22FBDC4D62E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\uipc_gui\common">
+      <UniqueIdentifier>{3114B154-FD32-3DCD-A6DC-E4571E526689}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

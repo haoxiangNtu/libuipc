@@ -17,3 +17,13 @@ UPDATE 2024-12-14
 
 - xmake use a lot of process for parallel compilation in order to accelerate the compilation task. However, nvcc will consume a lot of memory, thus will eventually cause an OOM
 - Solution:  set the multi-process manurally, e.g. `xmake -j8` to set 8 parallel compilation jobs
+
+
+
+
+uipc_create_engine
+
+cadance
+
+
+所以这里实际上是使用了Octree 进行build 建立了LBVH？？？？？？？？

@@ -1,0 +1,82 @@
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+The following packages are already installed:
+  * boost-assert:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@d6e23ac8a35da1fa74839bde3a863d279a6059a3
+  * boost-cmake:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@1a36be4443ec1c0be66984a1e82914a5181b37b1
+  * boost-config:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@08220601e68293ce84acafc748856e45db90b6e0
+  * boost-core:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@4c65d7305461035adb983409910487493fbc3c17
+  * boost-headers:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@89fca00b9db236eb0cb0ea97b9db246c2db7b3e1
+  * boost-optional:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@1c8c7aa2e1a750a5faf818b3bc8e0491f415b489
+  * boost-static-assert:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@2cb92121f4df9c9b122c4837cb8e41ac1f4800b6
+  * boost-throw-exception:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@cce052773fa40ae37c9497cf38739945720cf104
+  * boost-type-traits:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@5c25a4ff2c1fd4d4eb993dfed7cba2b32fd020a6
+  * boost-uninstall:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@3b2f9f82076f2d15124a4e449700848c25bcadcc
+    catch2:x64-windows@3.8.1 -- git+https://github.com/microsoft/vcpkg@663b04662ae30cc321b1b1a0c781c9f4a3d29b93
+  * console-bridge:x64-windows@1.0.2 -- git+https://github.com/microsoft/vcpkg@e5f1141775543ea0491358a281840ce2bcc100be
+    cppitertools:x64-windows@2.2 -- git+https://github.com/microsoft/vcpkg@7ed0b0e14e29b9d30f9ae606ae2a7ef6c3dce0f8
+    cpptrace:x64-windows@1.0.2 -- git+https://github.com/microsoft/vcpkg@48649f4a79fe4083e34178f73cb8a422fbb03b04
+  * cuda:x64-windows@10.1#13 -- git+https://github.com/microsoft/vcpkg@d7709c275f8ce58e6d1b4c71b8d37fba4a9a0377
+    dylib:x64-windows@2.2.1 -- git+https://github.com/microsoft/vcpkg@5fcb0f058217dc6352d308f18015ef37b3f5f23c
+    eigen3:x64-windows@3.4.0#5 -- git+https://github.com/microsoft/vcpkg@d9b547a9e3dc5b847f5ecab763fdea9728107a16
+    fmt:x64-windows@10.2.1 -- git+https://github.com/microsoft/vcpkg@405156a2b01c91258bf66768ceb3ae75c1caba7f
+  * hwloc:x64-windows@2.11.2 -- git+https://github.com/microsoft/vcpkg@4b14fa65f32abe3d816a08d5d37aaf183372338c
+    libigl:x64-windows@2.6.0 -- git+https://github.com/microsoft/vcpkg@3b47fec68bb327d7372d5a8d2c5418482fc60fdf
+    magic-enum:x64-windows@0.9.7#1 -- git+https://github.com/microsoft/vcpkg@9ab95f56c0327e8b6c0190fae3d975439161ffaa
+    muda:x64-windows@2025.10.3#1 -- git+https://github.com/spiriMirror/vcpkg@47b4d516fb2ec14c472a7873577d5cedf0f2c92c
+    nlohmann-json:x64-windows@3.12.0 -- git+https://github.com/microsoft/vcpkg@060c829772d52e920fee94cf84755031c61e3b67
+    spdlog:x64-windows@1.12.0 -- git+https://github.com/microsoft/vcpkg@41cf31aa350a44644863d7777489501d240f248c
+  * stb:x64-windows@2024-07-29#1 -- git+https://github.com/microsoft/vcpkg@c362152d1d02973e7b1ce777960f8a6876656560
+    tbb[core,hwloc]:x64-windows@2022.1.0 -- git+https://github.com/microsoft/vcpkg@2d847cfd21c285d0c77182456b82de69d2123325
+    tinygltf:x64-windows@2.9.6 -- git+https://github.com/microsoft/vcpkg@c5edbac51522b64ff965ab1365cf5482c54d5a29
+  * tinyxml:x64-windows@2.6.2#10 -- git+https://github.com/microsoft/vcpkg@4463cb1a60eed81cb34748d54b2ad5e3b8ed3a08
+    urdfdom:x64-windows@3.1.1 -- git+https://github.com/microsoft/vcpkg@eb1c1a30329b850ac4450d3b1a72166697058bb8
+  * urdfdom-headers:x64-windows@1.1.1 -- git+https://github.com/microsoft/vcpkg@092b0a254c20195ecca315045637a1e7aed2a244
+  * vcpkg-boost:x64-windows@2025-03-29 -- git+https://github.com/microsoft/vcpkg@858b0333b773b5650c3f19ef271e3205542d7ceb
+  * vcpkg-cmake:x64-windows@2024-04-23 -- git+https://github.com/microsoft/vcpkg@e74aa1e8f93278a8e71372f1fa08c3df420eb840
+  * vcpkg-cmake-config:x64-windows@2024-05-23 -- git+https://github.com/microsoft/vcpkg@97a63e4bc1a17422ffe4eff71da53b4b561a7841
+The following packages will be built and installed:
+    bgfx[core,multithreaded]:x64-windows@1.129.8866-491 -- git+https://github.com/microsoft/vcpkg@a31ddfefd30660f6e321840607f6ae654849b8f9
+  * egl-registry:x64-windows@2024-01-25 -- git+https://github.com/microsoft/vcpkg@d883db43133dd223c4ffdbef4193943f6784d43a
+    freeglut:x64-windows@3.6.0#1 -- git+https://github.com/microsoft/vcpkg@2b2ff4479793417da25f0324620f2ce3373de98b
+    glfw3:x64-windows@3.4#1 -- git+https://github.com/microsoft/vcpkg@d4bbd4f27c2ca619f57778985120cddcedadb1cc
+    imgui:x64-windows@1.91.9 -- git+https://github.com/microsoft/vcpkg@cecad336497c19491c07fead1897ac139a173ed2
+  * libsquish:x64-windows@1.15#14 -- git+https://github.com/microsoft/vcpkg@eb13fe850ce51bd142d19b0662ba0d990efb5d77
+  * miniz:x64-windows@3.1.0 -- git+https://github.com/microsoft/vcpkg@d598c340f6c87c8c7f2e63bd15664e627a22a511
+    opengl:x64-windows@2022-12-04#3 -- git+https://github.com/microsoft/vcpkg@c3ae71738f88449ebcd781cef60d9a253fa091d4
+  * opengl-registry:x64-windows@2024-02-10#1 -- git+https://github.com/microsoft/vcpkg@22f7aa58ee78c9f0db904b6251e9265f2be26f9d
+  * tinyexr:x64-windows@1.0.9 -- git+https://github.com/microsoft/vcpkg@d2b22b1785f27ed281bc1d3da4e3853e0c4846f5
+Additional packages (*) will be modified to complete this operation.
+Restored 1 package(s) from C:\Users\haoxiang\AppData\Local\vcpkg\archives in 113 ms. Use --debug to see more details.
+Installing 1/10 miniz:x64-windows@3.1.0...
+Elapsed time to handle miniz:x64-windows: 23.5 ms
+miniz:x64-windows package ABI: fe4daf7b973ba522ecf024d04082204c87eda76db9202655209112d2b5aa5f41
+Installing 2/10 tinyexr:x64-windows@1.0.9...
+Building tinyexr:x64-windows@1.0.9...
+C:\Users\haoxiang\AppData\Local\vcpkg\registries\git-trees\d2b22b1785f27ed281bc1d3da4e3853e0c4846f5: info: installing from git registry git+https://github.com/microsoft/vcpkg@d2b22b1785f27ed281bc1d3da4e3853e0c4846f5
+-- Note: tinyexr only supports static library linkage. Building static library.
+-- Using cached syoyo-tinyexr-v1.0.9.tar.gz
+-- Extracting source C:/Users/haoxiang/Toolchain/vcpkg/downloads/syoyo-tinyexr-v1.0.9.tar.gz
+CMake Error at scripts/cmake/vcpkg_execute_required_process.cmake:127 (message):
+    Command failed: "C:/Program Files/CMake/bin/cmake.exe" -E tar xjf C:/Users/haoxiang/Toolchain/vcpkg/downloads/syoyo-tinyexr-v1.0.9.tar.gz
+    Working Directory: C:/Users/haoxiang/Toolchain/vcpkg/buildtrees/tinyexr/src/v1.0.9-32c77dbb50.clean.tmp
+    Error code: 1
+    See logs for more information:
+      C:\Users\haoxiang\Toolchain\vcpkg\buildtrees\tinyexr\extract-err.log
+
+Call Stack (most recent call first):
+  scripts/cmake/vcpkg_extract_source_archive.cmake:120 (vcpkg_execute_required_process)
+  scripts/cmake/vcpkg_extract_source_archive_ex.cmake:8 (vcpkg_extract_source_archive)
+  scripts/cmake/vcpkg_from_github.cmake:127 (vcpkg_extract_source_archive_ex)
+  C:/Users/haoxiang/AppData/Local/vcpkg/registries/git-trees/d2b22b1785f27ed281bc1d3da4e3853e0c4846f5/portfile.cmake:3 (vcpkg_from_github)
+  scripts/ports.cmake:206 (include)
+
+
+error: building tinyexr:x64-windows failed with: BUILD_FAILED
+See https://learn.microsoft.com/vcpkg/troubleshoot/build-failures?WT.mc_id=vcpkg_inproduct_cli for more information.
+Elapsed time to handle tinyexr:x64-windows: 324 ms
+Please ensure you're using the latest port files with `git pull` and `vcpkg update`.
+Then check for known issues at:
+  https://github.com/microsoft/vcpkg/issues?q=is%3Aissue+is%3Aopen+in%3Atitle+tinyexr
+You can submit a new issue at:
+  https://github.com/microsoft/vcpkg/issues/new?title=%5Btinyexr%5D%20build%20error%20on%20x64-windows&body=Copy%20issue%20body%20from%20D%3A%2FProgramming%2Flibuipc%2FbuildGUI%2Fvcpkg_installed%2Fvcpkg%2Fissue_body.md
+
