@@ -12,8 +12,56 @@
 #include <newton_tolerance/newton_tolerance_manager.h>
 #include <time_integrator/time_integrator_manager.h>
 
+
+#include <uipc/uipc.h>
 namespace uipc::backend::cuda
 {
+	template <typename DType>
+__forceinline__ __device__ __host__ bool solve3x3_psd_stable(const DType* m,
+                                                             const DType* b,
+                                                             DType*       out)
+{
+    const DType a11 = m[0];
+    const DType a12 = m[3];
+    const DType a13 = m[6];
+    const DType a21 = m[1];
+    const DType a22 = m[4];
+    const DType a23 = m[7];
+    const DType a31 = m[2];
+    const DType a32 = m[5];
+    const DType a33 = m[8];
+
+    const DType i11 = a33 * a22 - a32 * a23;
+    const DType i12 = -(a33 * a12 - a32 * a13);
+    const DType i13 = a23 * a12 - a22 * a13;
+
+    const DType det = (a11 * i11 + a21 * i12 + a31 * i13);
+
+    if(abs(det) < 1e-4 * (abs(a11 * i11) + abs(a21 * i12) + abs(a31 * i13)))
+    {
+        out[0] = b[0];
+        out[1] = b[1];
+        out[2] = b[2];
+        return false;
+    }
+
+
+    const DType deti = 1.0 / det;
+
+    const DType i21 = -(a33 * a21 - a31 * a23);
+    const DType i22 = a33 * a11 - a31 * a13;
+    const DType i23 = -(a23 * a11 - a21 * a13);
+
+    const DType i31 = a32 * a21 - a31 * a22;
+    const DType i32 = -(a32 * a11 - a31 * a12);
+    const DType i33 = a22 * a11 - a21 * a12;
+
+    out[0] = deti * (i11 * b[0] + i12 * b[1] + i13 * b[2]);
+    out[1] = deti * (i21 * b[0] + i22 * b[1] + i23 * b[2]);
+    out[2] = deti * (i31 * b[0] + i32 * b[1] + i33 * b[2]);
+    return true;
+}
+
 void SimEngine::do_advance()
 {
     Float alpha     = 1.0;
@@ -223,6 +271,47 @@ void SimEngine::do_advance()
         }
     };
 
+    //auto solve3x3_psd_stable = []<typename DType>(const DType* m, const DType* b, DType* out)
+    //__forceinline__ __device__ __host__ -> bool
+    //{
+    //    const DType a11 = m[0];
+    //    const DType a12 = m[3];
+    //    const DType a13 = m[6];
+    //    const DType a21 = m[1];
+    //    const DType a22 = m[4];
+    //    const DType a23 = m[7];
+    //    const DType a31 = m[2];
+    //    const DType a32 = m[5];
+    //    const DType a33 = m[8];
+    //    const DType i11 = a33 * a22 - a32 * a23;
+    //    const DType i12 = -(a33 * a12 - a32 * a13);
+    //    const DType i13 = a23 * a12 - a22 * a13;
+
+    //    const DType det = (a11 * i11 + a21 * i12 + a31 * i13);
+
+    //    if(abs(det) < CMP_EPSILON * (abs(a11 * i11) + abs(a21 * i12) + abs(a31 * i13)))
+    //    {
+    //        out[0] = b[0];
+    //        out[1] = b[1];
+    //        out[2] = b[2];
+    //        return false;
+    //    }
+
+    //    const DType deti = 1.0 / det;
+
+    //    const DType i21 = -(a33 * a21 - a31 * a23);
+    //    const DType i22 = a33 * a11 - a31 * a13;
+    //    const DType i23 = -(a23 * a11 - a21 * a13);
+    //    const DType i31 = a32 * a21 - a31 * a22;
+    //    const DType i32 = -(a32 * a11 - a31 * a12);
+    //    const DType i33 = a22 * a11 - a21 * a12;
+
+    //    out[0] = deti * (i11 * b[0] + i12 * b[1] + i13 * b[2]);
+    //    out[1] = deti * (i21 * b[0] + i22 * b[1] + i23 * b[2]);
+    //    out[2] = deti * (i31 * b[0] + i32 * b[1] + i33 * b[2]);
+    //    return true;
+    //};
+
     /***************************************************************************************
     *                                  Core Pipeline
     ***************************************************************************************/
@@ -404,6 +493,7 @@ void SimEngine::do_advance()
 
         spdlog::info(R"(>>> Begin Frame: {})", m_current_frame);
 
+
         // Rebuild Scene
         {
             Timer timer{"Rebuild Scene"};
@@ -423,15 +513,281 @@ void SimEngine::do_advance()
             // Update the diff parms
             update_diff_parm();
         }
+        //m_global_vertex_manager->m_impl.body_ids();
+        //world().scene().solve_pending();
+        //world().scene();
+        //world().scene().geometries().data();
+        //auto obj_all = scene.objects().find("balls")[0];
+        //auto ids     = obj_all->geometries().ids();
+        //auto geo     = scene.geometries()
+        //               .find(ids[0])
+        //               .rest_geometry->geometry()
+        //               .as<SimplicialComplex>()
+        //               ->vertices();
+
+        //GlobalVertexManager* m_global_vertex_manager = nullptr;
+        //GlobalSimplicialSurfaceManager* m_global_simplicial_surface_manager = nullptr;
+        //GlobalBodyManager*         m_global_body_manager          = nullptr;
+        //GlobalContactManager*      m_global_contact_manager       = nullptr;
+        //GlobalDyTopoEffectManager* m_global_dytopo_effect_manager = nullptr;
+        //GlobalTrajectoryFilter*    m_global_trajectory_filter     = nullptr;
+
+        //// Newton Solver Systems
+        //TimeIntegratorManager*  m_time_integrator_manager  = nullptr;
+        //LineSearcher*           m_line_searcher            = nullptr;
+        //GlobalLinearSystem*     m_global_linear_system     = nullptr;
+        //NewtonToleranceManager* m_newton_tolerance_manager = nullptr;
+
+        spdlog::info("<<< End Frame: {}", m_current_frame);
 
         // Simulation:
         {
             Timer timer{"Simulation"};
             // 1. Adaptive Parameter Calculation
-            AABB vertex_bounding_box =
-                m_global_vertex_manager->compute_vertex_bounding_box();
-            detect_dcd_candidates();
-            compute_adaptive_kappa();
+            AABB vertex_bounding_box = m_global_vertex_manager->compute_vertex_bounding_box();
+            size_t size = m_global_vertex_manager->body_ids().size();
+            std::vector<IndexT> body_ids_host(size);
+            m_global_vertex_manager->body_ids().copy_to(body_ids_host.data());
+            //DeviceBuffer<Vector2i> body_ids_test;
+            //std::vector<Vector2i>  body_ids_test_host;
+            //body_ids_test.copy_to(body_ids_test_host);
+            //using namespace uipc;
+            //using namespace uipc::core;
+            using namespace uipc::geometry;
+
+            //uipc::geometry::GeometrySlot
+
+            auto geo = world().scene().geometries()[0];
+
+            auto & verticesColoringCategories = geo->geometry().edgesColoringCategories;
+            auto& edgesColoringCategories = geo->geometry().edgesColoringCategories;
+            auto& tetsColoringCategories = geo->geometry().tetsColoringCategories;
+            /////////############################################## read graph color method:
+
+            /////////############################################## run color mapping graph
+            //// generate parallelization groups
+            size_t numberOfParallelGroups = 0;
+            //for(size_t iMesh = 0; iMesh < basetetMeshes.size(); iMesh++)
+            //{
+            //    if(numberOfParallelGroups
+            //       < basetetMeshes[iMesh]->verticesColoringCategories().size())
+            //    {
+            //        numberOfParallelGroups =
+            //            basetetMeshes[iMesh]->verticesColoringCategories().size();
+            //    }
+            //}
+            //########################## multi-mesh cases to load color into same region
+            std::vector<std::vector<int32_t>> vertexParallelGroups;
+            vertexParallelGroups.resize(numberOfParallelGroups);
+            //for(int iMesh = 0; iMesh < tMeshes.size(); iMesh++)
+            //{
+            //    VBDBaseTetMesh::SharedPtr pMesh = tMeshes[iMesh];
+            //    size_t numColors = pMesh->verticesColoringCategories().size();
+            //    std::vector<IdType> availableColors(numColors, -1);
+            //    numAllVertices += pMesh->numVertices();
+
+            //    for(int iColor = 0; iColor < numColors; iColor++)
+            //    {
+            //        availableColors[iColor] = iColor;
+            //    }
+
+            //    for(int iColor = 0; iColor < numColors; iColor++)
+            //    {
+            //        const std::vector<IdType>& currentColorGroup =
+            //            pMesh->verticesColoringCategories()[iColor];
+
+            //        int smallestGroupId =
+            //            findSmallestParallelGroup(availableColors, vertexParallelGroups, true);
+            //        // add the current color group to this parallel group
+            //        for(int iVertex = 0; iVertex < currentColorGroup.size(); iVertex++)
+            //        {
+            //            vertexParallelGroups[smallestGroupId].push_back(iMesh);
+            //            vertexParallelGroups[smallestGroupId].push_back(
+            //                currentColorGroup[iVertex]);
+            //        }
+            //        // color group from the same mesh cannot be added to this group again
+            //        // std::cout << "Color " << iColor << " of mesh " << iMesh << " was added to parallel group " << smallestGroupId << "\n";
+            //    }
+            //}
+            ///////////////////////////////////////////////////////////////////////////////
+            world().scene().geometries()[0]->geometry().instances().find<IndexT>(builtin::is_fixed);
+            world().scene().find_geometry(0)->geometry().instances().find<IndexT>(builtin::is_fixed);
+
+
+            auto geoT = world()
+                           .scene()
+                           .get()
+                           .geometries()
+                           .find(0)
+                           .rest_geometry->geometry()
+                           .as<SimplicialComplex>();
+
+
+            auto pos = geoT->vertices().find<Vector3>(builtin::position);
+            span<Vector3>       non_const_view = view(*pos);
+            for(size_t i = 0; i < non_const_view.size(); ++i)
+            {
+                const auto& vec = non_const_view[i];
+                spdlog::info("顶点 {}: ({}, {}, {})",
+                             i,
+                             vec.x(),
+                             vec.y(),
+                             vec.z());
+            }
+
+
+            /////##############################################CPU serial
+            int iterations = 100;
+            for(int iIter = 0; iIter < iterations; iIter++)
+            {
+                //bool apply_friction = iIter >= physicsParams().frictionStartIter;
+                //solveCollisionsSequentially();
+                for(size_t iGroup = 0; iGroup < vertexParallelGroups.size(); iGroup++)
+                {
+                    const std::vector<int32_t>& parallelGroup = vertexParallelGroups[iGroup];
+                    size_t numVertices = parallelGroup.size() / 2;  // 每个顶点存储两个元素（iMesh和vId）
+
+                    // 将并行循环改为串行for循环，逐个处理组内的顶点
+                    for(int iV = 0; iV < numVertices; ++iV)
+                    {
+                        int32_t iMesh = parallelGroup[iV * 2];  // 获取顶点所属的网格索引
+                        int vId = parallelGroup[2 * iV + 1];  // 获取顶点在网格中的索引
+
+                        // 获取网格对象并执行处理逻辑
+                        //VBDTetMeshNeoHookean* pMesh = (VBDTetMeshNeoHookean*)tMeshes[iMesh].get();
+                        //if(!pMesh->fixedMask[vId] && !pMesh->activeCollisionMask[vId]
+                        //   && pMesh->activeForMaterialSolve)
+                        {
+                            //VBDStepWithCollision(pMesh, iMesh, vId, apply_friction);
+                            //VBDTetMeshNeoHookean* pMesh = (VBDTetMeshNeoHookean*)pMesh_;
+                            Matrix3x3 h;
+                            Vector3   force;
+                            h.setZero();
+                            force.setZero();
+
+                            // 累加材料力和海森矩阵（核心逻辑保留）
+                            //pMesh->accumlateMaterialForceAndHessian2(vertexId, force, h);
+
+                            // 累加惯性力和海森矩阵（核心逻辑保留，删除debugOperation）
+                            //pMesh->accumlateInertiaForceAndHessian(vertexId, force, h);
+
+                            /*Mat3 tmp_h = h; 
+                            pMesh->accumlateMaterialForceAndHessian(vertexId, force, h);
+                            Mat3 K = h - tmp_h; 
+                            accumlateDampingForceAndHessian(pMesh, vertexId, force, h, K);*/
+
+                            // 累加边界力、碰撞力和海森矩阵（核心逻辑保留）
+                            //accumlateBoundaryForceAndHessian(pMesh, meshId, vertexId, force, h, apply_friction);
+                            // 碰撞立这里可以先不添加试一试
+                            // 
+                            //accumlateCollisionForceAndHessian(
+                            //    pMesh, meshId, vertexId, force, h, apply_friction);
+
+                            // 叠加外力（核心逻辑保留）
+                            //force += pMesh->vertexExternalForces.col(vertexId);
+
+                            // 线搜索与线性求解， 这里恐怕得需要自己去求解了
+                            double specified_error = 1e-4;
+                            if(force.squaredNorm() > specified_error)
+                            {
+                                Matrix3x3    h;
+                                Vector3      force;
+
+                                Vector3 descentDirection;
+                                //float   stepSize = physicsParams().stepSize;
+                                //float lineSearchShrinkFactor = physicsParams().tau;
+
+                                bool solverSuccess;
+                                bool useDouble3x3 = 1;
+                                if(useDouble3x3)
+                                {
+                                    double H[9] = {h(0, 0),
+                                                   h(1, 0),
+                                                   h(2, 0),
+                                                   h(0, 1),
+                                                   h(1, 1),
+                                                   h(2, 1),
+                                                   h(0, 2),
+                                                   h(1, 2),
+                                                   h(2, 2)};
+                                    double F[3] = {force(0), force(1), force(2)};
+                                    double dx[3] = {0, 0, 0};
+                                    solverSuccess = solve3x3_psd_stable(H, F, dx);
+                                    descentDirection = Vector3(dx[0], dx[1], dx[2]);
+
+                                    ////CuMatrix 是什么库？？？？
+                                }
+                                else
+                                {
+                                    solverSuccess = solve3x3_psd_stable(
+                                        h.data(), force.data(), descentDirection.data());
+                                }
+
+                                if(!solverSuccess)
+                                {
+                                    //stepSize = physicsParams().stepSizeGD;
+                                    descentDirection = force;
+                                    //lineSearchShrinkFactor = physicsParams().tau_GD;
+                                    //std::cout << "Solver failed at vertex "
+                                    //          << vertexId << std::endl;
+                                    // std::exit(-1);
+                                }
+                                if(descentDirection.hasNaN())
+                                {
+                                    std::cout << "force: " << force.transpose() << "\nHessian:\n"
+                                              << h;
+                                    //std::cout << "descentDirection has NaN at vertex "
+                                    //          << vertexId << std::endl;
+                                    std::exit(-1);
+                                }
+
+                                // 更新顶点位置（核心逻辑保留）
+                                //pMesh->vertex(vertexId) += stepSize * descentDirection;
+                            }
+
+                        }
+                    }
+                }
+            }  // iteration
+            /////##############################################CPU parallel	
+            //for(size_t iGroup = 0; iGroup < vertexParallelGroups.size(); iGroup++)
+            //{
+            //    const std::vector<IdType>& parallelGroup = vertexParallelGroups[iGroup];
+
+            //    size_t numVertices = parallelGroup.size() / 2;
+            //    //cpu_parallel_for(0,
+            //    //                 numVertices,
+            //    //                 [&](int iV)
+            //    //                 {
+            //    //                     IdType iMesh = parallelGroup[iV * 2];
+            //    //                     int    vId   = parallelGroup[2 * iV + 1];
+
+            //    //                     VBDTetMeshNeoHookean* pMesh =
+            //    //                         (VBDTetMeshNeoHookean*)tMeshes[iMesh].get();
+            //    //                     if(!pMesh->fixedMask[vId]
+            //    //                        && !pMesh->activeCollisionMask[vId]
+            //    //                        && pMesh->activeForMaterialSolve)
+            //    //                     //if (!pMesh->fixedMask[vId])
+            //    //                     {
+            //    //                         //pMesh->VBDStep(vId);
+            //    //                         VBDStepWithCollision(pMesh, iMesh, vId, apply_friction);
+            //    //                     }
+            //    //                 });
+            //}
+            /////##############################################
+
+
+            //std::vector<Vector3> positions_host;
+            //m_global_vertex_manager->positions().copy_to(positions_host);
+
+
+            //std::vector<Vector2i> pairs_host;
+            //pairs.copy_to(pairs_host);
+            //positions
+            //GlobalVertexManager::body_ids();
+            //m_global_vertex_manager->m_impl.body_ids();
+            //detect_dcd_candidates();
+            //compute_adaptive_kappa();
 
             // 2. Record Friction Candidates at the beginning of the frame
             record_friction_candidates();
@@ -688,8 +1044,8 @@ void SimEngine::do_advance()
 
     try
     {
-        pipeline_ipc();
-        //pipeline_vbd();
+        //pipeline_ipc();
+        pipeline_vbd();
         m_last_solved_frame = m_current_frame;
     }
     catch(const SimEngineException& e)

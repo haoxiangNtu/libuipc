@@ -7,6 +7,21 @@
 #include <fstream>
 #include <numbers>
 
+template <typename T>
+bool convertJsonParameters(nlohmann::json j, T& param)
+{
+    try
+    {
+        param = j.get<T>();
+    }
+    catch(nlohmann::json::exception& e)
+    {
+        std::cout << e.what() << "\n";
+        return false;
+    }
+    return true;
+}
+
 int main()
 {
     using namespace uipc;
@@ -48,7 +63,45 @@ int main()
             ifs >> wrecking_ball_scene;
         }
 
+        Json wrecking_ball_vertexColoring;
+        {
+            std::ifstream ifs(fmt::format("{}model.VertexColoring.json", this_folder));
+            ifs >> wrecking_ball_vertexColoring;
+        }
 
+        Json wrecking_ball_edgeColoring;
+        {
+            std::ifstream ifs(fmt::format("{}model.EdgeColoring.json", this_folder));
+            ifs >> wrecking_ball_edgeColoring;
+        }
+
+        Json wrecking_ball_tetColoring;
+        //{
+        //    std::ifstream ifs(fmt::format("{}model.TetColoring.json", this_folder));
+        //    ifs >> wrecking_ball_tetColoring;
+        //}
+
+        std::vector<std::vector<int32_t>> verticesColoringCategories;
+        std::vector<std::vector<int32_t>> edgesColoringCategories;
+        std::vector<std::vector<int32_t>> tetsColoringCategories;
+        convertJsonParameters(wrecking_ball_vertexColoring, verticesColoringCategories);
+        convertJsonParameters(wrecking_ball_edgeColoring, edgesColoringCategories);
+        convertJsonParameters(wrecking_ball_tetColoring, tetsColoringCategories);
+        // we sort them from large to small for the aggregated solve
+        std::sort(tetsColoringCategories.begin(),
+                  tetsColoringCategories.end(),
+                  [](const std::vector<int>& a, const std::vector<int>& b)
+                  { return a.size() > b.size(); });
+        // we sort them from large to small for the aggregated solve
+        std::sort(tetsColoringCategories.begin(),
+                  tetsColoringCategories.end(),
+                  [](const std::vector<int>& a, const std::vector<int>& b)
+                  { return a.size() > b.size(); });
+
+        ////#######################verticesColoringCategories this info need to be saved inside
+        ////#######################call it when needed 
+        // 
+        // 
         // create constitution and contact model
         AffineBodyConstitution abd;
         scene.constitution_tabular().insert(abd);
@@ -127,7 +180,21 @@ int main()
             auto is_fixed_attr = this_mesh.instances().find<IndexT>(builtin::is_fixed);
             view(*is_fixed_attr)[0] = is_fixed;
 
+
             obj.geometries().create(this_mesh);
+
+            this_mesh.verticesColoringCategories = verticesColoringCategories;
+            this_mesh.edgesColoringCategories    = edgesColoringCategories;
+            this_mesh.tetsColoringCategories     = tetsColoringCategories;
+
+            //SimplicialComplexIO  io;
+            //auto                 cube     = io.read("cube.msh");
+            //auto                 VA       = cube.vertices();
+            //auto                 pos      = VA.find<Vector3>(builtin::position);
+            //auto                 TA       = cube.tetrahedra();
+            //span<Vector4i>       tet_view = view(TA.topo());
+            //span<const Vector4i> ctet_view = TA.topo().view();
+
         };
 
         //IndexT count = 0;
@@ -147,6 +214,7 @@ int main()
                 build_mesh(obj, *ball_obj, ball);
             }
         }
+
 
         constexpr bool UseMeshGround = false;
 
@@ -187,12 +255,27 @@ int main()
 
     auto obj_all = scene.objects().find("balls")[0];
     auto ids  = obj_all->geometries().ids();
+
     auto geo = scene.geometries()
                    .find(ids[0])
                    .rest_geometry->geometry()
-                   .as<SimplicialComplex>()
-                   ->vertices();
+                   .as<SimplicialComplex>();
 
+    //auto pos = geo->vertices().find<Vector3>(builtin::position);
+
+    //const auto geo1 = scene.geometries().find(ids[0]).rest_geometry->geometry().as<SimplicialComplex>();
+    //span<const Vector3>  const_view = pos->view();
+    //span<Vector3>        non_const_view = view(*pos);
+    //for(auto& v : non_const_view)
+    //{
+    //    v.x() += 1.0f;
+    //}
+    //SpreadSheetIO       Sheetio;
+    //// dump to csv
+    //Sheetio.write_json(fmt::format("{}geojson", this_output_path),
+    //                   scene.geometries().find(ids[0]).rest_geometry->geometry());
+
+    
     while(world.frame() < 300)
     {
         world.advance();

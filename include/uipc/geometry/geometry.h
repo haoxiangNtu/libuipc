@@ -96,6 +96,9 @@ class UIPC_CORE_API Geometry : public IGeometry
     /**
      * @brief A wrapper class for the meta attributes of a geometries.
      */
+    std::vector<std::vector<int32_t>> verticesColoringCategories;
+    std::vector<std::vector<int32_t>> edgesColoringCategories;
+    std::vector<std::vector<int32_t>> tetsColoringCategories;
     template <bool IsConst>
     class MetaAttributesT
     {
