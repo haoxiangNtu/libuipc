@@ -21,7 +21,10 @@ class FEMLinearSubsystem final : public DiagLinearSubsystem
 
         void report_extent(GlobalLinearSystem::DiagExtentInfo& info);
         void assemble(GlobalLinearSystem::DiagInfo& info);
+
+        void solve_system_vertex(GlobalLinearSystem::DiagInfo& info);
         void _assemble_producers(GlobalLinearSystem::DiagInfo& info);
+        void _assemble_producers_by_vertex(GlobalLinearSystem::DiagInfo& info, IndexT vertexId);
         void _assemble_dytopo_effect(GlobalLinearSystem::DiagInfo& info);
 
         void _assemble_animation(GlobalLinearSystem::DiagInfo& info);
@@ -65,6 +68,7 @@ class FEMLinearSubsystem final : public DiagLinearSubsystem
     virtual void do_init(DiagLinearSubsystem::InitInfo& info) override;
     virtual void do_report_extent(GlobalLinearSystem::DiagExtentInfo& info) override;
     virtual void do_assemble(GlobalLinearSystem::DiagInfo& info) override;
+    virtual void do_solve_system_vertex(GlobalLinearSystem::DiagInfo& info) override;
     virtual void do_accuracy_check(GlobalLinearSystem::AccuracyInfo& info) override;
     virtual void do_retrieve_solution(GlobalLinearSystem::SolutionInfo& info) override;
     virtual void do_report_init_extent(GlobalLinearSystem::InitDofExtentInfo& info) override;

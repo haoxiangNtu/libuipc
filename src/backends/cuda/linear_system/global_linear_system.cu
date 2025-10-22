@@ -49,7 +49,7 @@ void GlobalLinearSystem::dump_linear_system(std::string_view filename)
 
     {
         Eigen::VectorX<Float> x;
-        m_impl.x.copy_to(x);
+        m_impl.x_update.copy_to(x);
 
         auto x_file = fmt::format("{}.x.csv", filename);
 
@@ -76,6 +76,40 @@ void GlobalLinearSystem::solve()
     if(m_impl.empty_system) [[unlikely]]
         return;
     m_impl.solve_linear_system();
+    m_impl.distribute_solution();
+}
+
+void GlobalLinearSystem::solve_by_vertex()
+{
+
+    // 3. Copy x_update to another host vector after the call
+    std::vector<Float> x_update_before(m_impl.x_update.size());
+    m_impl.x_update.buffer_view().copy_to(x_update_before.data());
+
+    //#####################################################
+    m_impl.build_linear_system_by_vertex();
+    //m_impl.build_linear_system();
+    // if the system is empty, skip the following steps
+    if(m_impl.empty_system) [[unlikely]]
+        return;
+    //#####################################################
+    // 3. Copy x_update to another host vector after the call
+    std::vector<Float> x_update_after(m_impl.x_update.size());
+    m_impl.x_update.buffer_view().copy_to(x_update_after.data());
+
+    // 4. Compare the two vectors
+    bool modified = !std::equal(
+        x_update_before.begin(), x_update_before.end(), x_update_after.begin());
+
+    if(modified)
+        std::cout << "x_update has been modified." << std::endl;
+    else
+        std::cout << "x_update has not been modified." << std::endl;
+
+    // reset x_update to initial previous position for sub system;
+    /////in fact u can set it here too
+    //m_impl.solve_system_by_vertex();
+    //m_impl.solve_linear_system();
     m_impl.distribute_solution();
 }
 
@@ -188,6 +222,46 @@ void GlobalLinearSystem::Impl::build_linear_system()
     _assemble_preconditioner();
 }
 
+void GlobalLinearSystem::Impl::build_linear_system_by_vertex()
+{
+    Timer timer{"Build Linear System"};
+    empty_system = !_update_subsystem_extent();
+    // if empty, skip the following steps
+    if(empty_system) [[unlikely]]
+        return;
+
+    // 1. Copy x_update to a host vector before the call
+    std::vector<Float> x_update_before(x_update.size());
+    x_update.buffer_view().copy_to(x_update_before.data());
+
+    //2. Call the function that may modify x_update
+    _assemble_linear_system_by_vertex();
+    //converter.ge2sym(triplet_A);
+    //converter.convert(triplet_A, bcoo_A);
+
+    //_assemble_preconditioner();
+
+    // 3. Copy x_update to another host vector after the call
+    std::vector<Float> x_update_after(x_update.size());
+    x_update.buffer_view().copy_to(x_update_after.data());
+
+    // 4. Compare the two vectors
+    bool modified = !std::equal(
+        x_update_before.begin(), x_update_before.end(), x_update_after.begin());
+
+    if(modified)
+        std::cout << "x_update has been modified." << std::endl;
+    else
+        std::cout << "x_update has not been modified." << std::endl;
+
+    //_assemble_linear_system_by_vertex();
+
+    //converter.ge2sym(triplet_A);
+    //converter.convert(triplet_A, bcoo_A);
+
+    //_assemble_preconditioner();
+}
+
 bool GlobalLinearSystem::Impl::_update_subsystem_extent()
 {
     bool dof_count_changed     = false;
@@ -243,15 +317,15 @@ bool GlobalLinearSystem::Impl::_update_subsystem_extent()
         diag_dof_offsets_counts.scan();
     }
     total_dof = diag_dof_offsets_counts.total_count();
-    if(x.capacity() < total_dof)
+    if(x_update.capacity() < total_dof)
     {
         auto reserve_count = total_dof * reserve_ratio;
-        x.reserve(reserve_count);
+        x_update.reserve(reserve_count);
         b.reserve(reserve_count);
     }
     auto blocked_dof = total_dof / DoFBlockSize;
     triplet_A.reshape(blocked_dof, blocked_dof);
-    x.resize(total_dof);
+    x_update.resize(total_dof);
     b.resize(total_dof);
 
     if(triplet_count_changed) [[likely]]
@@ -290,7 +364,7 @@ void GlobalLinearSystem::Impl::_assemble_linear_system()
 
     auto subsystem_triplet_counts  = subsystem_triplet_offsets_counts.counts();
     auto subsystem_triplet_offsets = subsystem_triplet_offsets_counts.offsets();
-
+    int  CountTemp                 = 0;
     for(const auto& subsystem_info : subsystem_infos)
     {
         if(subsystem_info.is_diag)
@@ -314,7 +388,10 @@ void GlobalLinearSystem::Impl::_assemble_linear_system()
             info.m_hessians = HA.subview(subsystem_triplet_offsets[triplet_i],
                                          subsystem_triplet_counts[triplet_i])
                                   .submatrix(ij_offset, ij_count);
-
+            //==0 is abd , ==1 is fem
+            if(CountTemp==1){
+                int teststopHere = 0;
+            }
             diag_subsystem->assemble(info);
         }
         else
@@ -355,6 +432,96 @@ void GlobalLinearSystem::Impl::_assemble_linear_system()
 
             off_diag_subsystem->assemble(info);
         }
+        CountTemp++;
+    }
+}
+
+void GlobalLinearSystem::Impl::_assemble_linear_system_by_vertex()
+{
+    auto HA = triplet_A.view();
+    auto B  = b.view();
+    auto dxs = x_update.view();
+
+    auto diag_subsystem_view     = diag_subsystems.view();
+    auto off_diag_subsystem_view = off_diag_subsystems.view();
+
+    auto diag_dof_counts  = diag_dof_offsets_counts.counts();
+    auto diag_dof_offsets = diag_dof_offsets_counts.offsets();
+
+    auto subsystem_triplet_counts  = subsystem_triplet_offsets_counts.counts();
+    auto subsystem_triplet_offsets = subsystem_triplet_offsets_counts.offsets();
+    int  CountTemp                 = 0;
+    for(const auto& subsystem_info : subsystem_infos)
+    {
+        if(subsystem_info.is_diag)
+        {
+            auto  dof_i          = subsystem_info.local_index;
+            auto  triplet_i      = subsystem_info.index;
+            auto& diag_subsystem = diag_subsystem_view[dof_i];
+
+            int  dof_offset         = diag_dof_offsets[dof_i];
+            int  dof_count          = diag_dof_counts[dof_i];
+            int  blocked_dof_offset = dof_offset / DoFBlockSize;
+            int  blocked_dof_count  = dof_count / DoFBlockSize;
+            int2 ij_offset          = {blocked_dof_offset, blocked_dof_offset};
+            int2 ij_count           = {blocked_dof_count, blocked_dof_count};
+
+            DiagInfo info{this};
+
+            info.m_index        = triplet_i;
+            info.m_storage_type = HessianStorageType::Full;
+            info.m_x_update     = dxs.subview(dof_offset, dof_count);
+            info.m_gradients    = B.subview(dof_offset, dof_count);
+            info.m_hessians = HA.subview(subsystem_triplet_offsets[triplet_i],
+                                         subsystem_triplet_counts[triplet_i])
+                                  .submatrix(ij_offset, ij_count);
+            //==0 is abd , ==1 is fem
+            if(CountTemp == 1)
+            {
+                int teststopHere = 0;
+            }
+            diag_subsystem->do_solve_system_vertex(info);
+            //diag_subsystem->assemble(info);
+        }
+        else
+        {
+            auto triplet_i   = subsystem_info.index;
+            auto local_index = subsystem_info.local_index;
+            auto& off_diag_subsystem = off_diag_subsystem_view[subsystem_info.local_index];
+            auto& l_diag_index = off_diag_subsystem->m_l->m_index;
+            auto& r_diag_index = off_diag_subsystem->m_r->m_index;
+
+
+            int l_blocked_dof_offset = diag_dof_offsets[l_diag_index] / DoFBlockSize;
+            int l_blocked_dof_count = diag_dof_counts[l_diag_index] / DoFBlockSize;
+
+            int r_blocked_dof_offset = diag_dof_offsets[r_diag_index] / DoFBlockSize;
+            int r_blocked_dof_count = diag_dof_counts[r_diag_index] / DoFBlockSize;
+
+            auto lr_triplet_offset = subsystem_triplet_offsets[triplet_i];
+            auto lr_triplet_count  = off_diag_lr_triplet_counts[local_index].x;
+            auto rl_triplet_offset = lr_triplet_offset + lr_triplet_count;
+            auto rl_triplet_count  = off_diag_lr_triplet_counts[local_index].y;
+
+            OffDiagInfo info{this};
+            info.m_index        = triplet_i;
+            info.m_storage_type = HessianStorageType::Full;
+
+            info.m_lr_hessian =
+                HA.subview(lr_triplet_offset, lr_triplet_count)
+                    .submatrix(int2{l_blocked_dof_offset, r_blocked_dof_offset},
+                               int2{l_blocked_dof_count, r_blocked_dof_count});
+
+            info.m_rl_hessian =
+                HA.subview(rl_triplet_offset, rl_triplet_count)
+                    .submatrix(int2{r_blocked_dof_offset, l_blocked_dof_offset},
+                               int2{r_blocked_dof_count, l_blocked_dof_count});
+
+            // spdlog::info("rl_offset: {}, lr_offset: {}", rl_triplet_offset, lr_triplet_offset);
+
+            off_diag_subsystem->assemble(info);
+        }
+        CountTemp++;
     }
 }
 
@@ -380,9 +547,80 @@ void GlobalLinearSystem::Impl::solve_linear_system()
     {
         SolvingInfo info{this};
         info.m_b = b.cview();
-        info.m_x = x.view();
+        info.m_x = x_update.view();
         iterative_solver->solve(info);
         spdlog::info("Iterative linear solver iteration count: {}", info.m_iter_count);
+    }
+}
+
+void GlobalLinearSystem::Impl::solve_system_by_vertex()
+{
+    int TestStart = 0;
+
+    Timer timer{"Solve System by vertex"};
+    empty_system = !_update_subsystem_extent();
+    // if empty, skip the following steps
+    //if(empty_system) [[unlikely]]
+    //    return;
+    //_assemble_linear_system();
+    //converter.ge2sym(triplet_A);
+    //converter.convert(triplet_A, bcoo_A);
+    //_assemble_preconditioner();
+    //Timer timer{"Solve Linear System"};
+    if(iterative_solver)
+    {
+        SolvingInfo info{this};
+        info.m_b = b.cview();
+        info.m_x = x_update.view();
+
+        ////直接update x_update 或者是info.m_x ??????????
+        //
+
+        //// 这里要是修改x_update 的话注意只对对应于FEM的 sub system 进行修改
+        ////////////这里直接对info.m_x 进行修改:
+
+        //auto diag_subsystem_view = diag_subsystems.view();
+        //auto diag_dof_counts     = diag_dof_offsets_counts.counts();
+        //auto diag_dof_offsets    = diag_dof_offsets_counts.offsets();
+
+        //// distribute the solution to all diag subsystems
+        //for(auto&& [i, diag_subsystem] : enumerate(diag_subsystems.view()))
+        //{
+        //    auto dxs_fem = x_update.view().subview(diag_dof_offsets[i], diag_dof_counts[i]);
+        //    if(diag_dof_offsets.size() > 1000)
+        //    {
+        //        //dxs(i) = -result.segment<3>(i * 3).as_eigen();
+
+        //        dxs_fem.viewer().segment<3>(i * 3);
+        //        dxs_fem.<3>(i * 3).
+        //        dxs_fem.viewer().segment()
+        //    }
+        //    
+        //    //diag_subsystem.
+        //    SolutionInfo info{this};
+        //    info.m_solution =
+        //        x_update.view().subview(diag_dof_offsets[i], diag_dof_counts[i]);
+        //    diag_subsystem->retrieve_solution(info);
+        //}
+
+        ////info.m_x
+        //iterative_solver->solve(info);
+
+        ///////this is the way to use bcoo_A or the gradients info
+        //bcoo_A;
+
+        //spmv(p.cview(), Ap.view());
+
+        //// alpha = rz / dot(p.cview(), Ap.cview());
+        //alpha = rz / ctx().dot(p.cview(), Ap.cview());
+
+        //// x = x + alpha * p
+        //ctx().axpby(alpha, p.cview(), Float{1}, x);
+
+        //// r = r - alpha * Ap
+        //ctx().axpby(-alpha, Ap.cview(), Float{1}, r.view());
+
+        //spdlog::info("Iterative linear solver iteration count: {}", info.m_iter_count);
     }
 }
 
@@ -396,7 +634,8 @@ void GlobalLinearSystem::Impl::distribute_solution()
     for(auto&& [i, diag_subsystem] : enumerate(diag_subsystems.view()))
     {
         SolutionInfo info{this};
-        info.m_solution = x.view().subview(diag_dof_offsets[i], diag_dof_counts[i]);
+        info.m_solution =
+            x_update.view().subview(diag_dof_offsets[i], diag_dof_counts[i]);
         diag_subsystem->retrieve_solution(info);
     }
 }

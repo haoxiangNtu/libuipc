@@ -35,6 +35,10 @@ void DiagLinearSubsystem::assemble(GlobalLinearSystem::DiagInfo& info)
 {
     do_assemble(info);
 }
+void DiagLinearSubsystem::solve_system_vertex(GlobalLinearSystem::DiagInfo& info)
+{
+    do_solve_system_vertex(info);
+}
 void DiagLinearSubsystem::accuracy_check(GlobalLinearSystem::AccuracyInfo& info)
 {
     do_accuracy_check(info);

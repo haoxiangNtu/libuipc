@@ -390,10 +390,12 @@ void SimEngine::do_advance()
                 compute_dytopo_effect();
 
                 // 4) Solve Global Linear System => dx = A^-1 * b
+
                 m_state = SimEngineState::SolveGlobalLinearSystem;
                 {
                     Timer timer{"Solve Global Linear System"};
-                    m_global_linear_system->solve();
+                    //m_global_linear_system->solve();
+                    m_global_linear_system->solve_by_vertex();
                 }
 
 
@@ -628,7 +630,7 @@ void SimEngine::do_advance()
             for(size_t i = 0; i < non_const_view.size(); ++i)
             {
                 const auto& vec = non_const_view[i];
-                spdlog::info("顶点 {}: ({}, {}, {})",
+                spdlog::info("vertex info {}: ({}, {}, {})",
                              i,
                              vec.x(),
                              vec.y(),
@@ -1044,8 +1046,8 @@ void SimEngine::do_advance()
 
     try
     {
-        //pipeline_ipc();
-        pipeline_vbd();
+        pipeline_ipc();
+        //pipeline_vbd();
         m_last_solved_frame = m_current_frame;
     }
     catch(const SimEngineException& e)

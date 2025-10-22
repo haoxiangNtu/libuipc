@@ -350,6 +350,9 @@ class FiniteElementMethod final : public SimSystem
         muda::DeviceVar<Float> energy_producer_energy;  // Energy Producer Energy
         muda::DeviceBuffer<Float> energy_producer_energies;  // Energy Producer Energies
         muda::DeviceDoubletVector<Float, 3> energy_producer_gradients;  // Energy Producer Gradient
+        
+        muda::DeviceVar<IndexT> vertex_producer_index;  // Vertex index 
+        muda::DeviceBuffer<IndexT> vertex_producer_index_buffer;  // Vertex index buffer
         SizeT energy_producer_total_hessian_count = 0;
 
 

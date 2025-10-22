@@ -39,8 +39,110 @@ void LinearPCG::do_solve(GlobalLinearSystem::SolvingInfo& info)
     Ap.resize(N);
 
     auto iter = pcg(x, b, max_iter_ratio * b.size());
-
+    //auto iter1 = pcg_vertex(x, b, max_iter_ratio * b.size());
     info.iter_count(iter);
+
+    ////////// how to set value of x???????
+
+}
+
+SizeT LinearPCG::pcg_vertex(muda::DenseVectorView<Float>  x,
+                                muda::CDenseVectorView<Float> b,
+                                SizeT                         max_iter)
+{
+    SizeT k = 0;
+    // r = b - A * x
+    {
+        // r = b;
+        r.buffer_view().copy_from(b.buffer_view());
+
+        // x == 0, so we don't need to do the following
+        // r = - A * x + r
+        //spmv(-1.0, x.as_const(), 1.0, r.view());
+    }
+
+    Float alpha, beta, rz, rz0;
+
+    // z = P * r (apply preconditioner)
+    apply_preconditioner(z, r);
+
+    // p = z
+    p = z;
+
+    // init rz
+    // rz = r^T * z
+    rz = ctx().dot(r.cview(), z.cview());
+
+    rz0 = std::abs(rz);
+
+    if constexpr(RUNTIME_CHECK)
+    {
+        if(std::isnan(rz0) || !std::isfinite(rz0))
+        {
+            auto norm_r = ctx().norm(r.cview());
+            auto norm_z = ctx().norm(z.cview());
+
+            UIPC_ASSERT(!std::isnan(rz0) && std::isfinite(rz0),
+                        "Init Residual is {}, norm(r) = {}, norm(z) = {}",
+                        rz0,
+                        norm_r,
+                        norm_z);
+        }
+    }
+
+    // check convergence
+    if(accuracy_statisfied(r) && rz0 == Float{0.0})
+        return 0;
+
+    for(k = 1; k < max_iter; ++k)
+    {
+        spmv(p.cview(), Ap.view());
+
+        // alpha = rz / dot(p.cview(), Ap.cview());
+        alpha = rz / ctx().dot(p.cview(), Ap.cview());
+
+        // x = x + alpha * p
+        ctx().axpby(alpha, p.cview(), Float{1}, x);
+
+        // r = r - alpha * Ap
+        ctx().axpby(-alpha, Ap.cview(), Float{1}, r.view());
+
+        // z = P * r (apply preconditioner)
+        apply_preconditioner(z, r);
+
+        // rz_new = r^T * z
+        // rz_new = dot(r.cview(), z.cview());
+        Float rz_new = ctx().dot(r.cview(), z.cview());
+
+        if constexpr(RUNTIME_CHECK)
+        {
+            if(std::isnan(rz_new) || !std::isfinite(rz_new))
+            {
+                auto norm_r = ctx().norm(r.cview());
+                auto norm_z = ctx().norm(z.cview());
+                UIPC_ASSERT(!std::isnan(rz_new) && std::isfinite(rz_new),
+                            "Residual is {}, norm(r) = {}, norm(z) = {}",
+                            rz_new,
+                            norm_r,
+                            norm_z);
+            }
+        }
+
+        // check convergence
+        if(accuracy_statisfied(r) && std::abs(rz_new) <= global_tol_rate * rz0)
+            break;
+
+        // beta = rz_new / rz
+        beta = rz_new / rz;
+
+        // p = z + beta * p
+        ctx().axpby(Float{1}, z.cview(), beta, p.view());
+
+        // update rz
+        rz = rz_new;
+    }
+
+    return k;
 }
 
 SizeT LinearPCG::pcg(muda::DenseVectorView<Float> x, muda::CDenseVectorView<Float> b, SizeT max_iter)

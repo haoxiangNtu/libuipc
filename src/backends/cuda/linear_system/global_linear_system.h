@@ -87,12 +87,37 @@ class GlobalLinearSystem : public SimSystem
         HessianStorageType storage_type() { return m_storage_type; }
         TripletMatrixView  hessians() { return m_hessians; }
         DenseVectorView    gradients() { return m_gradients; }
+        DenseVectorView    x_update() { return m_x_update; }
 
       private:
         friend class Impl;
         SizeT              m_index = ~0ull;
         TripletMatrixView  m_hessians;
         DenseVectorView    m_gradients;
+        DenseVectorView    m_x_update;
+        HessianStorageType m_storage_type;
+        Impl*              m_impl = nullptr;
+    };
+
+    class Diag_vertex_Info
+    {
+      public:
+        Diag_vertex_Info(Impl* impl) noexcept
+            : m_impl(impl)
+        {
+        }
+
+        HessianStorageType storage_type() { return m_storage_type; }
+        TripletMatrixView  hessians() { return m_hessians; }
+        DenseVectorView    gradients() { return m_gradients; }
+        DenseVectorView    dxs() { return m_dxs; }
+
+      private:
+        friend class Impl;
+        SizeT              m_index = ~0ull;
+        TripletMatrixView  m_hessians;
+        DenseVectorView    m_gradients;
+        DenseVectorView    m_dxs;
         HessianStorageType m_storage_type;
         Impl*              m_impl = nullptr;
     };
@@ -259,10 +284,13 @@ class GlobalLinearSystem : public SimSystem
         void init();
 
         void build_linear_system();
+        void build_linear_system_by_vertex();
         bool _update_subsystem_extent();
         void _assemble_linear_system();
+        void _assemble_linear_system_by_vertex();
         void _assemble_preconditioner();
         void solve_linear_system();
+        void solve_system_by_vertex();
         void distribute_solution();
 
         Float reserve_ratio = 1.1;
@@ -288,7 +316,7 @@ class GlobalLinearSystem : public SimSystem
 
         // Linear System
         muda::LinearSystemContext           ctx;
-        muda::DeviceDenseVector<Float>      x;
+        muda::DeviceDenseVector<Float>      x_update;
         muda::DeviceDenseVector<Float>      b;
         muda::DeviceTripletMatrix<Float, 3> triplet_A;
         muda::DeviceBCOOMatrix<Float, 3>    bcoo_A;
@@ -335,7 +363,7 @@ class GlobalLinearSystem : public SimSystem
 
     // only be called by SimEngine::do_advance()
     void solve();
-
+    void solve_by_vertex();
     Impl m_impl;
 };
 }  // namespace uipc::backend::cuda

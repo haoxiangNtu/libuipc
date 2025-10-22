@@ -19,6 +19,7 @@ class LinearPCG : public IterativeSolver
     using DeviceBSRMatrix   = muda::DeviceBSRMatrix<Float, 3>;
 
     SizeT pcg(muda::DenseVectorView<Float> x, muda::CDenseVectorView<Float> b, SizeT max_iter);
+    SizeT pcg_vertex(muda::DenseVectorView<Float> x, muda::CDenseVectorView<Float> b, SizeT max_iter);
 
     DeviceDenseVector      z;   // preconditioned residual
     DeviceDenseVector      r;   // residual

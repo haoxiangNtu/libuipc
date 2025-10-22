@@ -127,6 +127,274 @@ void ABDLinearSubsystem::Impl::report_extent(GlobalLinearSystem::DiagExtentInfo&
     info.extent(H3x3_count, dof_count);
 }
 
+
+void ABDLinearSubsystem::Impl::solve_system_vertex(GlobalLinearSystem::DiagInfo& info)
+{
+    using namespace muda;
+
+    // 1) Kinetic & Shape
+    IndexT offset = 0;
+    {
+        // Collect Kinetic
+        AffineBodyDynamics::ComputeGradientHessianInfo this_info{
+            abd().body_id_to_kinetic_gradient, abd().body_id_to_kinetic_hessian, dt};
+        abd().kinetic->compute_gradient_hessian(this_info);
+
+        // Collect Shape
+        for(auto&& [i, cst] : enumerate(abd().constitutions.view()))
+        {
+            AffineBodyDynamics::ComputeGradientHessianInfo this_info{
+                abd().subview(abd().body_id_to_shape_gradient, cst->m_index),
+                abd().subview(abd().body_id_to_shape_hessian, cst->m_index),
+                dt};
+
+            cst->compute_gradient_hessian(this_info);
+        }
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(abd().body_count(),
+                   [is_fixed = abd().body_id_to_is_fixed.cviewer().name("is_fixed"),
+                    shape_gradient = abd().body_id_to_shape_gradient.cviewer().name("shape_gradient"),
+                    kinetic_gradient =
+                        abd().body_id_to_kinetic_gradient.cviewer().name("kinetic_gradient"),
+                    gradients = info.gradients().viewer().name("gradients"),
+                    cout      = KernelCout::viewer()] __device__(int i) mutable
+                   {
+                       Vector12 src;
+
+                       if(!is_fixed(i))  // if not fixed, add kinetic and shape gradients
+                       {
+                           src = kinetic_gradient(i) + shape_gradient(i);
+                       }
+                       else
+                       {
+                           src.setZero();  // if fixed, set to zero
+                       }
+
+                       gradients.segment<12>(i * 12) = src;
+                   });
+
+        auto body_count = abd().body_id_to_shape_hessian.size();
+        auto H3x3_count = body_count * 16;
+        auto body_H3x3  = info.hessians().subview(offset, H3x3_count);
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(body_count,
+                   [dst = body_H3x3.viewer().name("dst_hessian"),
+                    is_fixed = abd().body_id_to_is_fixed.cviewer().name("is_fixed"),
+                    shape_hessian = abd().body_id_to_shape_hessian.cviewer().name("src_hessian"),
+                    kinetic_hessian = abd().body_id_to_kinetic_hessian.cviewer().name("kinetic_hessian"),
+                    diag_hessian = abd().diag_hessian.viewer().name(
+                        "diag_hessian")] __device__(int I) mutable
+                   {
+                       TripletMatrixUnpacker MA{dst};
+
+                       // Fill kinetic hessian to avoid singularity
+                       Matrix12x12 src = kinetic_hessian(I);
+
+                       if(!is_fixed(I))  // if not fixed, add shape hessian
+                       {
+                           src += shape_hessian(I);
+                       }
+
+                       MA.block<4, 4>(I * 4 * 4)  // triplet range of [I*4*4, (I+1)*4*4)
+                           .write(I * 4,          // begin row
+                                  I * 4,          // begin col
+                                  src);
+
+                       // record diagonal hessian for diag-inv preconditioner
+                       diag_hessian(I) = src;
+                   });
+
+        offset += H3x3_count;
+    }
+
+    // 2) Dynamic Topology Effect
+    {
+        auto  vertex_offset = affine_body_vertex_reporter->vertex_offset();
+        SizeT dytopo_effect_gradient_count = 0;
+        if(dytopo_effect_receiver)
+        {
+            dytopo_effect_gradient_count =
+                dytopo_effect_receiver->gradients().doublet_count();
+        }
+
+        if(dytopo_effect_gradient_count)
+        {
+            ParallelFor()
+                .file_line(__FILE__, __LINE__)
+                .apply(dytopo_effect_gradient_count,
+                       [dytopo_effect_gradient =
+                            dytopo_effect_receiver->gradients().cviewer().name("dytopo_effect_gradient"),
+                        gradients = info.gradients().viewer().name("gradients"),
+                        v2b = abd().vertex_id_to_body_id.cviewer().name("v2b"),
+                        Js  = abd().vertex_id_to_J.cviewer().name("Js"),
+                        is_fixed = abd().body_id_to_is_fixed.cviewer().name("is_fixed"),
+                        vertex_offset = vertex_offset] __device__(int I) mutable
+                       {
+                           const auto& [g_i, G3] = dytopo_effect_gradient(I);
+
+                           auto i      = g_i - vertex_offset;
+                           auto body_i = v2b(i);
+                           auto J_i    = Js(i);
+
+                           if(is_fixed(body_i))
+                           {
+                               // Do nothing
+                           }
+                           else
+                           {
+                               Vector12 G12 = J_i.T() * G3;
+                               gradients.segment<12>(body_i * 12).atomic_add(G12);
+                           }
+                       });
+        }
+
+        SizeT dytopo_effect_hessian_count = 0;
+        if(dytopo_effect_receiver)
+            dytopo_effect_hessian_count =
+                dytopo_effect_receiver->hessians().triplet_count();
+
+        auto H3x3_count         = dytopo_effect_hessian_count * 16;
+        auto dytopo_effect_H3x3 = info.hessians().subview(offset, H3x3_count);
+
+        if(dytopo_effect_hessian_count)
+        {
+            ParallelFor()
+                .file_line(__FILE__, __LINE__)
+                .apply(dytopo_effect_hessian_count,
+                       [dytopo_effect_hessian =
+                            dytopo_effect_receiver->hessians().cviewer().name("dytopo_effect_hessian"),
+                        dst = dytopo_effect_H3x3.viewer().name("dst_hessian"),
+                        v2b = abd().vertex_id_to_body_id.cviewer().name("v2b"),
+                        Js  = abd().vertex_id_to_J.cviewer().name("Js"),
+                        is_fixed = abd().body_id_to_is_fixed.cviewer().name("is_fixed"),
+                        diag_hessian = abd().diag_hessian.viewer().name("diag_hessian"),
+                        vertex_offset = vertex_offset] __device__(int I) mutable
+                       {
+                           const auto& [g_i, g_j, H3x3] = dytopo_effect_hessian(I);
+
+                           auto i = g_i - vertex_offset;
+                           auto j = g_j - vertex_offset;
+
+                           auto body_i = v2b(i);
+                           auto body_j = v2b(j);
+
+                           auto& J_i = Js(i);
+                           auto& J_j = Js(j);
+
+                           Matrix12x12 H12x12;
+                           if(is_fixed(body_i) || is_fixed(body_j))
+                           {
+                               H12x12.setZero();
+                           }
+                           else
+                           {
+                               H12x12 = ABDJacobi::JT_H_J(J_i.T(), H3x3, J_j);
+
+                               // Fill diagonal hessian for diag-inv preconditioner
+                               // TODO: Maybe later we can move it to a separate kernel for readability
+                               if(body_i == body_j)
+                               {
+                                   eigen::atomic_add(diag_hessian(body_i), H12x12);
+                               }
+                           }
+
+                           TripletMatrixUnpacker MU{dst};
+                           MU.block<4, 4>(I * 4 * 4)  // triplet range of [I*4*4, (I+1)*4*4)
+                               .write(body_i * 4,  // begin row
+                                      body_j * 4,  // begin col
+                                      H12x12);
+                       });
+        }
+
+        offset += H3x3_count;
+    }
+
+
+    // 2) Other
+    {
+        // Fill TripletMatrix and DoubletVector
+        for(auto& R : reporters.view())
+        {
+            AssembleInfo info{this, R->m_index};
+            R->assemble(info);
+        }
+
+        if(reporter_gradients.doublet_count())
+        {
+            ParallelFor()
+                .file_line(__FILE__, __LINE__)
+                .apply(reporter_gradients.doublet_count(),
+                       [dst = info.gradients().viewer().name("dst_gradient"),
+                        src = reporter_gradients.cviewer().name("src_gradient"),
+                        is_fixed = abd().body_id_to_is_fixed.cviewer().name(
+                            "is_fixed")] __device__(int I) mutable
+                       {
+                           auto&& [body_i, G12] = src(I);
+
+                           if(is_fixed(body_i))
+                           {
+                               // Do nothing
+                           }
+                           else
+                           {
+                               dst.segment<12>(body_i * 12).atomic_add(G12);
+                           }
+                       });
+        }
+
+        if(reporter_hessians.triplet_count())
+        {
+            // get rest
+            auto H3x3s = info.hessians().subview(offset);
+
+            ParallelFor()
+                .file_line(__FILE__, __LINE__)
+                .apply(reporter_hessians.triplet_count(),
+                       [dst = H3x3s.viewer().name("dst_hessian"),
+                        src = reporter_hessians.cviewer().name("src_hessian"),
+                        diag_hessian = abd().diag_hessian.viewer().name("diag_hessian"),
+                        is_fixed = abd().body_id_to_is_fixed.cviewer().name(
+                            "is_fixed")] __device__(int I) mutable
+                       {
+                           TripletMatrixUnpacker MU{dst};
+                           Matrix12x12           Value;
+                           auto&& [body_i, body_j, H12x12] = src(I);
+                           Value                           = H12x12;
+
+                           bool has_fixed = (is_fixed(body_i) || is_fixed(body_j));
+
+                           if(has_fixed)
+                           {
+                               Value.setZero();  // zero out hessian for fixed bodies
+                           }
+
+                           MU.block<4, 4>(I * 4 * 4)  // triplet range of [I*4*4, (I+1)*4*4)
+                               .write(body_i * 4,  // begin row
+                                      body_j * 4,  // begin col
+                                      Value);
+
+                           // Fill diagonal hessian for diag-inv preconditioner
+                           if(body_i == body_j && !has_fixed)
+                           {
+                               eigen::atomic_add(diag_hessian(body_i), H12x12);
+                           }
+                       });
+
+            offset += reporter_hessians.triplet_count() * 16;  // 16 = 4 * 4
+        }
+    }
+
+    // 3) Check the size
+    UIPC_ASSERT(offset == info.hessians().triplet_count(),
+                "Hessian size mismatch: expected {}, got {}",
+                info.hessians().triplet_count(),
+                offset);
+}
+
 void ABDLinearSubsystem::Impl::assemble(GlobalLinearSystem::DiagInfo& info)
 {
     using namespace muda;
@@ -432,6 +700,11 @@ void ABDLinearSubsystem::do_report_extent(GlobalLinearSystem::DiagExtentInfo& in
 void ABDLinearSubsystem::do_assemble(GlobalLinearSystem::DiagInfo& info)
 {
     m_impl.assemble(info);
+}
+
+void ABDLinearSubsystem::do_solve_system_vertex(GlobalLinearSystem::DiagInfo& info)
+{
+    m_impl.solve_system_vertex(info);
 }
 
 void ABDLinearSubsystem::do_accuracy_check(GlobalLinearSystem::AccuracyInfo& info)
