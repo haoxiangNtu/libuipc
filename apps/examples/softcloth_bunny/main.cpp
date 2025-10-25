@@ -116,29 +116,51 @@ int main(int argc, char** argv)
     Transform T     = Transform::Identity();
     T.scale(scale);
     SimplicialComplexIO io{T};
-    auto cloth_mesh = io.read(fmt::format("{}grid20x20.obj", trimesh_path));
+    //auto cloth_mesh = io.read(fmt::format("{}grid20x20.obj", trimesh_path));
+    auto cloth_mesh = io.read(fmt::format("{}grid10x10.obj", trimesh_path));
     label_surface(cloth_mesh);
     NeoHookeanShell nhs;
     scene.constitution_tabular().insert(nhs);
+
+
     DiscreteShellBending dsb;
 
-    auto parm = ElasticModuli::youngs_poisson(10.0_kPa, 0.499);
+    auto parm = ElasticModuli::youngs_poisson(100.0_kPa, 0.499);
     nhs.apply_to(cloth_mesh, parm, 200, 0.001);
     dsb.apply_to(cloth_mesh, 10.0_Pa);
 
     auto pos_view = view(cloth_mesh.positions());
+    //std::ranges::transform(pos_view,
+    //                       pos_view.begin(),
+    //                       [](const Vector3& v) -> Vector3
+    //                       { return v + Vector3{1, 0.6, 1}; });
+
     std::ranges::transform(pos_view,
                            pos_view.begin(),
                            [](const Vector3& v) -> Vector3
-                           { return v + Vector3{1, 0.8, 1}; });
-    cloth_obj->geometries().create(cloth_mesh);
+                           { return v + Vector3{1, 1.6, 1}; });
 
+    auto is_fixed      = cloth_mesh.vertices().find<IndexT>(builtin::is_fixed);
+    view(*is_fixed)[0] = 1;
+    view(*is_fixed)[1] = 1;
+    view(*is_fixed)[10]  = 1;
+    //view(*is_fixed)[11] = 1;
+    //view(*is_fixed)[12]  = 1;
+    //view(*is_fixed)[22] = 1;
+
+    auto is_self_collision = cloth_mesh.meta().find<IndexT>(builtin::self_collision);
+    //auto is_self_collision = cloth_mesh.vertices().find<IndexT>(builtin::self_collision);
+    std::ranges::fill(view(*is_self_collision), 0);
+
+
+    cloth_obj->geometries().create(cloth_mesh);
 
     S<Object> bunny_obj = scene.objects().create("bunny");
     Transform T1         = Transform::Identity();
     T1.translate(Vector3::UnitX() + Vector3::UnitZ());
     SimplicialComplexIO io1{T1};
-    auto bunny_mesh = io1.read(fmt::format("{}bunny0.msh", tetmesh_dir));
+    //auto bunny_mesh = io1.read(fmt::format("{}bunny0.msh", tetmesh_dir));
+    auto bunny_mesh = io1.read(fmt::format("{}cube.msh", tetmesh_dir));
     label_surface(bunny_mesh);
     label_triangle_orient(bunny_mesh);
 
@@ -153,28 +175,24 @@ int main(int argc, char** argv)
     // create constitution and contact as in Python
 
 
+    //StableNeoHookean sth;
+    //scene.constitution_tabular().insert(nhs);
+    //auto parm1 = ElasticModuli::youngs_poisson(100.0_MPa, 0.499);
+    //sth.apply_to(flipped_bunny_mesh, parm1);
+    //auto is_fixed = flipped_bunny_mesh.instances().find<IndexT>(builtin::is_fixed);
+
     //AffineBodyConstitution abd;
     //scene.constitution_tabular().insert(abd);
     //abd.apply_to(flipped_bunny_mesh, 100.0_MPa);
-
-    StableNeoHookean sth;
-    scene.constitution_tabular().insert(nhs);
-    auto parm1 = ElasticModuli::youngs_poisson(100.0_MPa, 0.499);
-    sth.apply_to(flipped_bunny_mesh, parm1);
-
-
-    auto is_fixed = flipped_bunny_mesh.instances().find<IndexT>(builtin::is_fixed);
+    //auto is_fixed = flipped_bunny_mesh.instances().find<IndexT>(builtin::is_fixed);
     //view(*is_fixed)[0] = 1;
-    bunny_obj->geometries().create(flipped_bunny_mesh);
+    //bunny_obj->geometries().create(flipped_bunny_mesh);
     
-
-
-
     // create ground (as in Python)
     Float ground_height = -1.0;
     auto  g             = geometry::ground(ground_height);
     auto  ground_obj    = scene.objects().create("ground");
-    ground_obj->geometries().create(g);
+    //ground_obj->geometries().create(g);
 
     // init world & scene IO
     world.init(scene);
@@ -183,7 +201,7 @@ int main(int argc, char** argv)
 
     // optional: get some geometry handle (example from wrecking ball)
     // advance simulation for N frames and dump surfaces (no GUI)
-    const int MaxFrames = 300;
+    const int MaxFrames = 200;
     while(world.frame() < MaxFrames)
     {
         world.advance();

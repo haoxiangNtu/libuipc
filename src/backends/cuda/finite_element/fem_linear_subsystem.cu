@@ -114,7 +114,7 @@ __forceinline__ __device__ __host__ bool solve3x3_psd_stable(const DType* m,
 
     const DType det = (a11 * i11 + a21 * i12 + a31 * i13);
 
-    if(abs(det) < 1e-4 * (abs(a11 * i11) + abs(a21 * i12) + abs(a31 * i13)))
+    if(abs(det) < 1e-5 * (abs(a11 * i11) + abs(a21 * i12) + abs(a31 * i13)))
     {
         out[0] = b[0];
         out[1] = b[1];
@@ -207,244 +207,248 @@ void FEMLinearSubsystem::Impl::assemble(GlobalLinearSystem::DiagInfo& info)
 
 void FEMLinearSubsystem::Impl::solve_system_vertex(GlobalLinearSystem::DiagInfo& info)
 {
-    // 0) record dof info
-    auto frame = sim_engine->frame();
-    fem().set_dof_info(frame, info.gradients().offset(), info.gradients().size());
-
-    // 1) Clear Gradient
-    info.gradients().buffer_view().fill(0);
-
-    // 2) Assemble Gradient and Hessian
-    _assemble_producers(info);
-    _assemble_dytopo_effect(info);
-    _assemble_animation(info);
+    // 总函数时间计时
+    Timer totalTimer{"Total solve_system_vertex time"};
 
     using namespace muda;
-
-    // 3) Clear Fixed Vertex Gradient
-    ParallelFor()
-        .file_line(__FILE__, __LINE__)
-        .apply(fem().xs.size(),
-               [is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
-                gradients = info.gradients().viewer().name("gradients")] __device__(int i) mutable
-               {
-                   if(is_fixed(i))
-                   {
-                       gradients.segment<3>(i * 3).as_eigen().setZero();
-                   }
-               });
-
-    // 4) Clear Fixed Vertex hessian
-    ParallelFor()
-        .file_line(__FILE__, __LINE__)
-        .apply(info.hessians().triplet_count(),
-               [is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
-                hessians = info.hessians().viewer().name("hessians")] __device__(int I) mutable
-               {
-                   auto&& [i, j, H3] = hessians(I).read();
-
-                   if(is_fixed(i) || is_fixed(j))
-                   {
-                       if(i != j)
-                           hessians(I).write(i, j, Matrix3x3::Zero());
-                   }
-               })
-        .wait();
-
-    ///////////###############################TEST CONTACT,  where is external force??????
-    //////##############这里一定是能改的，就是哪里的更新的有问题????????????????
-    // 遍历所有顶点
-    auto N = fem().xs.size();
-    // 1. 定义 host 端的 vector（类型与 DeviceBuffer 一致，这里是 bool）
-    std::vector<IndexT> is_fixed_h;  // 无需提前 resize，copy_to 会自动处理
-    // 2. 调用 copy_to 复制设备数据到 host
-    fem().is_fixed.copy_to(is_fixed_h);
-
-    //std::vector<Float> gradient_h, hessian_h;
-    //info.gradients().buffer_view().copy_to(gradient_h.data());
-    //info.hessians();
-    //IndexT;
-    //Float;
-    //Float;
-    //fem().is_fixed.copy_to(is_fixed_h);
+    // 变量声明
+    auto                 N           = fem().xs.size();
     IndexT               vertex_size = fem().xs.size();
-    std::vector<Vector3> force_h(vertex_size);
-    for(int vertexId = 0; vertexId < vertex_size; ++vertexId)
+    auto                 info_x_size = info.x_update().size();
+    auto                 xs_size     = fem().xs.size();
+    std::vector<Float>   x_update_h_3v;
+    std::vector<Vector3> x_update_h_global;
+    std::vector<Vector3> xs_previous;
+
+    // 1. 初始化向量（内存分配+数据拷贝）
     {
-        // 跳过固定顶点（已在梯度/海森中处理，无需更新）
-        if(is_fixed_h[vertexId])
+        Timer timer{"Initialize vectors (x_update_h_3v, x_update_h_global, xs_previous)"};
+        x_update_h_3v.resize(info_x_size);
+        x_update_h_global.resize(xs_size, Vector3::Zero());
+        xs_previous.resize(xs_size);
+        fem().xs.copy_to(xs_previous);
+    }
+
+    // 顶点循环整体计时
+    {
+        Timer vertexLoopTimer{"Total vertex loop time (all vertices)"};
+
+        for(int vertexId = 0; vertexId < vertex_size; ++vertexId)
         {
-            continue;
-        }
-
-        // 后续步骤：提取该顶点的力和海森矩阵...
-        // 提取该顶点的梯度（3D向量）
-        //auto gradient_h = info.gradients().viewer().as_eigen();
-        //auto gradient_h = info.gradients().subview(1,3).viewer().as_eigen();
-
-        //auto gradients_vertexId  = info.gradients()
-        //                .viewer()
-        //                .segment<3>(vertexId * 3)  // 每个顶点3个自由度，偏移量为vertexId*3
-        //                .as_eigen();  // 转换为Eigen向量（假设支持as_eigen()）
-
-        //gradients.segment<3>(i * 3).as_eigen().setZero();
-        // 计算力：force = -gradient（能量的负梯度）
-
-        std::vector<Float> gradients_h;
-        int                gradients_size = info.gradients().size();
-        gradients_h.resize(gradients_size);
-        info.gradients().buffer_view().copy_to(gradients_h.data());
-        // 提取该顶点的梯度（CPU 端，对应 GPU 的 segment<3>）
-        Vector3 gradient = get_vertex_gradient(gradients_h, vertexId);
-        // 直接用cout输出
-        //std::cout << "gradient: " << gradient << std::endl; 
-
-        // 力 = -梯度
-        force_h[vertexId] = -gradient;
-        // （可选）如果有额外外力，需叠加（类似示例中的external force）
-        // force += pMesh->vertexExternalForces.col(vertexId);  // 根据你的网格接口调整
-        Matrix3x3 h = Matrix3x3::Zero();  // 初始化3x3海森矩阵
-        //Eigen::Matrix3f h = Eigen::Matrix3f::Zero();  // 初始化3x3海森矩阵
-
-        // 假设 info.hessians() 是 TripletMatrixView<float, 3, 3> 类型
-        //auto& hessian_view = info.hessians().viewer().;
-
-        // 复制行索引、列索引、值到CPU端vector
-        IndexT              triplet_size = info.hessians().row_indices().size();
-        std::vector<IndexT> host_rows;
-        std::vector<IndexT> host_cols;
-        std::vector<Matrix3x3> host_values;  // 3x3块值
-        host_rows.resize(triplet_size);
-        host_cols.resize(triplet_size);
-        host_values.resize(triplet_size);
-        info.hessians().row_indices().copy_to(host_rows.data());
-        info.hessians().col_indices().copy_to(host_cols.data());
-        info.hessians().values().copy_to(host_values.data());
-
-        // 遍历CPU端的三元组数据（此时所有数据都在CPU内存中）
-        for(int I = 0; I < host_rows.size(); ++I)
-        {
-            int  i  = host_rows[I];    // 行索引（CPU端访问，安全）
-            int  j  = host_cols[I];    // 列索引
-            auto H3 = host_values[I];  // 3x3子块
-            // 处理[i, j, H3]...
-            // 只关注当前顶点的对角块（i=j=vertexId）
-            if(i == vertexId && j == vertexId)
+            // 2. 清除梯度
             {
-                h = H3;  // 提取对角块作为局部海森矩阵
-                break;   // 假设每个顶点只有一个对角块，找到后退出
-            }
-        }
-
-        //// 遍历海森矩阵的三元组，找到当前顶点的对角块
-        //for(int I = 0; I < info.hessians().triplet_count(); ++I)
-        //{
-        //    auto&& [i, j, H3] = info.hessians().viewer()(I).read();  // 读取三元组(i, j, 3x3子块)
-
-        //    // 只关注当前顶点的对角块（i=j=vertexId）
-        //    if(i == vertexId && j == vertexId)
-        //    {
-        //        h = H3;  // 提取对角块作为局部海森矩阵
-        //        break;   // 假设每个顶点只有一个对角块，找到后退出
-        //    }
-        //}
-
-        // （可选）如果未找到对角块，可初始化一个默认矩阵（如单位矩阵，避免奇异）
-        if(h.isZero())
-        {
-            h = Matrix3x3::Identity() * 1e-6;  // 微小值避免求解失败
-        }
-
-        auto& force = force_h[vertexId];
-        // 检查力是否足够大（避免微小力的无效更新）
-        if(force.squaredNorm() > 1e-4)
-        {
-            Vector3 descentDirection;
-            Float   stepSize = 1;
-            //Float lineSearchShrinkFactor = tau;
-            Float lineSearchShrinkFactor = 0.8;
-            bool  solverSuccess;
-
-            bool useDouble3x3 = 1;
-            // 调用3x3 PSD矩阵求解器（与示例一致）
-            if(useDouble3x3)
-            {
-                // 转换为double数组（适配求解器接口）
-                double H[9] = {
-                    h(0, 0), h(1, 0), h(2, 0), h(0, 1), h(1, 1), h(2, 1), h(0, 2), h(1, 2), h(2, 2)};
-                double F[3]      = {force(0), force(1), force(2)};
-                double dx[3]     = {0, 0, 0};
-                solverSuccess    = solve3x3_psd_stable(H, F, dx);
-                descentDirection = Vector3(dx[0], dx[1], dx[2]);
-            }
-            else
-            {
-                //force
-                //solverSuccess = solve3x3_psd_stable(h.data(), force.data(), descentDirection.data());
+                Timer timer{"Clear Gradient (all vertices)"};
+                info.gradients().buffer_view().fill(0);
             }
 
-            // 处理求解失败（如矩阵奇异），退化为梯度下降
-            if(!solverSuccess)
+            // 3. 组装梯度和海森矩阵（分步骤）
             {
-                //stepSize         = stepSizeGD;  // 梯度下降步长
-                stepSize         = 1;      // 梯度下降步长
-                descentDirection = force;  // 直接用力（负梯度）作为方向
-                //lineSearchShrinkFactor = physicsParams().tau_GD;
-                lineSearchShrinkFactor = 0.8;
-                std::cout << "Solver failed at vertex " << vertexId << std::endl;
+                Timer timer{"Assemble producers (all vertices)"};
+                _assemble_producers(info);
+            }
+            {
+                Timer timer{"Assemble dytopo effect (all vertices)"};
+                _assemble_dytopo_effect(info);
+            }
+            {
+                Timer timer{"Assemble animation (all vertices)"};
+                _assemble_animation(info);
             }
 
-            // 检查数值异常（NaN）
-            if(descentDirection.hasNaN())
+            // 4. 清除固定顶点梯度（并行操作）
             {
-                std::cout << "force: " << force.transpose() << "\nHessian:\n"
-                          << h;
-                std::cout << "descentDirection has NaN at vertex " << vertexId << std::endl;
-                std::exit(-1);
-            }
-            //////顶点信息更新， 实际上之后使用retrive就可以了
-
-            //Vector3             host_data = Vector3::Zero();
-            descentDirection = stepSize * descentDirection;
-            // 1. Copy x_update to a host vector before the call
-            std::vector<Float> x_update_before(info.x_update().size());
-            info.x_update().buffer_view().copy_to(x_update_before.data());
-
-            //#####################################################
-            // 2. Call the function that may modify x_update
-            // 1. 从 GPU 拷贝到 CPU
-            std::vector<Float> x_update_h(info.x_update().size());
-            info.x_update().buffer_view().copy_to(x_update_h.data());
-
-            // 2. 在 CPU 端做加法
-            for(int k = 0; k < 3; ++k)
-            {
-                x_update_h[vertexId * 3 + k] += descentDirection[k];
+                Timer timer{"Clear Fixed Vertex Gradient (ParallelFor, all vertices)"};
+                ParallelFor()
+                    .file_line(__FILE__, __LINE__)
+                    .apply(fem().xs.size(),
+                           [is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
+                            gradients = info.gradients().viewer().name(
+                                "gradients")] __device__(int i) mutable
+                           {
+                               if(is_fixed(i))
+                               {
+                                   gradients.segment<3>(i * 3).as_eigen().setZero();
+                               }
+                           });
             }
 
-            // 3. 同步回 GPU
-            info.x_update().buffer_view().copy_from(x_update_h.data());
+            // 5. 清除固定顶点海森矩阵（并行操作）
+            {
+                Timer timer{"Clear Fixed Vertex hessian (ParallelFor, all vertices)"};
+                ParallelFor()
+                    .file_line(__FILE__, __LINE__)
+                    .apply(info.hessians().triplet_count(),
+                           [is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
+                            hessians = info.hessians().viewer().name("hessians")] __device__(int I) mutable
+                           {
+                               auto&& [i, j, H3] = hessians(I).read();
 
-            //#####################################################
-            // 3. Copy x_update to another host vector after the call
-            std::vector<Float> x_update_after(info.x_update().size());
-            info.x_update().buffer_view().copy_to(x_update_after.data());
+                               if(is_fixed(i) || is_fixed(j))
+                               {
+                                   if(i != j)
+                                       hessians(I).write(i, j, Matrix3x3::Zero());
+                               }
+                           })
+                    .wait();
+            }
 
-            // 4. Compare the two vectors
-            bool modified = !std::equal(x_update_before.begin(),
-                                        x_update_before.end(),
-                                        x_update_after.begin());
+            // 6. 提取梯度数据到CPU并计算力
+            std::vector<Vector3> force_h;
+            std::vector<Float>   gradients_h;
+            int                  gradients_size;
+            {
+                Timer timer{"Extract gradients to CPU and compute force (all vertices)"};
+                force_h.resize(vertex_size);
+                gradients_size = info.gradients().size();
+                gradients_h.resize(gradients_size);
+                info.gradients().buffer_view().copy_to(gradients_h.data());
 
-            if(modified)
-                std::cout << "x_update has been modified." << std::endl;
-            else
-                std::cout << "x_update has not been modified." << std::endl;
+                // 提取当前顶点梯度并计算力
+                Vector3 gradient  = get_vertex_gradient(gradients_h, vertexId);
+                force_h[vertexId] = -gradient;
+            }
 
+            // 7. 提取海森矩阵三元组到CPU
+            IndexT                 triplet_size;
+            std::vector<IndexT>    host_rows;
+            std::vector<IndexT>    host_cols;
+            std::vector<Matrix3x3> host_values;
+            int                    hessian_size;
+            {
+                Timer timer{"Extract Hessian triplets to CPU (all vertices)"};
+                triplet_size = info.hessians().row_indices().size();
+                host_rows.resize(triplet_size);
+                host_cols.resize(triplet_size);
+                host_values.resize(triplet_size);
+                info.hessians().row_indices().copy_to(host_rows.data());
+                info.hessians().col_indices().copy_to(host_cols.data());
+                info.hessians().values().copy_to(host_values.data());
+                hessian_size = info.hessians().total_triplet_count();
+            }
 
+            // 8. 遍历三元组获取当前顶点海森矩阵
+            Matrix3x3 h = Matrix3x3::Zero();
+            {
+                Timer timer{"Loop through triplets to get hessian h (all vertices)"};
+                for(int I = 0; I < triplet_size; ++I)
+                {
+                    int i_vertex = host_rows[I];
+                    int j_vertex = host_cols[I];
+                    if(i_vertex == vertexId && j_vertex == vertexId)
+                    {
+                        h += host_values[I];
+                    }
+                }
+            }
+
+            // 9. 求解3x3矩阵及相关处理
+            {
+                Timer  timer{"Solve 3x3 PSD system (all vertices)"};
+                auto&  force     = force_h[vertexId];
+                double ForceNorm = force.squaredNorm();
+
+                if(1)  // 保留原条件
+                {
+                    if(force.isZero())
+                    {
+                        continue;
+                    }
+                    if(h.isZero())
+                    {
+                        h = Matrix3x3::Identity() * 1e-6;
+                        continue;
+                    }
+
+                    Vector3 descentDirection;
+                    Float   stepSize               = 1;
+                    Float   lineSearchShrinkFactor = 0.8;
+                    bool    solverSuccess;
+
+                    bool useDouble3x3 = 1;
+                    if(useDouble3x3)
+                    {
+                        double H[9] = {h(0, 0),
+                                       h(1, 0),
+                                       h(2, 0),
+                                       h(0, 1),
+                                       h(1, 1),
+                                       h(2, 1),
+                                       h(0, 2),
+                                       h(1, 2),
+                                       h(2, 2)};
+
+                        double F[3]      = {force(0), force(1), force(2)};
+                        double dx[3]     = {0, 0, 0};
+                        solverSuccess    = solve3x3_psd_stable(H, F, dx);
+                        descentDirection = Vector3(dx[0], dx[1], dx[2]);
+
+                        // 验证计算
+                        auto   TestOuput = h * descentDirection;
+                        auto   diff      = TestOuput - force;
+                        double diff_norm = diff.norm();
+                        if(diff_norm > 1e-6)
+                        {
+                            std::cout << "Warning: h * descentDirection does not match force (diff_norm = "
+                                      << diff_norm << ")" << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        solverSuccess = false;  // 未使用分支
+                    }
+
+                    // 处理求解失败
+                    if(!solverSuccess)
+                    {
+                        stepSize               = 1;
+                        descentDirection       = force;
+                        lineSearchShrinkFactor = 0.8;
+                        std::cout << "Solver failed at vertex " << vertexId << std::endl;
+                    }
+
+                    // 检查数值异常
+                    if(descentDirection.hasNaN())
+                    {
+                        std::cout << "force: " << force.transpose() << "\nHessian:\n"
+                                  << h;
+                        std::cout << "descentDirection has NaN at vertex "
+                                  << vertexId << std::endl;
+                        std::exit(-1);
+                    }
+
+                    // 10. 更新x_update数组
+                    {
+                        Timer timer{"Update x_update arrays (all vertices)"};
+                        for(int k = 0; k < 3; ++k)
+                        {
+                            x_update_h_3v[vertexId * 3 + k] -= descentDirection[k];
+                        }
+                        x_update_h_global[vertexId] += descentDirection;
+                    }
+
+                    // 11. 更新顶点位置
+                    {
+                        Timer timer{"Update xs_temp and copy to fem().xs (all vertices)"};
+                        std::vector<Vector3> xs_temp(xs_previous.size());
+                        for(size_t i = 0; i < xs_previous.size(); ++i)
+                        {
+                            xs_temp[i] = xs_previous[i] + x_update_h_global[i];
+                        }
+                        fem().xs.copy_from(xs_temp);
+                    }
+                }
+            }
         }
     }
-}
 
+    // 12. 同步回GPU
+    {
+        Timer timer{"Copy x_update_h_3v to GPU (info.x_update())"};
+        info.x_update().buffer_view().copy_from(x_update_h_3v.data());
+    }
+
+    std::cout << "###########################################################" << std::endl;
+}
 
 void FEMLinearSubsystem::Impl::_assemble_producers(GlobalLinearSystem::DiagInfo& info)
 {
@@ -557,18 +561,6 @@ void FEMLinearSubsystem::Impl::retrieve_solution(GlobalLinearSystem::SolutionInf
                    // cout << "solution dx(" << i << "):" << dxs(i).transpose().eval() << "\n";
                });
     // This is retrive solution section
-
-    //auto dxs = fem().dxs.view();
-    //ParallelFor()
-    //    .file_line(__FILE__, __LINE__)
-    //    .apply(fem().xs.size(),
-    //           [dxs = dxs.viewer().name("dxs"),
-    //            result = info.solution().viewer().name("result")] __device__(int i) mutable
-    //           {
-    //               dxs(i) = -result.segment<3>(i * 3).as_eigen();
-
-    //               // cout << "solution dx(" << i << "):" << dxs(i).transpose().eval() << "\n";
-    //           });
 }
 
 void FEMLinearSubsystem::do_report_extent(GlobalLinearSystem::DiagExtentInfo& info)

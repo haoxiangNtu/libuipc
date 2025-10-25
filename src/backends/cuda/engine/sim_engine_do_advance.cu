@@ -14,6 +14,7 @@
 
 
 #include <uipc/uipc.h>
+
 namespace uipc::backend::cuda
 {
 	template <typename DType>
@@ -61,7 +62,8 @@ __forceinline__ __device__ __host__ bool solve3x3_psd_stable(const DType* m,
     out[2] = deti * (i31 * b[0] + i32 * b[1] + i33 * b[2]);
     return true;
 }
-
+std::vector<IndexT> newton_iters_record;
+std::vector<Float> Iters_energy;
 void SimEngine::do_advance()
 {
     Float alpha     = 1.0;
@@ -372,7 +374,9 @@ void SimEngine::do_advance()
 
             auto   newton_max_iter = m_newton_max_iter->view()[0];
             auto   newton_min_iter = m_newton_min_iter->view()[0];
+            newton_max_iter        = 20;
             IndexT newton_iter     = 0;
+            Float  Itres_Energy_each=0;
             for(; newton_iter < newton_max_iter; ++newton_iter)
             {
                 Timer timer{"Newton Iteration"};
@@ -435,6 +439,7 @@ void SimEngine::do_advance()
 
                     // * Step Forward => x = x_0 + alpha * dx
                     // Compute Test Energy => E
+
                     Float E = compute_energy(alpha);
 
                     if(!converged)
@@ -460,7 +465,7 @@ void SimEngine::do_advance()
                             // If not success, then shrink alpha
                             alpha /= 2;
                             E = compute_energy(alpha);
-
+                            Itres_Energy_each = E;
                             line_search_iter++;
                         }
 
@@ -470,13 +475,31 @@ void SimEngine::do_advance()
                     }
                 }
             }
-
+            newton_iters_record.push_back(newton_iter);
+            Iters_energy.push_back(Itres_Energy_each);
             // 5. Update Velocity => v = (x - x_0) / dt
             m_state = SimEngineState::UpdateVelocity;
             {
                 Timer timer{"Update Velocity"};
                 m_time_integrator_manager->update_state();
             }
+            std::cout << "Newton iteration counts: [";
+            for(size_t i = 0; i < newton_iters_record.size(); ++i)
+            {
+                std::cout << newton_iters_record[i];
+                if(i + 1 < newton_iters_record.size())
+                    std::cout << ", ";
+            }
+            std::cout << "]" << std::endl;
+
+            std::cout << "Energy iteration counts: [";
+            for(size_t i = 0; i < Iters_energy.size(); ++i)
+            {
+                std::cout << Iters_energy[i];
+                if(i + 1 < Iters_energy.size())
+                    std::cout << ", ";
+            }
+            std::cout << "]" << std::endl;
 
             // Check Newton Iteration
             // report warnings or throw exceptions if needed

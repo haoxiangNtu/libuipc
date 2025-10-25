@@ -107,6 +107,7 @@ class StableNeoHookean3D final : public FEM3DConstitution
     }
 
     virtual void do_compute_gradient_hessian(ComputeGradientHessianInfo& info) override
+
     {
         using namespace muda;
         namespace SNH = sym::stable_neo_hookean_3d;

@@ -82,34 +82,36 @@ void GlobalLinearSystem::solve()
 void GlobalLinearSystem::solve_by_vertex()
 {
 
-    // 3. Copy x_update to another host vector after the call
-    std::vector<Float> x_update_before(m_impl.x_update.size());
-    m_impl.x_update.buffer_view().copy_to(x_update_before.data());
+    //// 3. Copy x_update to another host vector after the call
+    //std::vector<Float> x_update_before(m_impl.x_update.size());
+    //m_impl.x_update.buffer_view().copy_to(x_update_before.data());
 
+    //    // 3. Copy x_update to another host vector after the call
+    //std::vector<Float> x_update_after(m_impl.x_update.size());
+    //m_impl.x_update.buffer_view().copy_to(x_update_after.data());
+
+    //// 4. Compare the two vectors
+    //bool modified = !std::equal(
+    //    x_update_before.begin(), x_update_before.end(), x_update_after.begin());
+
+    //if(modified)
+    //    std::cout << "x_update has been modified." << std::endl;
+    //else
+    //    std::cout << "x_update has not been modified." << std::endl;
+
+    //#####################################################
+    //m_impl.build_linear_system();
+    //if(m_impl.empty_system) [[unlikely]]
+    //    return;
+    //// reset x_update to initial previous position for sub system;
+    //m_impl.solve_linear_system();
+    //m_impl.distribute_solution();
+
+    ///////########################################
     //#####################################################
     m_impl.build_linear_system_by_vertex();
-    //m_impl.build_linear_system();
-    // if the system is empty, skip the following steps
     if(m_impl.empty_system) [[unlikely]]
         return;
-    //#####################################################
-    // 3. Copy x_update to another host vector after the call
-    std::vector<Float> x_update_after(m_impl.x_update.size());
-    m_impl.x_update.buffer_view().copy_to(x_update_after.data());
-
-    // 4. Compare the two vectors
-    bool modified = !std::equal(
-        x_update_before.begin(), x_update_before.end(), x_update_after.begin());
-
-    if(modified)
-        std::cout << "x_update has been modified." << std::endl;
-    else
-        std::cout << "x_update has not been modified." << std::endl;
-
-    // reset x_update to initial previous position for sub system;
-    /////in fact u can set it here too
-    //m_impl.solve_system_by_vertex();
-    //m_impl.solve_linear_system();
     m_impl.distribute_solution();
 }
 
@@ -236,10 +238,10 @@ void GlobalLinearSystem::Impl::build_linear_system_by_vertex()
 
     //2. Call the function that may modify x_update
     _assemble_linear_system_by_vertex();
-    //converter.ge2sym(triplet_A);
-    //converter.convert(triplet_A, bcoo_A);
+    converter.ge2sym(triplet_A);
+    converter.convert(triplet_A, bcoo_A);
 
-    //_assemble_preconditioner();
+    _assemble_preconditioner();
 
     // 3. Copy x_update to another host vector after the call
     std::vector<Float> x_update_after(x_update.size());
