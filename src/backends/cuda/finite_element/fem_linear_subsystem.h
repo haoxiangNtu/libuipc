@@ -24,7 +24,7 @@ class FEMLinearSubsystem final : public DiagLinearSubsystem
 
         void solve_system_vertex(GlobalLinearSystem::DiagInfo& info);
         void _assemble_producers(GlobalLinearSystem::DiagInfo& info);
-        void _assemble_producers_by_vertex(GlobalLinearSystem::DiagInfo& info, IndexT vertexId);
+        void vertices_Coloring();
         void _assemble_dytopo_effect(GlobalLinearSystem::DiagInfo& info);
 
         void _assemble_animation(GlobalLinearSystem::DiagInfo& info);
@@ -61,6 +61,9 @@ class FEMLinearSubsystem final : public DiagLinearSubsystem
         MatrixConverter<Float, 3>           converter;
         muda::DeviceTripletMatrix<Float, 3> triplet_A;
         muda::DeviceBCOOMatrix<Float, 3>    bcoo_A;
+
+        std::vector<int> vertex_colors;
+        std::vector<std::vector<int>> vertex_group;
     };
 
   private:
