@@ -852,7 +852,7 @@ void FEMLinearSubsystem::Impl::vertices_Coloring()
 
 void FEMLinearSubsystem::Impl::solve_system_vertex(GlobalLinearSystem::DiagInfo& info)
 {
-    vertices_Coloring();
+    //vertices_Coloring();
     // 总函数时间计时
     Timer totalTimer{"Total solve_system_vertex time"};
 
@@ -878,6 +878,33 @@ void FEMLinearSubsystem::Impl::solve_system_vertex(GlobalLinearSystem::DiagInfo&
     // 顶点循环整体计时
     {
         Timer vertexLoopTimer{"Total vertex loop time (all vertices)"};
+
+        for(size_t iGroup = 0; iGroup < vertex_group.size(); iGroup++)
+        {
+            auto & parallelGroup = vertex_group[iGroup];
+
+            // 我们这里没有分为mesh id 和 vertex id, 直接用vertex id
+            
+            //size_t numVertices = parallelGroup.size() / 2;
+            //cpu_parallel_for(0,
+            //                 numVertices,
+            //                 [&](int iV)
+            //                 {
+            //                     IdType iMesh = parallelGroup[iV * 2];
+            //                     int    vId   = parallelGroup[2 * iV + 1];
+
+            //                     VBDTetMeshNeoHookean* pMesh =
+            //                         (VBDTetMeshNeoHookean*)tMeshes[iMesh].get();
+            //                     if(!pMesh->fixedMask[vId]
+            //                        && !pMesh->activeCollisionMask[vId]
+            //                        && pMesh->activeForMaterialSolve)
+            //                     //if (!pMesh->fixedMask[vId])
+            //                     {
+            //                         //pMesh->VBDStep(vId);
+            //                         VBDStepWithCollision(pMesh, iMesh, vId, apply_friction);
+            //                     }
+            //                 });
+        }
 
         for(int vertexId = 0; vertexId < vertex_size; ++vertexId)
         {

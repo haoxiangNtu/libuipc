@@ -150,7 +150,7 @@ int main(int argc, char** argv)
 
     auto is_self_collision = cloth_mesh.meta().find<IndexT>(builtin::self_collision);
     //auto is_self_collision = cloth_mesh.vertices().find<IndexT>(builtin::self_collision);
-    std::ranges::fill(view(*is_self_collision), 0);
+    //std::ranges::fill(view(*is_self_collision), 0);
 
 
     cloth_obj->geometries().create(cloth_mesh);
