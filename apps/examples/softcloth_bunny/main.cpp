@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     config["dt"]                      = 0.01;
     config["contact"]["d_hat"]        = 0.01;
     //config["contact"]["friction"]["enable"] = true;
-    //config["contact"]["enable"]             = true;
+    config["contact"]["enable"]             = true;
     //config["contact"]["d_hat"]              = 0.01;
     //config["line_search"]["max_iter"]       = 8;
 
@@ -117,33 +117,55 @@ int main(int argc, char** argv)
     T.scale(scale);
     SimplicialComplexIO io{T};
     //auto cloth_mesh = io.read(fmt::format("{}grid20x20.obj", trimesh_path));
-    auto cloth_mesh = io.read(fmt::format("{}grid10x10.obj", trimesh_path));
+    auto cloth_mesh = io.read(fmt::format("{}cube.msh", tetmesh_dir));
+    //auto        cloth_mesh   = io.read(fmt::format("{}bunny0.msh", tetmesh_dir));
+    auto cloth_mesh_2 = io.read(fmt::format("{}cube.msh", tetmesh_dir));
+    // create a regular tetrahedron
+    vector<Vector3>  Vs = {Vector3{0, 1, 0},
+                           Vector3{0, 0, 1},
+                           Vector3{-std::sqrt(3) / 2, 0, -0.5},
+                           Vector3{std::sqrt(3) / 2, 0, -0.5}};
+    vector<Vector4i> Ts = {Vector4i{0, 1, 2, 3}};
+
+    // setup a base mesh to reduce the later work
+    //SimplicialComplex cloth_mesh = tetmesh(Vs, Ts);
+    //SimplicialComplex cloth_mesh_2 = tetmesh(Vs, Ts);
     label_surface(cloth_mesh);
+    label_surface(cloth_mesh_2);
+    AffineBodyConstitution abd;
+    scene.constitution_tabular().insert(abd);
     NeoHookeanShell nhs;
     scene.constitution_tabular().insert(nhs);
-
-
     DiscreteShellBending dsb;
-
-    auto parm = ElasticModuli::youngs_poisson(100.0_kPa, 0.499);
-    nhs.apply_to(cloth_mesh, parm, 200, 0.001);
-    dsb.apply_to(cloth_mesh, 10.0_Pa);
-
-    auto pos_view = view(cloth_mesh.positions());
+    auto parm = ElasticModuli::youngs_poisson(50.0_kPa, 0.499);
+    //nhs.apply_to(cloth_mesh, parm, 200, 0.001);
+    //dsb.apply_to(cloth_mesh, 10.0_Pa);
+    //auto pos_view = view(cloth_mesh.positions());
     //std::ranges::transform(pos_view,
     //                       pos_view.begin(),
     //                       [](const Vector3& v) -> Vector3
-    //                       { return v + Vector3{1, 0.6, 1}; });
+    //                       { return v + Vector3{1, 1.6, 1}; });
 
+    StableNeoHookean Stnh;
+    Stnh.apply_to(cloth_mesh, parm, 500);
+    Stnh.apply_to(cloth_mesh_2, parm, 500);
+    auto pos_view = view(cloth_mesh.positions());
     std::ranges::transform(pos_view,
                            pos_view.begin(),
                            [](const Vector3& v) -> Vector3
-                           { return v + Vector3{1, 1.6, 1}; });
+                           { return v + Vector3{0, 1.2, 0}; });
+   
+    auto pos_view_2 = view(cloth_mesh_2.positions());
+    std::ranges::transform(pos_view_2,
+                           pos_view_2.begin(),
+                           [](const Vector3& v) -> Vector3
+                           { return v + Vector3{0, 3.25, 0}; });
 
-    auto is_fixed      = cloth_mesh.vertices().find<IndexT>(builtin::is_fixed);
-    view(*is_fixed)[0] = 1;
-    view(*is_fixed)[1] = 1;
-    view(*is_fixed)[10]  = 1;
+
+    //auto is_fixed      = cloth_mesh.vertices().find<IndexT>(builtin::is_fixed);
+    //view(*is_fixed)[0] = 1;
+    //view(*is_fixed)[1] = 1;
+    //view(*is_fixed)[10]  = 1;
     //view(*is_fixed)[11] = 1;
     //view(*is_fixed)[12]  = 1;
     //view(*is_fixed)[22] = 1;
@@ -151,10 +173,12 @@ int main(int argc, char** argv)
     auto is_self_collision = cloth_mesh.meta().find<IndexT>(builtin::self_collision);
     //auto is_self_collision = cloth_mesh.vertices().find<IndexT>(builtin::self_collision);
     //std::ranges::fill(view(*is_self_collision), 0);
+    //auto is_fixed = cloth_mesh.vertices().find<IndexT>(builtin::is_fixed);
+    //std::ranges::fill(view(*is_fixed), 1);
 
 
     cloth_obj->geometries().create(cloth_mesh);
-
+    cloth_obj->geometries().create(cloth_mesh_2);
     S<Object> bunny_obj = scene.objects().create("bunny");
     Transform T1         = Transform::Identity();
     T1.translate(Vector3::UnitX() + Vector3::UnitZ());
@@ -189,16 +213,97 @@ int main(int argc, char** argv)
     //bunny_obj->geometries().create(flipped_bunny_mesh);
     
     // create ground (as in Python)
-    Float ground_height = -1.0;
-    auto  g             = geometry::ground(ground_height);
-    auto  ground_obj    = scene.objects().create("ground");
-    //ground_obj->geometries().create(g);
+    constexpr bool UseMeshGround = true;
+
+    if(UseMeshGround)
+    {
+        Transform pre_transform = Transform::Identity();
+        pre_transform.scale(Vector3{40, 0.2, 40});
+
+        SimplicialComplexIO io{pre_transform};
+        io          = SimplicialComplexIO{pre_transform};
+        auto ground = io.read(fmt::format("{}{}", tetmesh_dir, "cube.msh"));
+
+        label_surface(ground);
+        label_triangle_orient(ground);
+
+        Transform transform = Transform::Identity();
+        transform.translate(Vector3{0, -1, 0});
+        view(ground.transforms())[0] = transform.matrix();
+
+        //auto pos_view = view(ground.positions());
+        //std::ranges::transform(pos_view,
+        //                       pos_view.begin(),
+        //                       [](const Vector3& v) -> Vector3
+        //                       { return v + Vector3{0, -1, 0}; });
+
+        auto parm1 = ElasticModuli::youngs_poisson(50.0_kPa, 0.499);
+        Stnh.apply_to(ground, parm1, 500);
+        //abd.apply_to(ground, 10.0_MPa);
+
+        //////这里如果不固定平面，我们的vbd求解不出来，原因是更新的默认方向对应的步长太小，会被直接判定为收敛，
+        // 但是如果方大后，又需要很多次进行线搜索，后续需要处理vbd 方向对应的默认步长问题
+        //x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 1000; 的问题
+
+        // 还有那个步长的问题，vbd 默认求解的方向对应的步长太小了，我们需要x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 2;后线搜索才能求解
+        auto is_fixed      = ground.vertices().find<IndexT>(builtin::is_fixed);
+        std::ranges::fill(view(*is_fixed), 1);
+
+        auto ground_obj = scene.objects().create("ground");
+        ground_obj->geometries().create(ground);
+
+        //// === Cloth mesh bounding box ===
+        //{
+        //    auto pos_view = view(cloth_mesh.positions());
+
+        //    Vector3 min_pos = pos_view[0];
+        //    Vector3 max_pos = pos_view[0];
+
+        //    for(const auto& v : pos_view)
+        //    {
+        //        min_pos = min_pos.cwiseMin(v);
+        //        max_pos = max_pos.cwiseMax(v);
+        //    }
+
+        //    Vector3 size = max_pos - min_pos;
+        //    std::cout << "Cloth mesh bounding box:\n";
+        //    std::cout << "  Min:  " << min_pos.transpose() << "\n";
+        //    std::cout << "  Max:  " << max_pos.transpose() << "\n";
+        //    std::cout << "  Size: " << size.transpose() << "\n\n";
+        //}
+
+        //// === Ground mesh bounding box ===
+        //{
+        //    auto pos_view_ground = view(ground.positions());
+
+        //    Vector3 min_pos_g = pos_view_ground[0];
+        //    Vector3 max_pos_g = pos_view_ground[0];
+
+        //    for(const auto& v : pos_view_ground)
+        //    {
+        //        min_pos_g = min_pos_g.cwiseMin(v);
+        //        max_pos_g = max_pos_g.cwiseMax(v);
+        //    }
+
+        //    Vector3 size_g = max_pos_g - min_pos_g;
+        //    std::cout << "Ground mesh bounding box:\n";
+        //    std::cout << "  Min:  " << min_pos_g.transpose() << "\n";
+        //    std::cout << "  Max:  " << max_pos_g.transpose() << "\n";
+        //    std::cout << "  Size: " << size_g.transpose() << "\n";
+        //}
+    }
+    else
+    {
+        auto ground_obj = scene.objects().create("ground");
+        auto g          = geometry::ground(-1.0);
+        ground_obj->geometries().create(g);
+    }
 
     // init world & scene IO
     world.init(scene);
     SceneIO sio{scene};
     sio.write_surface(fmt::format("{}scene_surface{}.obj", this_output_path, 0));
-
+    //auto substep_Num = world.animator.substep();
     // optional: get some geometry handle (example from wrecking ball)
     // advance simulation for N frames and dump surfaces (no GUI)
     const int MaxFrames = 200;
@@ -211,6 +316,7 @@ int main(int argc, char** argv)
         sio.write_surface(
             fmt::format("{}scene_surface{}.obj", this_output_path, world.frame()));
 
+        auto currentFrame = world.frame();
         // (optional) log progress every 50 frames
         if(world.frame() % 50 == 0)
             spdlog::info("Frame {}", world.frame());

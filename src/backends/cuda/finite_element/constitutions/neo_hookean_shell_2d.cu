@@ -170,6 +170,119 @@ class NeoHookeanShell2D final : public Codim2DConstitution
                        TMA.block<3, 3>(I * 3 * 3).write(idx, H);
                    });
     }
+
+    virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info, IndexT vertexId) override
+    {
+        using namespace muda;
+        namespace NH = sym::shell_neo_hookean_2d;
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(info.indices().size(),
+                   [mus     = kappas.cviewer().name("mus"),
+                    lambdas = lambdas.cviewer().name("lambdas"),
+                    indices = info.indices().viewer().name("indices"),
+                    xs      = info.xs().viewer().name("xs"),
+                    x_bars  = info.x_bars().viewer().name("x_bars"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    G3s        = info.gradients().viewer().name("gradients"),
+                    H3x3s      = info.hessians().viewer().name("hessians"),
+                    rest_areas = info.rest_areas().viewer().name("volumes"),
+                    dt         = info.dt()] __device__(int I) mutable
+                   {
+                       Vector9  X;
+                       Vector3i idx = indices(I);
+                       for(int i = 0; i < 3; ++i)
+                           X.segment<3>(3 * i) = xs(idx(i));
+
+                       Vector9 X_bar;
+                       for(int i = 0; i < 3; ++i)
+                           X_bar.segment<3>(3 * i) = x_bars(idx(i));
+
+                       Matrix2x2 IB;
+                       NH::A(IB, X_bar);
+                       IB = muda::eigen::inverse(IB);
+
+                       Float mu        = mus(I);
+                       Float lambda    = lambdas(I);
+                       Float rest_area = rest_areas(I);
+                       Float thickness = triangle_thickness(thicknesses(idx(0)),
+                                                            thicknesses(idx(1)),
+                                                            thicknesses(idx(2)));
+
+                       Float Vdt2 = rest_area * thickness * dt * dt;
+
+                       Vector9 G;
+                       NH::dEdX(G, mu, lambda, X, IB);
+                       G *= Vdt2;
+                       DoubletVectorAssembler DVA{G3s};
+                       DVA.segment<3>(I * 3).write(idx, G);
+
+                       Matrix9x9 H;
+                       NH::ddEddX(H, mu, lambda, X, IB);
+                       H *= Vdt2;
+                       make_spd(H);
+                       TripletMatrixAssembler TMA{H3x3s};
+                       TMA.block<3, 3>(I * 3 * 3).write(idx, H);
+                   });
+    }
+    // add by color that include a set of vertices
+    virtual void do_compute_gradient_hessian_by_color(ComputeGradientHessianInfo& info,
+                                                      muda::CBufferView<IndexT> color_vertices) override
+    {
+        using namespace muda;
+        namespace NH = sym::shell_neo_hookean_2d;
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(info.indices().size(),
+                   [mus     = kappas.cviewer().name("mus"),
+                    lambdas = lambdas.cviewer().name("lambdas"),
+                    indices = info.indices().viewer().name("indices"),
+                    xs      = info.xs().viewer().name("xs"),
+                    x_bars  = info.x_bars().viewer().name("x_bars"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    G3s        = info.gradients().viewer().name("gradients"),
+                    H3x3s      = info.hessians().viewer().name("hessians"),
+                    rest_areas = info.rest_areas().viewer().name("volumes"),
+                    dt         = info.dt()] __device__(int I) mutable
+                   {
+                       Vector9  X;
+                       Vector3i idx = indices(I);
+                       for(int i = 0; i < 3; ++i)
+                           X.segment<3>(3 * i) = xs(idx(i));
+
+                       Vector9 X_bar;
+                       for(int i = 0; i < 3; ++i)
+                           X_bar.segment<3>(3 * i) = x_bars(idx(i));
+
+                       Matrix2x2 IB;
+                       NH::A(IB, X_bar);
+                       IB = muda::eigen::inverse(IB);
+
+                       Float mu        = mus(I);
+                       Float lambda    = lambdas(I);
+                       Float rest_area = rest_areas(I);
+                       Float thickness = triangle_thickness(thicknesses(idx(0)),
+                                                            thicknesses(idx(1)),
+                                                            thicknesses(idx(2)));
+
+                       Float Vdt2 = rest_area * thickness * dt * dt;
+
+                       Vector9 G;
+                       NH::dEdX(G, mu, lambda, X, IB);
+                       G *= Vdt2;
+                       DoubletVectorAssembler DVA{G3s};
+                       DVA.segment<3>(I * 3).write(idx, G);
+
+                       Matrix9x9 H;
+                       NH::ddEddX(H, mu, lambda, X, IB);
+                       H *= Vdt2;
+                       make_spd(H);
+                       TripletMatrixAssembler TMA{H3x3s};
+                       TMA.block<3, 3>(I * 3 * 3).write(idx, H);
+                   });
+    }
 };
 
 REGISTER_SIM_SYSTEM(NeoHookeanShell2D);

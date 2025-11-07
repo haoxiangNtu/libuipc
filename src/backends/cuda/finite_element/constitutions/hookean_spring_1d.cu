@@ -139,6 +139,105 @@ class HookeanSpring1D final : public Codim1DConstitution
                        MA.block<2, 2>(I * 2 * 2).write(idx, ignore, H);
                    });
     }
+
+    virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info, IndexT vertexId) override
+    {
+        using namespace muda;
+        namespace NS = sym::hookean_spring_1d;
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(info.indices().size(),
+                   [G3s    = info.gradients().viewer().name("gradients"),
+                    H3x3s  = info.hessians().viewer().name("hessians"),
+                    kappas = kappas.cviewer().name("kappas"),
+                    rest_lengths = info.rest_lengths().viewer().name("rest_lengths"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    indices  = info.indices().viewer().name("indices"),
+                    xs       = info.xs().viewer().name("xs"),
+                    x_bars   = info.x_bars().viewer().name("x_bars"),
+                    is_fixed = info.is_fixed().viewer().name("is_fixed"),
+                    dt       = info.dt(),
+                    Pi       = std::numbers::pi] __device__(int I) mutable
+                   {
+                       Vector6  X;
+                       Vector2i idx = indices(I);
+                       for(int i = 0; i < 2; ++i)
+                           X.segment<3>(3 * i) = xs(idx(i));
+
+                       Float L0 = rest_lengths(I);
+                       Float r =
+                           edge_thickness(thicknesses(idx(0)), thicknesses(idx(1)));
+                       Float kappa = kappas(I);
+
+                       Float Vdt2 = L0 * r * r * Pi * dt * dt;
+
+                       Vector2i ignore = {is_fixed(idx(0)), is_fixed(idx(1))};
+
+                       Vector6 G;
+                       NS::dEdX(G, kappa, X, L0);
+                       G *= Vdt2;
+                       DoubletVectorAssembler VA{G3s};
+                       VA.segment<2>(I * 2).write(idx, ignore, G);
+
+                       Matrix6x6 H;
+                       NS::ddEddX(H, kappa, X, L0);
+                       H *= Vdt2;
+                       make_spd(H);
+                       TripletMatrixAssembler MA{H3x3s};
+                       MA.block<2, 2>(I * 2 * 2).write(idx, ignore, H);
+                   });
+    }
+    // add by color that include a set of vertices
+    virtual void do_compute_gradient_hessian_by_color(ComputeGradientHessianInfo& info,
+                                                      muda::CBufferView<IndexT> color_vertices) override
+    {
+        using namespace muda;
+        namespace NS = sym::hookean_spring_1d;
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(info.indices().size(),
+                   [G3s    = info.gradients().viewer().name("gradients"),
+                    H3x3s  = info.hessians().viewer().name("hessians"),
+                    kappas = kappas.cviewer().name("kappas"),
+                    rest_lengths = info.rest_lengths().viewer().name("rest_lengths"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    indices  = info.indices().viewer().name("indices"),
+                    xs       = info.xs().viewer().name("xs"),
+                    x_bars   = info.x_bars().viewer().name("x_bars"),
+                    is_fixed = info.is_fixed().viewer().name("is_fixed"),
+                    dt       = info.dt(),
+                    Pi       = std::numbers::pi] __device__(int I) mutable
+                   {
+                       Vector6  X;
+                       Vector2i idx = indices(I);
+                       for(int i = 0; i < 2; ++i)
+                           X.segment<3>(3 * i) = xs(idx(i));
+
+                       Float L0 = rest_lengths(I);
+                       Float r =
+                           edge_thickness(thicknesses(idx(0)), thicknesses(idx(1)));
+                       Float kappa = kappas(I);
+
+                       Float Vdt2 = L0 * r * r * Pi * dt * dt;
+
+                       Vector2i ignore = {is_fixed(idx(0)), is_fixed(idx(1))};
+
+                       Vector6 G;
+                       NS::dEdX(G, kappa, X, L0);
+                       G *= Vdt2;
+                       DoubletVectorAssembler VA{G3s};
+                       VA.segment<2>(I * 2).write(idx, ignore, G);
+
+                       Matrix6x6 H;
+                       NS::ddEddX(H, kappa, X, L0);
+                       H *= Vdt2;
+                       make_spd(H);
+                       TripletMatrixAssembler MA{H3x3s};
+                       MA.block<2, 2>(I * 2 * 2).write(idx, ignore, H);
+                   });
+    }
 };
 
 REGISTER_SIM_SYSTEM(HookeanSpring1D);

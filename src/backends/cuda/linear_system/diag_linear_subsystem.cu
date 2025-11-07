@@ -39,6 +39,12 @@ void DiagLinearSubsystem::solve_system_vertex(GlobalLinearSystem::DiagInfo& info
 {
     do_solve_system_vertex(info);
 }
+
+void DiagLinearSubsystem::update_info(GlobalLinearSystem::DiagInfo& info)
+{
+    do_update_info(info);
+}
+
 void DiagLinearSubsystem::accuracy_check(GlobalLinearSystem::AccuracyInfo& info)
 {
     do_accuracy_check(info);

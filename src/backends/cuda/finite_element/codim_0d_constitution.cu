@@ -29,4 +29,16 @@ void Codim0DConstitution::do_compute_gradient_hessian(FiniteElementConstitution:
 {
     // do nothing
 }
+void Codim0DConstitution::do_compute_gradient_hessian_by_vertex(
+    FiniteElementConstitution::ComputeGradientHessianInfo& info, IndexT vertexId)
+{
+    // do nothing
+}
+// add by color that include a set of vertices
+void Codim0DConstitution::do_compute_gradient_hessian_by_color(
+    FiniteElementConstitution::ComputeGradientHessianInfo& info,
+    muda::CBufferView<IndexT>                              color_vertices)
+{
+    // do nothing
+}
 }  // namespace uipc::backend::cuda

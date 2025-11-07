@@ -127,6 +127,10 @@ void ABDLinearSubsystem::Impl::report_extent(GlobalLinearSystem::DiagExtentInfo&
     info.extent(H3x3_count, dof_count);
 }
 
+void ABDLinearSubsystem::Impl::update_info(GlobalLinearSystem::DiagInfo& info)
+{
+
+}
 
 void ABDLinearSubsystem::Impl::solve_system_vertex(GlobalLinearSystem::DiagInfo& info)
 {
@@ -705,6 +709,11 @@ void ABDLinearSubsystem::do_assemble(GlobalLinearSystem::DiagInfo& info)
 void ABDLinearSubsystem::do_solve_system_vertex(GlobalLinearSystem::DiagInfo& info)
 {
     m_impl.solve_system_vertex(info);
+}
+
+void ABDLinearSubsystem::do_update_info(GlobalLinearSystem::DiagInfo& info)
+{
+    m_impl.update_info(info);
 }
 
 void ABDLinearSubsystem::do_accuracy_check(GlobalLinearSystem::AccuracyInfo& info)

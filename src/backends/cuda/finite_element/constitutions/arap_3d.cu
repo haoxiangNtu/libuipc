@@ -134,6 +134,108 @@ class ARAP3D final : public FEM3DConstitution
                        TMA.block<4, 4>(I * 4 * 4).write(tet, H12x12);
                    });
     }
+
+    virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info, IndexT vertexId) override
+    {
+        using namespace muda;
+        namespace ARAP = sym::arap_3d;
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(info.indices().size(),
+                   [kappas  = kappas.cviewer().name("mus"),
+                    indices = info.indices().viewer().name("indices"),
+                    xs      = info.xs().viewer().name("xs"),
+                    Dm_invs = info.Dm_invs().viewer().name("Dm_invs"),
+                    G3s     = info.gradients().viewer().name("gradients"),
+                    H3x3s   = info.hessians().viewer().name("hessians"),
+                    volumes = info.rest_volumes().viewer().name("volumes"),
+                    dt      = info.dt()] __device__(int I) mutable
+                   {
+                       const Vector4i&  tet    = indices(I);
+                       const Matrix3x3& Dm_inv = Dm_invs(I);
+
+                       const Vector3& x0 = xs(tet(0));
+                       const Vector3& x1 = xs(tet(1));
+                       const Vector3& x2 = xs(tet(2));
+                       const Vector3& x3 = xs(tet(3));
+
+                       auto F = fem::F(x0, x1, x2, x3, Dm_inv);
+
+                       auto kt2 = kappas(I) * dt * dt;
+                       auto v   = volumes(I);
+
+                       Vector9   dEdF;
+                       Matrix9x9 ddEddF;
+                       ARAP::dEdF(dEdF, kt2, v, F);
+                       ARAP::ddEddF(ddEddF, kt2, v, F);
+
+                       make_spd(ddEddF);
+
+                       Matrix9x12  dFdx   = fem::dFdx(Dm_inv);
+                       Vector12    G12    = dFdx.transpose() * dEdF;
+                       Matrix12x12 H12x12 = dFdx.transpose() * ddEddF * dFdx;
+
+                       DoubletVectorAssembler DVA{G3s};
+                       DVA.segment<4>(I * 4).write(tet, G12);
+
+
+                       TripletMatrixAssembler TMA{H3x3s};
+                       TMA.block<4, 4>(I * 4 * 4).write(tet, H12x12);
+                   });
+    }
+
+    virtual void do_compute_gradient_hessian_by_color(ComputeGradientHessianInfo& info,
+                                                      muda::CBufferView<IndexT> color_vertices) override
+    {
+        using namespace muda;
+        namespace ARAP = sym::arap_3d;
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(info.indices().size(),
+                   [kappas  = kappas.cviewer().name("mus"),
+                    indices = info.indices().viewer().name("indices"),
+                    xs      = info.xs().viewer().name("xs"),
+                    Dm_invs = info.Dm_invs().viewer().name("Dm_invs"),
+                    G3s     = info.gradients().viewer().name("gradients"),
+                    H3x3s   = info.hessians().viewer().name("hessians"),
+                    volumes = info.rest_volumes().viewer().name("volumes"),
+                    dt      = info.dt()] __device__(int I) mutable
+                   {
+                       const Vector4i&  tet    = indices(I);
+                       const Matrix3x3& Dm_inv = Dm_invs(I);
+
+                       const Vector3& x0 = xs(tet(0));
+                       const Vector3& x1 = xs(tet(1));
+                       const Vector3& x2 = xs(tet(2));
+                       const Vector3& x3 = xs(tet(3));
+
+                       auto F = fem::F(x0, x1, x2, x3, Dm_inv);
+
+                       auto kt2 = kappas(I) * dt * dt;
+                       auto v   = volumes(I);
+
+                       Vector9   dEdF;
+                       Matrix9x9 ddEddF;
+                       ARAP::dEdF(dEdF, kt2, v, F);
+                       ARAP::ddEddF(ddEddF, kt2, v, F);
+
+                       make_spd(ddEddF);
+
+                       Matrix9x12  dFdx   = fem::dFdx(Dm_inv);
+                       Vector12    G12    = dFdx.transpose() * dEdF;
+                       Matrix12x12 H12x12 = dFdx.transpose() * ddEddF * dFdx;
+
+                       DoubletVectorAssembler DVA{G3s};
+                       DVA.segment<4>(I * 4).write(tet, G12);
+
+
+                       TripletMatrixAssembler TMA{H3x3s};
+                       TMA.block<4, 4>(I * 4 * 4).write(tet, H12x12);
+                   });
+    }
+
 };
 
 REGISTER_SIM_SYSTEM(ARAP3D);

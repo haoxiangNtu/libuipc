@@ -22,6 +22,39 @@ void FEM3DConstitution::do_compute_gradient_hessian(FiniteElementEnergyProducer:
     do_compute_gradient_hessian(this_info);
 }
 
+// add by vertex (wrapper: generic -> class-specific info)
+void FEM3DConstitution::do_compute_gradient_hessian_by_vertex(
+    FiniteElementEnergyProducer::ComputeGradientHessianInfo& info, IndexT vertexId)
+{
+    FEM3DConstitution::ComputeGradientHessianInfo this_info{
+        this, m_index_in_dim, info.dt(), info.gradients(), info.hessians()};
+    do_compute_gradient_hessian_by_vertex(this_info, static_cast<int>(vertexId));
+}
+
+// define the protected virtual expected by the linker (default no-op)
+void FEM3DConstitution::do_compute_gradient_hessian_by_vertex(
+    FEM3DConstitution::ComputeGradientHessianInfo& /*info*/,
+                                                                int /*vertexId*/)
+{
+    // Default: no per-vertex accumulation. Derived constitutions may override.
+}
+
+//now instead of add by vertex, we add by color that include a set of vertices
+void FEM3DConstitution::do_compute_gradient_hessian_by_color(
+    FiniteElementEnergyProducer::ComputeGradientHessianInfo& info, muda::CBufferView<IndexT> color_vertices)
+{
+    FEM3DConstitution::ComputeGradientHessianInfo this_info{
+        this, m_index_in_dim, info.dt(), info.gradients(), info.hessians()};
+    do_compute_gradient_hessian_by_color(this_info, color_vertices);
+}
+// define the protected virtual expected by the linke
+void FEM3DConstitution::do_compute_gradient_hessian_by_color(
+    FEM3DConstitution::ComputeGradientHessianInfo& /*info*/, muda::CBufferView<IndexT> /*color_vertices*/)
+{
+    // Default: no per-vertex accumulation. Derived constitutions may override.
+}
+
+
 IndexT FEM3DConstitution::get_dim() const noexcept
 {
     return 3;

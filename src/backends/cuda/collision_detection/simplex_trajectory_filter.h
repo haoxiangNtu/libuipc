@@ -96,10 +96,12 @@ class SimplexTrajectoryFilter : public TrajectoryFilter
         using DetectInfo::DetectInfo;
 
         muda::VarView<Float> toi() noexcept;
+        muda::BufferView<Float> penetration_depth() noexcept;
 
       private:
         friend class SimplexTrajectoryFilter;
         muda::VarView<Float> m_toi;
+        muda::BufferView<Float> m_pene_dis;
     };
 
     class Impl

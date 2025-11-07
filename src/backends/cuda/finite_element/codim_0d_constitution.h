@@ -25,5 +25,11 @@ class Codim0DConstitution : public FiniteElementConstitution
     virtual void do_compute_energy(FiniteElementConstitution::ComputeEnergyInfo& info) override final;
     virtual void do_compute_gradient_hessian(
         FiniteElementConstitution::ComputeGradientHessianInfo& info) override final;
+    virtual void do_compute_gradient_hessian_by_vertex(FiniteElementConstitution::ComputeGradientHessianInfo& info,
+                                                       IndexT vertexId) override final;
+    // add do compute gradient hessian by color
+    virtual void do_compute_gradient_hessian_by_color(
+        FiniteElementConstitution::ComputeGradientHessianInfo& info,
+        muda::CBufferView<IndexT> color_vertices) override final;
 };
 }  // namespace uipc::backend::cuda

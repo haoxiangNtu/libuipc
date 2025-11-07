@@ -22,6 +22,36 @@ void Codim1DConstitution::do_compute_gradient_hessian(FiniteElementEnergyProduce
     do_compute_gradient_hessian(this_info);
 }
 
+// add by vertex (wrapper: generic -> class-specific info)
+void Codim1DConstitution::do_compute_gradient_hessian_by_vertex(
+    FiniteElementEnergyProducer::ComputeGradientHessianInfo& info, IndexT vertexId)
+{
+    ComputeGradientHessianInfo this_info{
+        this, m_index_in_dim, info.dt(), info.gradients(), info.hessians()};
+    do_compute_gradient_hessian_by_vertex(this_info, static_cast<int>(vertexId));
+}
+
+// define the protected virtual expected by the linker (default no-op)
+void Codim1DConstitution::do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& /*info*/,
+                                                                int /*vertexId*/)
+{
+    // Default: no per-vertex accumulation. Derived constitutions may override.
+}
+//now instead of add by vertex, we add by color that include a set of vertices
+void Codim1DConstitution::do_compute_gradient_hessian_by_color(
+    FiniteElementEnergyProducer::ComputeGradientHessianInfo& info, muda::CBufferView<IndexT> color_vertices)
+{
+    ComputeGradientHessianInfo this_info{
+        this, m_index_in_dim, info.dt(), info.gradients(), info.hessians()};
+    do_compute_gradient_hessian_by_color(this_info, color_vertices);
+}
+// define the protected virtual expected by the linker
+void Codim1DConstitution::do_compute_gradient_hessian_by_color(
+    ComputeGradientHessianInfo& /*info*/, muda::CBufferView<IndexT> /*color_vertices*/)
+{
+    // Default: no per-vertex accumulation. Derived constitutions may override.
+}
+
 IndexT Codim1DConstitution::get_dim() const noexcept
 {
     return 1;

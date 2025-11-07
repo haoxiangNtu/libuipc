@@ -54,6 +54,7 @@ class ABDLinearSubsystem final : public DiagLinearSubsystem
         void receive_init_dof_info(WorldVisitor& w, GlobalLinearSystem::InitDofInfo& info);
 
         void assemble(GlobalLinearSystem::DiagInfo& info);
+        void update_info(GlobalLinearSystem::DiagInfo& info);
         void solve_system_vertex(GlobalLinearSystem::DiagInfo& info);
         void accuracy_check(GlobalLinearSystem::AccuracyInfo& info);
         void retrieve_solution(GlobalLinearSystem::SolutionInfo& info);
@@ -85,6 +86,8 @@ class ABDLinearSubsystem final : public DiagLinearSubsystem
     virtual void do_report_extent(GlobalLinearSystem::DiagExtentInfo& info) override;
     virtual void do_assemble(GlobalLinearSystem::DiagInfo& info) override;
     virtual void do_solve_system_vertex(GlobalLinearSystem::DiagInfo& info) override;
+    virtual void do_update_info(GlobalLinearSystem::DiagInfo& info) override;
+
     virtual void do_accuracy_check(GlobalLinearSystem::AccuracyInfo& info) override;
     virtual void do_retrieve_solution(GlobalLinearSystem::SolutionInfo& info) override;
 

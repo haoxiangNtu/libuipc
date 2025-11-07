@@ -295,4 +295,8 @@ muda::VarView<Float> SimplexTrajectoryFilter::FilterTOIInfo::toi() noexcept
 {
     return m_toi;
 }
+muda::BufferView<Float> SimplexTrajectoryFilter::FilterTOIInfo::penetration_depth() noexcept
+{
+    return m_pene_dis;
+}
 }  // namespace uipc::backend::cuda

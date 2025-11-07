@@ -101,13 +101,21 @@ class FiniteElementKinetic : public FiniteElementEnergyProducer
     virtual void do_report_extent(FiniteElementEnergyProducer::ReportExtentInfo& info) override;
     virtual void do_compute_energy(ComputeEnergyInfo& info) = 0;
     virtual void do_compute_gradient_hessian(ComputeGradientHessianInfo& info) = 0;
-
+    virtual void do_compute_gradient_hessian_by_vertex(FiniteElementKinetic::ComputeGradientHessianInfo& info,
+                                                       IndexT vertexId);
+    virtual void do_compute_gradient_hessian_by_color(FiniteElementKinetic::ComputeGradientHessianInfo& info,
+                                                      muda::CBufferView<IndexT> color_vertices);
 
   private:
     virtual void do_build(FiniteElementEnergyProducer::BuildInfo& info) override;
     virtual void do_compute_energy(FiniteElementEnergyProducer::ComputeEnergyInfo& info) override;
     virtual void do_compute_gradient_hessian(
         FiniteElementEnergyProducer::ComputeGradientHessianInfo& info) override;
+
+    virtual void do_compute_gradient_hessian_by_vertex(
+        FiniteElementEnergyProducer::ComputeGradientHessianInfo& info, IndexT vertexId) override;
+    virtual void do_compute_gradient_hessian_by_color(FiniteElementEnergyProducer::ComputeGradientHessianInfo& info,
+        muda::CBufferView<IndexT> color_vertices) override;
 
     Impl m_impl;
 };

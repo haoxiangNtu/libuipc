@@ -941,6 +941,450 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active(FilterActiveInfo& info)
     }
 }
 
+void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveInfo& info)
+{
+    using namespace muda;
+
+    // we will filter-out the active pairs
+    auto positions = info.positions();
+
+    SizeT N_PCoimP  = candidate_AllP_CodimP_pairs.size();
+    SizeT N_CodimPE = candidate_CodimP_AllE_pairs.size();
+    SizeT N_PTs     = candidate_AllP_AllT_pairs.size();
+    SizeT N_EEs     = candidate_AllE_AllE_pairs.size();
+
+    // PT, EE, PT, PP can degenerate to PP
+    temp_PPs.resize(N_PCoimP + N_CodimPE + N_PTs + N_EEs);
+    // PT, EE, PT can degenerate to PE
+    temp_PEs.resize(N_CodimPE + N_PTs + N_EEs);
+
+    temp_PTs.resize(N_PTs);
+    temp_EEs.resize(N_EEs);
+
+    SizeT temp_PP_offset = 0;
+    SizeT temp_PE_offset = 0;
+
+    // AllP and CodimP
+    if(N_PCoimP > 0)
+    {
+        auto PP_view = temp_PPs.view(temp_PP_offset, N_PCoimP);
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(candidate_AllP_CodimP_pairs.size(),
+                   [positions = positions.viewer().name("positions"),
+                    PCodimP_pairs = candidate_AllP_CodimP_pairs.viewer().name("PP_pairs"),
+                    surf_vertices = info.surf_vertices().viewer().name("surf_vertices"),
+                    codim_vertices = info.codim_vertices().viewer().name("codim_vertices"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    temp_PPs = PP_view.viewer().name("temp_PPs"),
+                    d_hats = info.d_hats().viewer().name("d_hats")] __device__(int i) mutable
+                   {
+                       // default invalid
+                       auto& PP = temp_PPs(i);
+                       PP.setConstant(-1);
+
+                       Vector2i indices = PCodimP_pairs(i);
+
+                       IndexT P0 = surf_vertices(indices(0));
+                       IndexT P1 = codim_vertices(indices(1));
+
+
+                       const auto& V0 = positions(P0);
+                       const auto& V1 = positions(P1);
+
+                       Float thickness = PP_thickness(thicknesses(P0), thicknesses(P1));
+                       Float d_hat = PP_d_hat(d_hats(P0), d_hats(P1));
+
+                       Vector2 range = D_range(thickness, d_hat);
+
+                       Float D;
+                       distance::point_point_distance2(V0, V1, D);
+
+
+                       if(!is_active_D(range, D))
+                           return;  // early return
+
+                       PP = {P0, P1};
+                   });
+
+        temp_PP_offset += N_PCoimP;
+    }
+    // CodimP and AllE
+    if(N_CodimPE > 0)
+    {
+        auto PP_view = temp_PPs.view(temp_PP_offset, N_CodimPE);
+        auto PE_view = temp_PEs.view(temp_PE_offset, N_CodimPE);
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(
+                candidate_CodimP_AllE_pairs.size(),
+                [positions = positions.viewer().name("positions"),
+                 CodimP_AllE_pairs = candidate_CodimP_AllE_pairs.viewer().name("PE_pairs"),
+                 codim_veritces = info.codim_vertices().viewer().name("codim_vertices"),
+                 surf_edges  = info.surf_edges().viewer().name("surf_edges"),
+                 thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                 temp_PPs    = PP_view.viewer().name("temp_PPs"),
+                 temp_PEs    = PE_view.viewer().name("temp_PEs"),
+                 d_hats = info.d_hats().viewer().name("d_hats")] __device__(int i) mutable
+                {
+                    auto& PP = temp_PPs(i);
+                    PP.setConstant(-1);
+                    auto& PE = temp_PEs(i);
+                    PE.setConstant(-1);
+
+                    Vector2i indices = CodimP_AllE_pairs(i);
+                    IndexT   V       = codim_veritces(indices(0));
+                    Vector2i E       = surf_edges(indices(1));
+
+                    Vector3i vIs = {V, E(0), E(1)};
+                    Vector3 Ps[] = {positions(vIs(0)), positions(vIs(1)), positions(vIs(2))};
+
+                    Float thickness = PE_thickness(
+                        thicknesses(V), thicknesses(E(0)), thicknesses(E(1)));
+
+                    Float d_hat = PE_d_hat(d_hats(V), d_hats(E(0)), d_hats(E(1)));
+
+
+                    Vector3i flag =
+                        distance::point_edge_distance_flag(Ps[0], Ps[1], Ps[2]);
+
+                    Vector2 range = D_range(thickness, d_hat);
+
+                    Float D;
+                    distance::point_edge_distance2(flag, Ps[0], Ps[1], Ps[2], D);
+
+                    if(!is_active_D(range, D))
+                        return;  // early return
+
+                    Vector3i offsets;
+                    auto dim = distance::degenerate_point_edge(flag, offsets);
+
+                    switch(dim)
+                    {
+                        case 2:  // PP
+                        {
+                            IndexT V0 = vIs(offsets(0));
+                            IndexT V1 = vIs(offsets(1));
+                            PP        = {V0, V1};
+                        }
+                        break;
+                        case 3:  // PE
+                        {
+                            PE = vIs;
+                        }
+                        break;
+                        default: {
+                            MUDA_ERROR_WITH_LOCATION("unexpected degenerate case dim=%d", dim);
+                        }
+                        break;
+                    }
+                });
+
+        temp_PP_offset += N_CodimPE;
+        temp_PE_offset += N_CodimPE;
+    }
+
+    // AllP and AllT
+    {
+        auto PP_view = temp_PPs.view(temp_PP_offset, N_PTs);
+        auto PE_view = temp_PEs.view(temp_PE_offset, N_PTs);
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(
+                candidate_AllP_AllT_pairs.size(),
+                [positions = positions.viewer().name("Ps"),
+                 PT_pairs = candidate_AllP_AllT_pairs.viewer().name("PT_pairs"),
+                 surf_vertices = info.surf_vertices().viewer().name("surf_vertices"),
+                 surf_triangles = info.surf_triangles().viewer().name("surf_triangles"),
+                 thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                 temp_PPs    = PP_view.viewer().name("temp_PPs"),
+                 temp_PEs    = PE_view.viewer().name("temp_PEs"),
+                 temp_PTs    = temp_PTs.viewer().name("temp_PTs"),
+                 d_hats = info.d_hats().viewer().name("d_hats")] __device__(int i) mutable
+                {
+                    auto& PP = temp_PPs(i);
+                    PP.setConstant(-1);
+                    auto& PE = temp_PEs(i);
+                    PE.setConstant(-1);
+                    auto& PT = temp_PTs(i);
+                    PT.setConstant(-1);
+
+                    Vector2i indices = PT_pairs(i);
+                    IndexT   V       = surf_vertices(indices(0));
+                    Vector3i F       = surf_triangles(indices(1));
+
+                    Vector4i vIs  = {V, F(0), F(1), F(2)};
+                    Vector3  Ps[] = {positions(vIs(0)),
+                                     positions(vIs(1)),
+                                     positions(vIs(2)),
+                                     positions(vIs(3))};
+
+                    Float thickness = PT_thickness(thicknesses(V),
+                                                   thicknesses(F(0)),
+                                                   thicknesses(F(1)),
+                                                   thicknesses(F(2)));
+
+                    Float d_hat =
+                        PT_d_hat(d_hats(V), d_hats(F(0)), d_hats(F(1)), d_hats(F(2)));
+
+                    Vector4i flag =
+                        distance::point_triangle_distance_flag(Ps[0], Ps[1], Ps[2], Ps[3]);
+
+                    Vector2 range = D_range(thickness, d_hat);
+
+                    Float D;
+                    distance::point_triangle_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);
+
+                    MUDA_ASSERT(
+                        D > 0.0, "D=%f, V F = (%d,%d,%d,%d)", D, vIs(0), vIs(1), vIs(2), vIs(3));
+
+                    if(!is_active_D(range, D))
+                        return;  // early return
+
+                    Vector4i offsets;
+                    auto dim = distance::degenerate_point_triangle(flag, offsets);
+
+                    switch(dim)
+                    {
+                        case 2:  // PP
+                        {
+                            IndexT V0 = vIs(offsets(0));
+                            IndexT V1 = vIs(offsets(1));
+                            PP        = {V0, V1};
+                        }
+                        break;
+                        case 3:  // PE
+                        {
+                            IndexT V0 = vIs(offsets(0));
+                            IndexT V1 = vIs(offsets(1));
+                            IndexT V2 = vIs(offsets(2));
+                            PE        = {V0, V1, V2};
+                        }
+                        break;
+                        case 4:  // PT
+                        {
+                            PT = vIs;
+                        }
+                        break;
+                        default: {
+                            MUDA_ERROR_WITH_LOCATION("unexpected degenerate case dim=%d", dim);
+                        }
+                        break;
+                    }
+                });
+
+        temp_PP_offset += N_PTs;
+        temp_PE_offset += N_PTs;
+    }
+    // AllE and AllE
+    {
+        auto PP_view = temp_PPs.view(temp_PP_offset, N_EEs);
+        auto PE_view = temp_PEs.view(temp_PE_offset, N_EEs);
+
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(
+                candidate_AllE_AllE_pairs.size(),
+                [positions = positions.viewer().name("Ps"),
+                 rest_positions = info.rest_positions().viewer().name("rest_positions"),
+                 EE_pairs = candidate_AllE_AllE_pairs.viewer().name("EE_pairs"),
+                 surf_edges  = info.surf_edges().viewer().name("surf_edges"),
+                 thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                 temp_PPs    = PP_view.viewer().name("temp_PPs"),
+                 temp_PEs    = PE_view.viewer().name("temp_PEs"),
+                 temp_EEs    = temp_EEs.viewer().name("temp_EEs"),
+                 d_hats = info.d_hats().viewer().name("d_hats")] __device__(int i) mutable
+                {
+                    auto& PP = temp_PPs(i);
+                    PP.setConstant(-1);
+                    auto& PE = temp_PEs(i);
+                    PE.setConstant(-1);
+                    auto& EE = temp_EEs(i);
+                    EE.setConstant(-1);
+
+                    Vector2i indices = EE_pairs(i);
+                    Vector2i E0      = surf_edges(indices(0));
+                    Vector2i E1      = surf_edges(indices(1));
+
+                    Vector4i vIs  = {E0(0), E0(1), E1(0), E1(1)};
+                    Vector3  Ps[] = {positions(vIs(0)),
+                                     positions(vIs(1)),
+                                     positions(vIs(2)),
+                                     positions(vIs(3))};
+
+                    Float thickness = EE_thickness(thicknesses(E0(0)),
+                                                   thicknesses(E0(1)),
+                                                   thicknesses(E1(0)),
+                                                   thicknesses(E1(1)));
+
+                    Float d_hat = EE_d_hat(
+                        d_hats(E0(0)), d_hats(E0(1)), d_hats(E1(0)), d_hats(E1(1)));
+
+                    Vector2 range = D_range(thickness, d_hat);
+
+                    Vector4i flag =
+                        distance::edge_edge_distance_flag(Ps[0], Ps[1], Ps[2], Ps[3]);
+
+                    Float D;
+                    distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);
+
+                    if(!is_active_D(range, D))
+                        return;  // early return
+
+                    Float eps_x;
+                    distance::edge_edge_mollifier_threshold(rest_positions(vIs(0)),
+                                                            rest_positions(vIs(1)),
+                                                            rest_positions(vIs(2)),
+                                                            rest_positions(vIs(3)),
+                                                            eps_x);
+
+                    if(distance::need_mollify(Ps[0], Ps[1], Ps[2], Ps[3], eps_x))
+                    {
+                        EE = vIs;
+                        return;
+                    }
+                    else  // classify to EE/PE/PP
+                    {
+                        Vector4i offsets;
+                        auto dim = distance::degenerate_edge_edge(flag, offsets);
+
+                        switch(dim)
+                        {
+                            case 2:  // PP
+                            {
+                                IndexT V0 = vIs(offsets(0));
+                                IndexT V1 = vIs(offsets(1));
+                                PP        = {V0, V1};
+                            }
+                            break;
+                            case 3:  // PE
+                            {
+                                IndexT V0 = vIs(offsets(0));
+                                IndexT V1 = vIs(offsets(1));
+                                IndexT V2 = vIs(offsets(2));
+                                PE        = {V0, V1, V2};
+                            }
+                            break;
+                            case 4:  // EE
+                            {
+                                EE = vIs;
+                            }
+                            break;
+                            default: {
+                                MUDA_ERROR_WITH_LOCATION("unexpected degenerate case dim=%d", dim);
+                            }
+                            break;
+                        }
+                    }
+                })
+            .wait();
+
+        temp_PP_offset += N_EEs;
+        temp_PE_offset += N_EEs;
+    }
+
+    UIPC_ASSERT(temp_PP_offset == temp_PPs.size(), "size mismatch");
+    UIPC_ASSERT(temp_PE_offset == temp_PEs.size(), "size mismatch");
+
+    {  // select the valid ones
+        PPs.resize(temp_PPs.size());
+        PEs.resize(temp_PEs.size());
+        PTs.resize(temp_PTs.size());
+        EEs.resize(temp_EEs.size());
+
+        DeviceSelect().If(temp_PPs.data(),
+                          PPs.data(),
+                          selected_PP_count.data(),
+                          temp_PPs.size(),
+                          [] CUB_RUNTIME_FUNCTION(const Vector2i& PP)
+                          { return PP(0) != -1; });
+
+        DeviceSelect().If(temp_PEs.data(),
+                          PEs.data(),
+                          selected_PE_count.data(),
+                          temp_PEs.size(),
+                          [] CUB_RUNTIME_FUNCTION(const Vector3i& PE)
+                          { return PE(0) != -1; });
+
+        DeviceSelect().If(temp_PTs.data(),
+                          PTs.data(),
+                          selected_PT_count.data(),
+                          temp_PTs.size(),
+                          [] CUB_RUNTIME_FUNCTION(const Vector4i& PT)
+                          { return PT(0) != -1; });
+
+        DeviceSelect().If(temp_EEs.data(),
+                          EEs.data(),
+                          selected_EE_count.data(),
+                          temp_EEs.size(),
+                          [] CUB_RUNTIME_FUNCTION(const Vector4i& EE)
+                          { return EE(0) != -1; });
+
+        IndexT PP_count = selected_PP_count;
+        IndexT PE_count = selected_PE_count;
+        IndexT PT_count = selected_PT_count;
+        IndexT EE_count = selected_EE_count;
+
+        PPs.resize(PP_count);
+        PEs.resize(PE_count);
+        PTs.resize(PT_count);
+        EEs.resize(EE_count);
+    }
+
+    info.PPs(PPs);
+    info.PEs(PEs);
+    info.PTs(PTs);
+    info.EEs(EEs);
+
+    if constexpr(PrintDebugInfo)
+    {
+        std::vector<Vector2i> PPs_host;
+        std::vector<Float>    PP_thicknesses_host;
+
+        std::vector<Vector3i> PEs_host;
+        std::vector<Float>    PE_thicknesses_host;
+
+        std::vector<Vector4i> PTs_host;
+        std::vector<Float>    PT_thicknesses_host;
+
+        std::vector<Vector4i> EEs_host;
+        std::vector<Float>    EE_thicknesses_host;
+
+        PPs.copy_to(PPs_host);
+        PEs.copy_to(PEs_host);
+        PTs.copy_to(PTs_host);
+        EEs.copy_to(EEs_host);
+
+        std::cout << "filter result:" << std::endl;
+
+        for(auto&& [PP, thickness] : zip(PPs_host, PP_thicknesses_host))
+        {
+            std::cout << "PP: " << PP.transpose() << " thickness: " << thickness << "\n";
+        }
+
+        for(auto&& [PE, thickness] : zip(PEs_host, PE_thicknesses_host))
+        {
+            std::cout << "PE: " << PE.transpose() << " thickness: " << thickness << "\n";
+        }
+
+        for(auto&& [PT, thickness] : zip(PTs_host, PT_thicknesses_host))
+        {
+            std::cout << "PT: " << PT.transpose() << " thickness: " << thickness << "\n";
+        }
+
+        for(auto&& [EE, thickness] : zip(EEs_host, EE_thicknesses_host))
+        {
+            std::cout << "EE: " << EE.transpose() << " thickness: " << thickness << "\n";
+        }
+
+        std::cout << std::flush;
+    }
+}
+
+
 void LBVHSimplexTrajectoryFilter::Impl::filter_toi(FilterTOIInfo& info)
 {
     using namespace muda;
@@ -973,7 +1417,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_toi(FilterTOIInfo& info)
 
     // large enough toi (>1)
     constexpr Float large_enough_toi = 1.1;
-
+    auto            alpha            = info.alpha();
     // AllP and CodimP
     {
         ParallelFor()
@@ -1237,4 +1681,365 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_toi(FilterTOIInfo& info)
         info.toi().fill(large_enough_toi);
     }
 }
+
+
+void LBVHSimplexTrajectoryFilter::Impl::filter_toi_distance(FilterTOIInfo& info)
+{
+    using namespace muda;
+
+    auto toi_size =
+        candidate_AllP_CodimP_pairs.size() + candidate_CodimP_AllE_pairs.size()
+        + candidate_AllP_AllT_pairs.size() + candidate_AllE_AllE_pairs.size();
+
+    tois.resize(toi_size);
+    penetration_depth.resize(toi_size);
+
+    auto offset  = 0;
+    auto PP_tois = tois.view(offset, candidate_AllP_CodimP_pairs.size());
+    auto PP_dis = penetration_depth.view(offset, candidate_AllP_CodimP_pairs.size());
+    offset += candidate_AllP_CodimP_pairs.size();
+    auto PE_tois = tois.view(offset, candidate_CodimP_AllE_pairs.size());
+    auto PE_dis = penetration_depth.view(offset, candidate_CodimP_AllE_pairs.size());
+    offset += candidate_CodimP_AllE_pairs.size();
+    auto PT_tois = tois.view(offset, candidate_AllP_AllT_pairs.size());
+    auto PT_dis = penetration_depth.view(offset, candidate_AllP_AllT_pairs.size());
+    offset += candidate_AllP_AllT_pairs.size();
+    auto EE_tois = tois.view(offset, candidate_AllE_AllE_pairs.size());
+    auto EE_dis = penetration_depth.view(offset, candidate_AllE_AllE_pairs.size());
+    offset += candidate_AllE_AllE_pairs.size();
+
+    UIPC_ASSERT(offset == toi_size, "size mismatch");
+
+
+    // TODO: Now hard code the minimum separation coefficient
+    // gap = eta * (dist2_cur - thickness * thickness) / (dist_cur + thickness);
+    constexpr Float eta = 0.1;
+
+    // TODO: Now hard code the maximum iteration
+    constexpr SizeT max_iter = 1000;
+
+    // large enough toi (>1)
+    constexpr Float large_enough_toi = 1.1;
+
+    // no enough toi (>1)
+    constexpr Float no_penetrate = 0.0;
+
+    // AllP and CodimP
+    {
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(candidate_AllP_CodimP_pairs.size(),
+                   [PP_tois = PP_tois.viewer().name("PP_tois"),
+                    PP_dis  = PP_dis.viewer().name("PP_dis"),
+                    PCodimP_pairs = candidate_AllP_CodimP_pairs.viewer().name("PP_pairs"),
+                    codim_vertices = info.codim_vertices().viewer().name("codim_vertices"),
+                    surf_vertices = info.surf_vertices().viewer().name("surf_vertices"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    positions = info.positions().viewer().name("Ps"),
+                    dxs       = info.displacements().viewer().name("dxs"),
+                    d_hats    = info.d_hats().viewer().name("d_hats"),
+                    alpha     = info.alpha(),
+
+                    eta,
+                    max_iter,
+                    large_enough_toi,
+                    no_penetrate] __device__(int i) mutable
+                   {
+                       auto   indices = PCodimP_pairs(i);
+                       IndexT V0      = surf_vertices(indices(0));
+                       IndexT V1      = codim_vertices(indices(1));
+
+                       Float thickness = PP_thickness(thicknesses(V0), thicknesses(V1));
+                       Float d_hat = PP_d_hat(d_hats(V0), d_hats(V1));
+
+                       Vector3 VP0  = positions(V0);
+                       Vector3 VP1  = positions(V1);
+                       Vector3 dVP0 = alpha * dxs(V0);
+                       Vector3 dVP1 = alpha * dxs(V1);
+
+                       Float toi = large_enough_toi;
+                       Float dis = no_penetrate;
+                       bool faraway = !distance::point_point_ccd_broadphase(
+                           VP0, VP1, dVP0, dVP1, d_hat + thickness);
+
+                       if(faraway)
+                       {
+                           PP_tois(i) = toi;
+                           PP_dis(i)  = dis;
+                           return;
+                       }
+
+                       //bool hit = distance::point_point_ccd(
+                       //    VP0, VP1, dVP0, dVP1, eta, thickness, max_iter, toi);
+
+                       bool hit = distance::point_point_ccd_compute_penetration_depth(
+                           VP0, VP1, dVP0, dVP1, eta, thickness, max_iter, toi, dis);
+
+                       if(!hit)
+                       {
+                           toi = large_enough_toi;
+                           dis = no_penetrate;
+                       }
+
+                       PP_tois(i) = toi;
+                       PP_dis(i)  = toi;
+                   });
+    }
+
+    // CodimP and AllE
+    {
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(candidate_CodimP_AllE_pairs.size(),
+                   [PE_tois = PE_tois.viewer().name("PE_tois"),
+                    PE_dis  = PE_dis.viewer().name("PE_dis"),
+                    CodimP_AllE_pairs = candidate_CodimP_AllE_pairs.viewer().name("PE_pairs"),
+                    codim_vertices = info.codim_vertices().viewer().name("codim_vertices"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    surf_edges = info.surf_edges().viewer().name("surf_edges"),
+                    Ps         = info.positions().viewer().name("Ps"),
+                    dxs        = info.displacements().viewer().name("dxs"),
+                    d_hats     = info.d_hats().viewer().name("d_hats"),
+                    alpha      = info.alpha(),
+                    eta,
+                    max_iter,
+                    large_enough_toi] __device__(int i) mutable
+                   {
+                       auto     indices = CodimP_AllE_pairs(i);
+                       IndexT   V       = codim_vertices(indices(0));
+                       Vector2i E       = surf_edges(indices(1));
+
+                       Float thickness = PE_thickness(
+                           thicknesses(V), thicknesses(E(0)), thicknesses(E(1)));
+                       Float d_hat = PE_d_hat(d_hats(V), d_hats(E(0)), d_hats(E(1)));
+
+                       Vector3 VP  = Ps(V);
+                       Vector3 dVP = alpha * dxs(V);
+
+                       Vector3 EP0  = Ps(E[0]);
+                       Vector3 EP1  = Ps(E[1]);
+                       Vector3 dEP0 = alpha * dxs(E[0]);
+                       Vector3 dEP1 = alpha * dxs(E[1]);
+
+                       Float toi = large_enough_toi;
+                       Float dis     = no_penetrate;
+                       bool faraway = !distance::point_edge_ccd_broadphase(
+                           VP, EP0, EP1, dVP, dEP0, dEP1, d_hat + thickness);
+
+                       if(faraway)
+                       {
+                           PE_tois(i) = toi;
+                           PE_dis(i)  = dis;
+                           return;
+                       }
+
+                       //bool hit = distance::point_edge_ccd(
+                       //    VP, EP0, EP1, dVP, dEP0, dEP1, eta, thickness, max_iter, toi);
+
+                       bool hit = distance::point_edge_ccd_compute_penetration_depth(
+                           VP, EP0, EP1, dVP, dEP0, dEP1, eta, thickness, max_iter, toi, dis);
+
+                       if(!hit)
+                       {
+                           toi = large_enough_toi;
+                           dis = no_penetrate;
+                       }
+
+                       PE_tois(i) = toi;
+                       PE_dis(i) = toi;
+                   });
+    }
+
+    // AllP and AllT
+    {
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(candidate_AllP_AllT_pairs.size(),
+                   [PT_tois = PT_tois.viewer().name("PT_tois"),
+                    PT_dis  = PT_dis.viewer().name("PT_dis"),
+                    PT_pairs = candidate_AllP_AllT_pairs.viewer().name("PT_pairs"),
+                    surf_vertices = info.surf_vertices().viewer().name("surf_vertices"),
+                    surf_triangles = info.surf_triangles().viewer().name("surf_triangles"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    Ps     = info.positions().viewer().name("Ps"),
+                    dxs    = info.displacements().viewer().name("dxs"),
+                    d_hats = info.d_hats().viewer().name("d_hats"),
+                    alpha  = info.alpha(),
+                    eta,
+                    max_iter,
+                    large_enough_toi] __device__(int i) mutable
+                   {
+                       auto     indices = PT_pairs(i);
+                       IndexT   V       = surf_vertices(indices(0));
+                       Vector3i F       = surf_triangles(indices(1));
+
+                       Float thickness = PT_thickness(thicknesses(V),
+                                                      thicknesses(F(0)),
+                                                      thicknesses(F(1)),
+                                                      thicknesses(F(2)));
+                       Float d_hat =
+                           PT_d_hat(d_hats(V), d_hats(F(0)), d_hats(F(1)), d_hats(F(2)));
+
+                       Vector3 VP  = Ps(V);
+                       Vector3 dVP = alpha * dxs(V);
+
+                       Vector3 FP0 = Ps(F[0]);
+                       Vector3 FP1 = Ps(F[1]);
+                       Vector3 FP2 = Ps(F[2]);
+
+                       Vector3 dFP0 = alpha * dxs(F[0]);
+                       Vector3 dFP1 = alpha * dxs(F[1]);
+                       Vector3 dFP2 = alpha * dxs(F[2]);
+
+                       Float toi = large_enough_toi;
+                       Float dis = no_penetrate;
+
+                       bool faraway = !distance::point_triangle_ccd_broadphase(
+                           VP, FP0, FP1, FP2, dVP, dFP0, dFP1, dFP2, d_hat + thickness);
+
+                       if(faraway)
+                       {
+                           PT_tois(i) = toi;
+                           PT_dis(i)  = dis;
+                           return;
+                       }
+
+                       //bool hit = distance::point_triangle_ccd(
+                       //    VP, FP0, FP1, FP2, dVP, dFP0, dFP1, dFP2, eta, thickness, max_iter, toi);
+
+                       bool hit = distance::point_triangle_ccd_compute_penetration_depth(
+                           VP, FP0, FP1, FP2, dVP, dFP0, dFP1, dFP2, eta, thickness, max_iter, toi, dis);
+
+                       if(!hit)
+                       {
+                           toi = large_enough_toi;
+                           dis = no_penetrate;
+                       }
+
+                       PT_tois(i) = toi;
+                       PT_dis(i)  = dis;
+                   });
+    }
+
+    // AllE and AllE
+    {
+        ParallelFor()
+            .file_line(__FILE__, __LINE__)
+            .apply(candidate_AllE_AllE_pairs.size(),
+                   [EE_tois = EE_tois.viewer().name("EE_tois"),
+                    EE_dis  = EE_dis.viewer().name("EE_dis"),
+                    EE_pairs = candidate_AllE_AllE_pairs.viewer().name("EE_pairs"),
+                    surf_edges = info.surf_edges().viewer().name("surf_edges"),
+                    thicknesses = info.thicknesses().viewer().name("thicknesses"),
+                    Ps     = info.positions().viewer().name("Ps"),
+                    dxs    = info.displacements().viewer().name("dxs"),
+                    d_hats = info.d_hats().viewer().name("d_hats"),
+                    alpha  = info.alpha(),
+                    eta,
+                    max_iter,
+                    large_enough_toi] __device__(int i) mutable
+                   {
+                       auto     indices = EE_pairs(i);
+                       Vector2i E0      = surf_edges(indices(0));
+                       Vector2i E1      = surf_edges(indices(1));
+
+                       Float thickness = EE_thickness(thicknesses(E0(0)),
+                                                      thicknesses(E0(1)),
+                                                      thicknesses(E1(0)),
+                                                      thicknesses(E1(1)));
+
+                       Float d_hat = EE_d_hat(
+                           d_hats(E0(0)), d_hats(E0(1)), d_hats(E1(0)), d_hats(E1(1)));
+
+
+                       Vector3 EP0  = Ps(E0[0]);
+                       Vector3 EP1  = Ps(E0[1]);
+                       Vector3 dEP0 = alpha * dxs(E0[0]);
+                       Vector3 dEP1 = alpha * dxs(E0[1]);
+
+                       Vector3 EP2  = Ps(E1[0]);
+                       Vector3 EP3  = Ps(E1[1]);
+                       Vector3 dEP2 = alpha * dxs(E1[0]);
+                       Vector3 dEP3 = alpha * dxs(E1[1]);
+
+                       Float toi = large_enough_toi;
+                       Float dis     = no_penetrate;
+                       bool faraway = !distance::edge_edge_ccd_broadphase(
+                           // position
+                           EP0,
+                           EP1,
+                           EP2,
+                           EP3,
+                           // displacement
+                           dEP0,
+                           dEP1,
+                           dEP2,
+                           dEP3,
+                           d_hat + thickness);
+
+                       if(faraway)
+                       {
+                           EE_tois(i) = toi;
+                           EE_dis(i)  = dis;
+                           return;
+                       }
+
+                       //bool hit = distance::edge_edge_ccd(
+                       //    // position
+                       //    EP0,
+                       //    EP1,
+                       //    EP2,
+                       //    EP3,
+                       //    // displacement
+                       //    dEP0,
+                       //    dEP1,
+                       //    dEP2,
+                       //    dEP3,
+                       //    eta,
+                       //    thickness,
+                       //    max_iter,
+                       //    toi);
+
+                       bool hit = distance::edge_edge_ccd_compute_penetration_depth(
+                           // position
+                           EP0,
+                           EP1,
+                           EP2,
+                           EP3,
+                           // displacement
+                           dEP0,
+                           dEP1,
+                           dEP2,
+                           dEP3,
+                           eta,
+                           thickness,
+                           max_iter,
+                           toi,
+                           dis);
+
+                       if(!hit)
+                       {
+                           toi = large_enough_toi;
+                           dis = no_penetrate;
+                       }
+
+                       EE_tois(i) = toi;
+                       EE_dis(i)  = dis;
+                   });
+    }
+
+    if(tois.size())
+    {
+        // get min toi
+        DeviceReduce().Min(tois.data(), info.toi().data(), tois.size());
+        // copy the penetration depth this penetration_depth.data() to info.penetration_depth().data()
+        info.penetration_depth().copy_from(penetration_depth.data());
+    }
+    else
+    {
+        info.toi().fill(large_enough_toi);
+        info.penetration_depth().fill(no_penetrate);
+    }
+}
+
 }  // namespace uipc::backend::cuda

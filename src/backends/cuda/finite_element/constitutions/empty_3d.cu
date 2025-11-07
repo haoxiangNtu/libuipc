@@ -45,6 +45,17 @@ class Empty3D final : public FEM3DConstitution
     {
         // do nothing
     }
+
+    virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info, IndexT vertexId) override
+    {
+        // do nothing
+    }
+    virtual void do_compute_gradient_hessian_by_color(ComputeGradientHessianInfo& info,
+                                                      muda::CBufferView<IndexT> color_vertices) override
+    {
+        // do nothing
+    }
+
 };
 
 REGISTER_SIM_SYSTEM(Empty3D);

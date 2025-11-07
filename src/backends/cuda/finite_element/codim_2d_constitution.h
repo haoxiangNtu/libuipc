@@ -81,6 +81,12 @@ class Codim2DConstitution : public FiniteElementConstitution
     virtual void do_build(BuildInfo& info)                  = 0;
     virtual void do_compute_energy(ComputeEnergyInfo& info) = 0;
     virtual void do_compute_gradient_hessian(ComputeGradientHessianInfo& info) = 0;
+    //add do compute gradient hessian by vertex
+    virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info,
+                                                       IndexT vertexId);
+    //add do compute gradient hessian by color
+    virtual void do_compute_gradient_hessian_by_color(ComputeGradientHessianInfo& info,
+                                                      muda::CBufferView<IndexT> color_vertices);
     const FiniteElementMethod::ConstitutionInfo& constitution_info() const noexcept;
 
   private:
@@ -89,6 +95,12 @@ class Codim2DConstitution : public FiniteElementConstitution
     virtual void do_compute_energy(FiniteElementEnergyProducer::ComputeEnergyInfo& info) override final;
     virtual void do_compute_gradient_hessian(
         FiniteElementEnergyProducer::ComputeGradientHessianInfo& info) override final;
+    virtual void do_compute_gradient_hessian_by_vertex(
+        FiniteElementEnergyProducer::ComputeGradientHessianInfo& info,
+                                                       IndexT vertexId) override final;
+    virtual void do_compute_gradient_hessian_by_color(
+        FiniteElementEnergyProducer::ComputeGradientHessianInfo& info,
+        muda::CBufferView<IndexT> color_vertices) override final;
     virtual IndexT get_dim() const noexcept override final;
 };
 }  // namespace uipc::backend::cuda

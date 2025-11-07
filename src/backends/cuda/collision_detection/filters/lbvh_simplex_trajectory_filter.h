@@ -18,7 +18,14 @@ class LBVHSimplexTrajectoryFilter final : public SimplexTrajectoryFilter
       public:
         void detect(DetectInfo& info);
         void filter_active(FilterActiveInfo& info);
+        void filter_active_dcd_distance(FilterActiveInfo& info);
         void filter_toi(FilterTOIInfo& info);
+        void filter_toi_distance(FilterTOIInfo& info);
+
+        // 新增成员函数
+        void filter_toi(FilterTOIInfo& info);
+
+        void preprocess_adjacency(FilterActiveInfo& info);
 
         /****************************************************
         *                   Broad Phase
@@ -91,6 +98,7 @@ class LBVHSimplexTrajectoryFilter final : public SimplexTrajectoryFilter
         ****************************************************/
 
         muda::DeviceBuffer<Float> tois;  // PP, PE, PT, EE
+        muda::DeviceBuffer<Float> penetration_depth;  // PP, PE, PT, EE
     };
 
   private:

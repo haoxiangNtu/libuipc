@@ -88,6 +88,7 @@ class GlobalLinearSystem : public SimSystem
         TripletMatrixView  hessians() { return m_hessians; }
         DenseVectorView    gradients() { return m_gradients; }
         DenseVectorView    x_update() { return m_x_update; }
+        DenseVectorView    xs_position() { return m_xs; }
 
       private:
         friend class Impl;
@@ -95,6 +96,7 @@ class GlobalLinearSystem : public SimSystem
         TripletMatrixView  m_hessians;
         DenseVectorView    m_gradients;
         DenseVectorView    m_x_update;
+        DenseVectorView    m_xs;
         HessianStorageType m_storage_type;
         Impl*              m_impl = nullptr;
     };
@@ -288,6 +290,7 @@ class GlobalLinearSystem : public SimSystem
         bool _update_subsystem_extent();
         void _assemble_linear_system();
         void _assemble_linear_system_by_vertex();
+        void _update_info();
         void _assemble_preconditioner();
         void solve_linear_system();
         void solve_system_by_vertex();
@@ -317,6 +320,7 @@ class GlobalLinearSystem : public SimSystem
         // Linear System
         muda::LinearSystemContext           ctx;
         muda::DeviceDenseVector<Float>      x_update;
+        muda::DeviceDenseVector<Float>      xs_position;
         muda::DeviceDenseVector<Float>      b;
         muda::DeviceTripletMatrix<Float, 3> triplet_A;
         muda::DeviceBCOOMatrix<Float, 3>    bcoo_A;

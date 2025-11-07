@@ -13,6 +13,29 @@ class FEMLinearSubsystem final : public DiagLinearSubsystem
   public:
     using DiagLinearSubsystem::DiagLinearSubsystem;
 
+    class ComputeGradientHessianInfo
+    {
+      public:
+        ComputeGradientHessianInfo(Float                             dt,
+                                   muda::DoubletVectorView<Float, 3> gradients,
+                                   muda::TripletMatrixView<Float, 3> hessians)
+            : m_dt(dt)
+            , m_gradients(gradients)
+            , m_hessians(hessians)
+        {
+        }
+
+        auto gradients() const noexcept { return m_gradients; }
+        auto hessians() const noexcept { return m_hessians; }
+        auto dt() const noexcept { return m_dt; }
+
+      private:
+        friend class FiniteElementEnergyProducer;
+        muda::DoubletVectorView<Float, 3> m_gradients;
+        muda::TripletMatrixView<Float, 3> m_hessians;
+        Float                             m_dt = 0.0;
+    };
+
     class Impl
     {
       public:
@@ -22,8 +45,15 @@ class FEMLinearSubsystem final : public DiagLinearSubsystem
         void report_extent(GlobalLinearSystem::DiagExtentInfo& info);
         void assemble(GlobalLinearSystem::DiagInfo& info);
 
-        void solve_system_vertex(GlobalLinearSystem::DiagInfo& info);
+        void solve_system_vertex_test(GlobalLinearSystem::DiagInfo& info);
+        void solve_system_vertex_cpu(GlobalLinearSystem::DiagInfo& info);
+        void solve_system_vertex_gpu(GlobalLinearSystem::DiagInfo& info);
+        void update_info(GlobalLinearSystem::DiagInfo& info);
         void _assemble_producers(GlobalLinearSystem::DiagInfo& info);
+        void _assemble_producers_by_vertex(GlobalLinearSystem::DiagInfo& info, IndexT vertexId);
+        //add by vertex coloring
+        void _assemble_producers_by_color(GlobalLinearSystem::DiagInfo& info,
+                                          muda::CBufferView<IndexT> color_vertices);
         void vertices_Coloring();
         void _assemble_dytopo_effect(GlobalLinearSystem::DiagInfo& info);
 
@@ -72,6 +102,7 @@ class FEMLinearSubsystem final : public DiagLinearSubsystem
     virtual void do_report_extent(GlobalLinearSystem::DiagExtentInfo& info) override;
     virtual void do_assemble(GlobalLinearSystem::DiagInfo& info) override;
     virtual void do_solve_system_vertex(GlobalLinearSystem::DiagInfo& info) override;
+    virtual void do_update_info(GlobalLinearSystem::DiagInfo& info) override;
     virtual void do_accuracy_check(GlobalLinearSystem::AccuracyInfo& info) override;
     virtual void do_retrieve_solution(GlobalLinearSystem::SolutionInfo& info) override;
     virtual void do_report_init_extent(GlobalLinearSystem::InitDofExtentInfo& info) override;

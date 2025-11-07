@@ -100,7 +100,9 @@ class FiniteElementEnergyProducer : public SimSystem
     virtual void do_report_extent(ReportExtentInfo& info)   = 0;
     virtual void do_compute_energy(ComputeEnergyInfo& info) = 0;
     virtual void do_compute_gradient_hessian(ComputeGradientHessianInfo& info) = 0;
-
+    virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info, IndexT vertexId);
+    virtual void do_compute_gradient_hessian_by_color(ComputeGradientHessianInfo& info,
+                                                      muda::CBufferView<IndexT> color_vertices);
   private:
     friend class FEMLinearSubsystem;
     friend class FiniteElementMethod;
@@ -116,6 +118,9 @@ class FiniteElementEnergyProducer : public SimSystem
         Float                             dt;
     };
     void assemble_gradient_hessian(AssemblyInfo& info);
+    void assemble_gradient_hessian_by_vertex(AssemblyInfo& info, IndexT vertexId);
+    void assemble_gradient_hessian_by_color(AssemblyInfo& info,
+                                            muda::CBufferView<IndexT> color_vertices);
 
     Impl m_impl;
 };

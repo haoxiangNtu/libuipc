@@ -83,31 +83,43 @@ void GlobalLinearSystem::solve_by_vertex()
 {
 
     //// 3. Copy x_update to another host vector after the call
-    //std::vector<Float> x_update_before(m_impl.x_update.size());
-    //m_impl.x_update.buffer_view().copy_to(x_update_before.data());
+    //std::vector<Float> x_update_before(m_impl.xs_position.size());
+    //m_impl.xs_position.buffer_view().copy_to(x_update_before.data());
 
-    //    // 3. Copy x_update to another host vector after the call
-    //std::vector<Float> x_update_after(m_impl.x_update.size());
-    //m_impl.x_update.buffer_view().copy_to(x_update_after.data());
+    //// 3. Copy x_update to another host vector after the call
+    //std::vector<Float> x_update_after(m_impl.xs_position.size());
+    //m_impl.xs_position.buffer_view().copy_to(x_update_after.data());
 
     //// 4. Compare the two vectors
     //bool modified = !std::equal(
     //    x_update_before.begin(), x_update_before.end(), x_update_after.begin());
 
     //if(modified)
-    //    std::cout << "x_update has been modified." << std::endl;
+    //    std::cout << "xs_position has been modified." << std::endl;
     //else
-    //    std::cout << "x_update has not been modified." << std::endl;
+    //    std::cout << "xs_position has not been modified." << std::endl;
 
     //#####################################################
     //m_impl.build_linear_system();
     //if(m_impl.empty_system) [[unlikely]]
     //    return;
     //// reset x_update to initial previous position for sub system;
+
+    //m_impl.xs_position.view();
+    //SolvingInfo info{this};
+    //info.m_b = b.cview();
+    //info.m_x = x_update.view();
+
     //m_impl.solve_linear_system();
     //m_impl.distribute_solution();
 
     ///////########################################
+    //m_impl.build_linear_system();
+    //// if the system is empty, skip the following steps
+    //if(m_impl.empty_system) [[unlikely]]
+    //    return;
+    //m_impl.solve_linear_system();
+    //m_impl.distribute_solution();
     //#####################################################
     m_impl.build_linear_system_by_vertex();
     if(m_impl.empty_system) [[unlikely]]
@@ -226,42 +238,91 @@ void GlobalLinearSystem::Impl::build_linear_system()
 
 void GlobalLinearSystem::Impl::build_linear_system_by_vertex()
 {
+    //Timer timer{"Build Linear System"};
+    //empty_system = !_update_subsystem_extent();
+    //// if empty, skip the following steps
+    //if(empty_system) [[unlikely]]
+    //    return;
+
+    //_update_info();
+    //// 1. Copy x_update to a host vector before the call
+    //std::vector<Float> xs_position_before(xs_position.size());
+    //xs_position.buffer_view().copy_to(xs_position_before.data());
+
+    ////2. Call the function that may modify x_update
+    //_assemble_linear_system_by_vertex();
+    //converter.ge2sym(triplet_A);
+    //converter.convert(triplet_A, bcoo_A);
+
+    //_assemble_preconditioner();
+
+    ////_update_info();
+    //// 3. Copy x_update to another host vector after the call
+    //std::vector<Float> xs_position_after(xs_position.size());
+    //xs_position.buffer_view().copy_to(xs_position_after.data());
+
+    //// 4. Compare the two vectors
+    //bool modified = !std::equal(xs_position_before.begin(),
+    //                            xs_position_before.end(),
+    //                            xs_position_after.begin());
+
+    //if(modified)
+    //    std::cout << "xs_position has been modified." << std::endl;
+    //else
+    //    std::cout << "xs_position has not been modified." << std::endl;
+
     Timer timer{"Build Linear System"};
     empty_system = !_update_subsystem_extent();
     // if empty, skip the following steps
     if(empty_system) [[unlikely]]
         return;
 
-    // 1. Copy x_update to a host vector before the call
-    std::vector<Float> x_update_before(x_update.size());
-    x_update.buffer_view().copy_to(x_update_before.data());
+    _update_info();
 
-    //2. Call the function that may modify x_update
+    // 1. 复制 xs_position 和 x_update（dxs）到主机端（调用函数前）
+    std::vector<Float> xs_position_before(xs_position.size());
+    xs_position.buffer_view().copy_to(xs_position_before.data());
+
+    // 假设 x_update 是需要比较的变量（若变量名是 dxs，此处替换为 dxs 即可）
+    std::vector<Float> x_update_before(x_update.size());  // 或 dxs_before(dxs.size())
+    x_update.buffer_view().copy_to(x_update_before.data());  // 或 dxs.buffer_view().copy_to(...)
+
+    // 2. 调用可能修改 xs_position 和 x_update 的函数
     _assemble_linear_system_by_vertex();
     converter.ge2sym(triplet_A);
     converter.convert(triplet_A, bcoo_A);
 
     _assemble_preconditioner();
 
-    // 3. Copy x_update to another host vector after the call
-    std::vector<Float> x_update_after(x_update.size());
-    x_update.buffer_view().copy_to(x_update_after.data());
+    // 3. 复制 xs_position 和 x_update 到主机端（调用函数后）
+    std::vector<Float> xs_position_after(xs_position.size());
+    xs_position.buffer_view().copy_to(xs_position_after.data());
 
-    // 4. Compare the two vectors
-    bool modified = !std::equal(
-        x_update_before.begin(), x_update_before.end(), x_update_after.begin());
+    std::vector<Float> x_update_after(x_update.size());  // 或 dxs_after(dxs.size())
+    x_update.buffer_view().copy_to(x_update_after.data());  // 或 dxs.buffer_view().copy_to(...)
 
-    if(modified)
-        std::cout << "x_update has been modified." << std::endl;
-    else
-        std::cout << "x_update has not been modified." << std::endl;
+    // 4. 分别比较两个变量的前后值
+    bool modified_xs_position = !std::equal(xs_position_before.begin(),
+                                            xs_position_before.end(),
+                                            xs_position_after.begin());
 
-    //_assemble_linear_system_by_vertex();
+    bool modified_x_update = !std::equal(  // 或 modified_dxs
+        x_update_before.begin(),
+        x_update_before.end(),
+        x_update_after.begin());
 
-    //converter.ge2sym(triplet_A);
-    //converter.convert(triplet_A, bcoo_A);
+    //// 输出比较结果
+    //if(modified_xs_position)
+    //    std::cout << "xs_position has been modified." << std::endl;
+    //else
+    //    std::cout << "xs_position has not been modified." << std::endl;
 
-    //_assemble_preconditioner();
+
+
+    //if(modified_x_update)  // 或 modified_dxs
+    //    std::cout << "x_update (dxs) has been modified." << std::endl;
+    //else
+    //    std::cout << "x_update (dxs) has not been modified." << std::endl;
 }
 
 bool GlobalLinearSystem::Impl::_update_subsystem_extent()
@@ -323,11 +384,13 @@ bool GlobalLinearSystem::Impl::_update_subsystem_extent()
     {
         auto reserve_count = total_dof * reserve_ratio;
         x_update.reserve(reserve_count);
+        xs_position.reserve(reserve_count);
         b.reserve(reserve_count);
     }
     auto blocked_dof = total_dof / DoFBlockSize;
     triplet_A.reshape(blocked_dof, blocked_dof);
     x_update.resize(total_dof);
+    xs_position.resize(total_dof);
     b.resize(total_dof);
 
     if(triplet_count_changed) [[likely]]
@@ -443,6 +506,7 @@ void GlobalLinearSystem::Impl::_assemble_linear_system_by_vertex()
     auto HA = triplet_A.view();
     auto B  = b.view();
     auto dxs = x_update.view();
+    auto xs_pos = xs_position.view();
 
     auto diag_subsystem_view     = diag_subsystems.view();
     auto off_diag_subsystem_view = off_diag_subsystems.view();
@@ -473,6 +537,8 @@ void GlobalLinearSystem::Impl::_assemble_linear_system_by_vertex()
             info.m_index        = triplet_i;
             info.m_storage_type = HessianStorageType::Full;
             info.m_x_update     = dxs.subview(dof_offset, dof_count);
+            info.m_xs           = xs_pos.subview(dof_offset, dof_count);
+
             info.m_gradients    = B.subview(dof_offset, dof_count);
             info.m_hessians = HA.subview(subsystem_triplet_offsets[triplet_i],
                                          subsystem_triplet_counts[triplet_i])
@@ -526,6 +592,64 @@ void GlobalLinearSystem::Impl::_assemble_linear_system_by_vertex()
         CountTemp++;
     }
 }
+
+
+void GlobalLinearSystem::Impl::_update_info()
+{
+    auto HA     = triplet_A.view();
+    auto B      = b.view();
+    auto dxs    = x_update.view();
+    auto xs_pos = xs_position.view();
+
+    auto diag_subsystem_view     = diag_subsystems.view();
+    auto off_diag_subsystem_view = off_diag_subsystems.view();
+
+    auto diag_dof_counts  = diag_dof_offsets_counts.counts();
+    auto diag_dof_offsets = diag_dof_offsets_counts.offsets();
+
+    auto subsystem_triplet_counts  = subsystem_triplet_offsets_counts.counts();
+    auto subsystem_triplet_offsets = subsystem_triplet_offsets_counts.offsets();
+    int  CountTemp                 = 0;
+    for(const auto& subsystem_info : subsystem_infos)
+    {
+        if(subsystem_info.is_diag)
+        {
+            auto  dof_i          = subsystem_info.local_index;
+            auto  triplet_i      = subsystem_info.index;
+            auto& diag_subsystem = diag_subsystem_view[dof_i];
+
+            int  dof_offset         = diag_dof_offsets[dof_i];
+            int  dof_count          = diag_dof_counts[dof_i];
+            int  blocked_dof_offset = dof_offset / DoFBlockSize;
+            int  blocked_dof_count  = dof_count / DoFBlockSize;
+            int2 ij_offset          = {blocked_dof_offset, blocked_dof_offset};
+            int2 ij_count           = {blocked_dof_count, blocked_dof_count};
+
+            DiagInfo info{this};
+
+            info.m_index        = triplet_i;
+            info.m_storage_type = HessianStorageType::Full;
+            info.m_x_update     = dxs.subview(dof_offset, dof_count);
+            info.m_xs           = xs_pos.subview(dof_offset, dof_count);
+
+            info.m_gradients = B.subview(dof_offset, dof_count);
+            info.m_hessians  = HA.subview(subsystem_triplet_offsets[triplet_i],
+                                         subsystem_triplet_counts[triplet_i])
+                                  .submatrix(ij_offset, ij_count);
+            //==0 is abd , ==1 is fem
+            if(CountTemp == 1)
+            {
+                int teststopHere = 0;
+            }
+            diag_subsystem->update_info(info);
+        }
+        else
+        {
+        }
+        CountTemp++;
+    }
+}
+
 
 void GlobalLinearSystem::Impl::_assemble_preconditioner()
 {

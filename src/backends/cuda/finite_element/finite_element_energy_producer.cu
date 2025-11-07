@@ -33,6 +33,20 @@ void FiniteElementEnergyProducer::compute_energy(LineSearcher::EnergyInfo& info)
     do_compute_energy(this_info);
 }
 
+void FiniteElementEnergyProducer::do_compute_gradient_hessian_by_vertex(
+    ComputeGradientHessianInfo& info, IndexT vertexId)
+{
+    // 默认回退到 element-wise 的梯度 Hessian 计算
+    do_compute_gradient_hessian(info);
+}
+
+void FiniteElementEnergyProducer::do_compute_gradient_hessian_by_color(
+    ComputeGradientHessianInfo& info, muda::CBufferView<IndexT> color_vertices)
+{
+    // 默认回退到 element-wise 的梯度 Hessian 计算
+    do_compute_gradient_hessian(info);
+}
+
 void FiniteElementEnergyProducer::assemble_gradient_hessian(AssemblyInfo& info)
 {
     auto global_gradient_view =
@@ -44,6 +58,35 @@ void FiniteElementEnergyProducer::assemble_gradient_hessian(AssemblyInfo& info)
         info.hessians.subview(m_impl.hessian_offset, m_impl.hessian_count)};
 
     do_compute_gradient_hessian(this_info);
+}
+
+
+void FiniteElementEnergyProducer::assemble_gradient_hessian_by_vertex(AssemblyInfo& info, IndexT vertexId)
+{
+    auto global_gradient_view =
+        m_impl.finite_element_method->m_impl.energy_producer_gradients.view();
+
+    ComputeGradientHessianInfo this_info{
+        info.dt,
+        global_gradient_view.subview(m_impl.gradient_offset, m_impl.gradient_count),
+        info.hessians.subview(m_impl.hessian_offset, m_impl.hessian_count)};
+
+    //do_compute_gradient_hessian(this_info);
+    do_compute_gradient_hessian_by_vertex(this_info, vertexId);
+}
+
+void FiniteElementEnergyProducer::assemble_gradient_hessian_by_color(AssemblyInfo& info, muda::CBufferView<IndexT> color_vertices)
+{
+    auto global_gradient_view =
+        m_impl.finite_element_method->m_impl.energy_producer_gradients.view();
+
+    ComputeGradientHessianInfo this_info{
+        info.dt,
+        global_gradient_view.subview(m_impl.gradient_offset, m_impl.gradient_count),
+        info.hessians.subview(m_impl.hessian_offset, m_impl.hessian_count)};
+
+    //do_compute_gradient_hessian(this_info);
+    do_compute_gradient_hessian_by_color(this_info, color_vertices);
 }
 
 void FiniteElementEnergyProducer::ReportExtentInfo::energy_count(SizeT count) noexcept

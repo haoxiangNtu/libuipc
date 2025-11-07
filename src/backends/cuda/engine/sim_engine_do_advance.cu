@@ -64,6 +64,7 @@ __forceinline__ __device__ __host__ bool solve3x3_psd_stable(const DType* m,
 }
 std::vector<IndexT> newton_iters_record;
 std::vector<Float> Iters_energy;
+std::vector<Float>  Iters_line_search;
 void SimEngine::do_advance()
 {
     Float alpha     = 1.0;
@@ -351,6 +352,11 @@ void SimEngine::do_advance()
 
         // Simulation:
         {
+            //auto subtimestep_iter = 0;
+            //auto subtiemstep_max = 10;
+            //for(; subtimestep_iter < subtiemstep_max; ++subtimestep_iter)
+            //{
+            //}
             Timer timer{"Simulation"};
             // 1. Adaptive Parameter Calculation
             AABB vertex_bounding_box =
@@ -395,6 +401,7 @@ void SimEngine::do_advance()
 
                 // 4) Solve Global Linear System => dx = A^-1 * b
 
+                // 2. 调用可能修改 xs_position 和 x_update 的函数
                 m_state = SimEngineState::SolveGlobalLinearSystem;
                 {
                     Timer timer{"Solve Global Linear System"};
@@ -403,18 +410,20 @@ void SimEngine::do_advance()
                 }
 
 
-                // 5) Collect Vertex Displacements Globally
+                // 5) Collect Vertex Displacements Globally, 重新计算更新方向？？？？只要更新方向dxs足够小就叫做收敛??????????
                 m_global_vertex_manager->collect_vertex_displacements();
 
 
                 // 6) Check Termination Condition
                 bool converged  = convergence_check(newton_iter);
                 bool terminated = converged && (newton_iter >= newton_min_iter);
+                auto testCC     = newton_iter;
                 if(terminated)
                     break;
 
 
                 // 7) Begin Line Search
+                auto line_search_iter_global = 0;
                 m_state = SimEngineState::LineSearch;
                 {
                     Timer timer{"Line Search"};
@@ -439,7 +448,6 @@ void SimEngine::do_advance()
 
                     // * Step Forward => x = x_0 + alpha * dx
                     // Compute Test Energy => E
-
                     Float E = compute_energy(alpha);
 
                     if(!converged)
@@ -472,8 +480,10 @@ void SimEngine::do_advance()
                         // Check Line Search Iteration
                         // report warnings or throw exceptions if needed
                         check_line_search_iter(line_search_iter);
+                        line_search_iter_global = line_search_iter;
                     }
                 }
+                Iters_line_search.push_back(line_search_iter_global);
             }
             newton_iters_record.push_back(newton_iter);
             Iters_energy.push_back(Itres_Energy_each);
@@ -483,23 +493,32 @@ void SimEngine::do_advance()
                 Timer timer{"Update Velocity"};
                 m_time_integrator_manager->update_state();
             }
-            std::cout << "Newton iteration counts: [";
-            for(size_t i = 0; i < newton_iters_record.size(); ++i)
-            {
-                std::cout << newton_iters_record[i];
-                if(i + 1 < newton_iters_record.size())
-                    std::cout << ", ";
-            }
-            std::cout << "]" << std::endl;
+            //std::cout << "Newton iteration counts: [";
+            //for(size_t i = 0; i < newton_iters_record.size(); ++i)
+            //{
+            //    std::cout << newton_iters_record[i];
+            //    if(i + 1 < newton_iters_record.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
 
-            std::cout << "Energy iteration counts: [";
-            for(size_t i = 0; i < Iters_energy.size(); ++i)
-            {
-                std::cout << Iters_energy[i];
-                if(i + 1 < Iters_energy.size())
-                    std::cout << ", ";
-            }
-            std::cout << "]" << std::endl;
+            //std::cout << "Line search counts: [";
+            //for(size_t i = 0; i < Iters_line_search.size(); ++i)
+            //{
+            //    std::cout << Iters_line_search[i];
+            //    if(i + 1 < Iters_line_search.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
+
+            //std::cout << "Energy iteration counts: [";
+            //for(size_t i = 0; i < Iters_energy.size(); ++i)
+            //{
+            //    std::cout << Iters_energy[i];
+            //    if(i + 1 < Iters_energy.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
 
             // Check Newton Iteration
             // report warnings or throw exceptions if needed
