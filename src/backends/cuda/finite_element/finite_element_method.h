@@ -334,7 +334,7 @@ class FiniteElementMethod final : public SimSystem
         muda::DeviceBuffer<Float>   masses;    // Mass
         muda::DeviceBuffer<Float>   thicknesses;  // Thickness
 
-
+        muda::DeviceBuffer<Float> alpha_by_vertex;
         //tex:
         // FEM3D Material Basis
         //$$

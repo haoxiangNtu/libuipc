@@ -17,6 +17,12 @@ void TrajectoryFilter::filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info)
     do_filter_toi(info);
 }
 
+void TrajectoryFilter::filter_d_v(GlobalTrajectoryFilter::FilterActiveInfo& info,
+                                  std::vector<Float>& d_bv)
+{
+    do_filter_d_v(info, d_bv);
+}
+
 void TrajectoryFilter::record_friction_candidates(GlobalTrajectoryFilter::RecordFrictionCandidatesInfo& info)
 {
     do_record_friction_candidates(info);

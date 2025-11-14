@@ -1,0 +1,140 @@
+Fetching registry information from https://github.com/microsoft/vcpkg (HEAD)...
+Fetching registry information from https://github.com/spiriMirror/vcpkg (master)...
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+The following packages will be built and installed:
+  * boost-assert:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@d6e23ac8a35da1fa74839bde3a863d279a6059a3
+  * boost-cmake:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@1a36be4443ec1c0be66984a1e82914a5181b37b1
+  * boost-config:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@08220601e68293ce84acafc748856e45db90b6e0
+  * boost-core:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@4c65d7305461035adb983409910487493fbc3c17
+  * boost-headers:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@89fca00b9db236eb0cb0ea97b9db246c2db7b3e1
+  * boost-optional:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@1c8c7aa2e1a750a5faf818b3bc8e0491f415b489
+  * boost-static-assert:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@2cb92121f4df9c9b122c4837cb8e41ac1f4800b6
+  * boost-throw-exception:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@cce052773fa40ae37c9497cf38739945720cf104
+  * boost-type-traits:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@5c25a4ff2c1fd4d4eb993dfed7cba2b32fd020a6
+  * boost-uninstall:x64-windows@1.88.0 -- git+https://github.com/microsoft/vcpkg@3b2f9f82076f2d15124a4e449700848c25bcadcc
+    catch2:x64-windows@3.8.1 -- git+https://github.com/microsoft/vcpkg@663b04662ae30cc321b1b1a0c781c9f4a3d29b93
+  * console-bridge:x64-windows@1.0.2 -- git+https://github.com/microsoft/vcpkg@e5f1141775543ea0491358a281840ce2bcc100be
+    cppitertools:x64-windows@2.2 -- git+https://github.com/microsoft/vcpkg@7ed0b0e14e29b9d30f9ae606ae2a7ef6c3dce0f8
+    cpptrace:x64-windows@1.0.2 -- git+https://github.com/microsoft/vcpkg@48649f4a79fe4083e34178f73cb8a422fbb03b04
+  * cuda:x64-windows@10.1#13 -- git+https://github.com/microsoft/vcpkg@d7709c275f8ce58e6d1b4c71b8d37fba4a9a0377
+    dylib:x64-windows@2.2.1 -- git+https://github.com/microsoft/vcpkg@5fcb0f058217dc6352d308f18015ef37b3f5f23c
+    eigen3:x64-windows@3.4.0#5 -- git+https://github.com/microsoft/vcpkg@d9b547a9e3dc5b847f5ecab763fdea9728107a16
+    fmt:x64-windows@10.2.1 -- git+https://github.com/microsoft/vcpkg@405156a2b01c91258bf66768ceb3ae75c1caba7f
+  * hwloc:x64-windows@2.11.2 -- git+https://github.com/microsoft/vcpkg@4b14fa65f32abe3d816a08d5d37aaf183372338c
+    libigl:x64-windows@2.6.0 -- git+https://github.com/microsoft/vcpkg@3b47fec68bb327d7372d5a8d2c5418482fc60fdf
+    magic-enum:x64-windows@0.9.7#1 -- git+https://github.com/microsoft/vcpkg@9ab95f56c0327e8b6c0190fae3d975439161ffaa
+    muda:x64-windows@2025.10.3#1 -- git+https://github.com/spiriMirror/vcpkg@8d0a74f4d3b353144b9655418cc3e0fc1279b872
+    nlohmann-json:x64-windows@3.12.0 -- git+https://github.com/microsoft/vcpkg@060c829772d52e920fee94cf84755031c61e3b67
+    spdlog:x64-windows@1.12.0 -- git+https://github.com/microsoft/vcpkg@41cf31aa350a44644863d7777489501d240f248c
+  * stb:x64-windows@2024-07-29#1 -- git+https://github.com/microsoft/vcpkg@c362152d1d02973e7b1ce777960f8a6876656560
+    tbb[core,hwloc]:x64-windows@2022.1.0 -- git+https://github.com/microsoft/vcpkg@2d847cfd21c285d0c77182456b82de69d2123325
+    tinygltf:x64-windows@2.9.6 -- git+https://github.com/microsoft/vcpkg@c5edbac51522b64ff965ab1365cf5482c54d5a29
+  * tinyxml:x64-windows@2.6.2#10 -- git+https://github.com/microsoft/vcpkg@4463cb1a60eed81cb34748d54b2ad5e3b8ed3a08
+    urdfdom:x64-windows@3.1.1 -- git+https://github.com/microsoft/vcpkg@eb1c1a30329b850ac4450d3b1a72166697058bb8
+  * urdfdom-headers:x64-windows@1.1.1 -- git+https://github.com/microsoft/vcpkg@092b0a254c20195ecca315045637a1e7aed2a244
+  * vcpkg-boost:x64-windows@2025-03-29 -- git+https://github.com/microsoft/vcpkg@858b0333b773b5650c3f19ef271e3205542d7ceb
+  * vcpkg-cmake:x64-windows@2024-04-23 -- git+https://github.com/microsoft/vcpkg@e74aa1e8f93278a8e71372f1fa08c3df420eb840
+  * vcpkg-cmake-config:x64-windows@2024-05-23 -- git+https://github.com/microsoft/vcpkg@97a63e4bc1a17422ffe4eff71da53b4b561a7841
+Additional packages (*) will be modified to complete this operation.
+Restored 32 package(s) from C:\Users\haoxiang\AppData\Local\vcpkg\archives in 981 ms. Use --debug to see more details.
+Installing 1/33 vcpkg-cmake-config:x64-windows@2024-05-23...
+Elapsed time to handle vcpkg-cmake-config:x64-windows: 5.87 ms
+vcpkg-cmake-config:x64-windows package ABI: 6817c733c9ea80b6f5f55e5642a01810efeda3b520f93a5b3e289b3f7150ba0a
+Installing 2/33 vcpkg-cmake:x64-windows@2024-04-23...
+Elapsed time to handle vcpkg-cmake:x64-windows: 6.37 ms
+vcpkg-cmake:x64-windows package ABI: b1ed26f9d89441764bd9e3a367828ba72fc913abe3c2964e412f918238a3081c
+Installing 3/33 catch2:x64-windows@3.8.1...
+Elapsed time to handle catch2:x64-windows: 147 ms
+catch2:x64-windows package ABI: 6ee65524837632807a9145739ae905c97e25a76d7ca68920e2344845a90cb5fc
+Installing 4/33 vcpkg-boost:x64-windows@2025-03-29...
+Elapsed time to handle vcpkg-boost:x64-windows: 5.73 ms
+vcpkg-boost:x64-windows package ABI: 0863790b56fcedc92ac3d65317d7f02a026c5554cba17a912594b717007c52ce
+Installing 5/33 boost-uninstall:x64-windows@1.88.0...
+Elapsed time to handle boost-uninstall:x64-windows: 4.19 ms
+boost-uninstall:x64-windows package ABI: b042260d316f048ee71ef863c7849470608189e384bdfc88d74cc39d9a39345e
+Installing 6/33 boost-cmake:x64-windows@1.88.0...
+Elapsed time to handle boost-cmake:x64-windows: 10.4 ms
+boost-cmake:x64-windows package ABI: 39a89f42174815422f09da7f20fadce6e0192a5d5c668861b372ef2a56966715
+Installing 7/33 boost-headers:x64-windows@1.88.0...
+Elapsed time to handle boost-headers:x64-windows: 6.62 ms
+boost-headers:x64-windows package ABI: 3b6a0067f780c183a9d94134bc08ba7ed5bd9d7542b5e3b320f27b5f8cc1292a
+Installing 8/33 boost-config:x64-windows@1.88.0...
+Elapsed time to handle boost-config:x64-windows: 139 ms
+boost-config:x64-windows package ABI: 2133a21c39ee96f176bf6b2f7179492b6c60608052f21eeb709984c7187399b9
+Installing 9/33 boost-static-assert:x64-windows@1.88.0...
+Elapsed time to handle boost-static-assert:x64-windows: 6.87 ms
+boost-static-assert:x64-windows package ABI: a4465ffd861e72861c24fc3452938b9ca2ca3437030ab415fa2db6ae9b3b79ce
+Installing 10/33 boost-type-traits:x64-windows@1.88.0...
+Elapsed time to handle boost-type-traits:x64-windows: 115 ms
+boost-type-traits:x64-windows package ABI: 5395f1775b1d80d6475202af94df451f9f812f63cbf40c67fc1e8f2c7bae09da
+Installing 11/33 boost-assert:x64-windows@1.88.0...
+Elapsed time to handle boost-assert:x64-windows: 8.02 ms
+boost-assert:x64-windows package ABI: f7f2a32c59e429f6f3a8b214ba984a8ef952c1537503717955577871f9b10dac
+Installing 12/33 boost-throw-exception:x64-windows@1.88.0...
+Elapsed time to handle boost-throw-exception:x64-windows: 7.7 ms
+boost-throw-exception:x64-windows package ABI: 77cc65c9bb2c98e3e679c45ffb38482f46ce8b5c7b1c0cf73f5da6a4e99ae74d
+Installing 13/33 boost-core:x64-windows@1.88.0...
+Elapsed time to handle boost-core:x64-windows: 47.3 ms
+boost-core:x64-windows package ABI: a7e7ce4526373a6c9f92e0ea6c4aeb97576ca17da98027d9218c8915935a5fa5
+Installing 14/33 boost-optional:x64-windows@1.88.0...
+Elapsed time to handle boost-optional:x64-windows: 16.3 ms
+boost-optional:x64-windows package ABI: 18d3154153a4cb778d4f6b70a06f363c832d37ed205bc3ef550bcb52cea9175b
+Installing 15/33 cppitertools:x64-windows@2.2...
+Elapsed time to handle cppitertools:x64-windows: 23.3 ms
+cppitertools:x64-windows package ABI: f3b4a1b808405ec85e702dcd3ffd57eeaf40e0b36c0c0c2bcd40fd18992c2958
+Installing 16/33 cpptrace:x64-windows@1.0.2...
+Elapsed time to handle cpptrace:x64-windows: 19.1 ms
+cpptrace:x64-windows package ABI: e2cfb86cbadb2b734ee4eb94571bf95e86efca8c2c71642faa84c0fc6a5c4427
+Installing 17/33 dylib:x64-windows@2.2.1...
+Elapsed time to handle dylib:x64-windows: 8.8 ms
+dylib:x64-windows package ABI: b7372f0f9db62f09cfdd334bed696286e7a61a2c9a3b2222a10031d515a23b10
+Installing 18/33 eigen3:x64-windows@3.4.0#5...
+Elapsed time to handle eigen3:x64-windows: 611 ms
+eigen3:x64-windows package ABI: 9ff85561d8f782de60f6910177bdfce50213d650e4b8bfce0650b7b6c4fdd349
+Installing 19/33 fmt:x64-windows@10.2.1...
+Elapsed time to handle fmt:x64-windows: 25.6 ms
+fmt:x64-windows package ABI: d3e048ab59a8bf5e6f99de3d720dc00021b1e2a06063644bfe178f68ace06ac8
+Installing 20/33 stb:x64-windows@2024-07-29#1...
+Elapsed time to handle stb:x64-windows: 19.4 ms
+stb:x64-windows package ABI: 6c4c1dfe168bca4760fa5ce1ba0e553fd70198c2d6f9785676bdfbdfd8a3e3be
+Installing 21/33 libigl:x64-windows@2.6.0...
+Elapsed time to handle libigl:x64-windows: 555 ms
+libigl:x64-windows package ABI: 532395a0b10f697ef3234d63ca8cd957708b8e2ad78373513df8bf917c710118
+Installing 22/33 magic-enum:x64-windows@0.9.7#1...
+Elapsed time to handle magic-enum:x64-windows: 15.6 ms
+magic-enum:x64-windows package ABI: 99dc98698d9c55505eab90f67c43614f9686f4bb0da9dae2b88614938cf1b452
+Installing 23/33 cuda:x64-windows@10.1#13...
+Elapsed time to handle cuda:x64-windows: 9.47 ms
+cuda:x64-windows package ABI: eed289f32d344610de58ae46800e2556efbba929fd0df2b20064146403dd9fb8
+Installing 24/33 muda:x64-windows@2025.10.3#1...
+Building muda:x64-windows@2025.10.3#1...
+C:\Users\haoxiang\AppData\Local\vcpkg\registries\git-trees\8d0a74f4d3b353144b9655418cc3e0fc1279b872: info: installing from git registry git+https://github.com/spiriMirror/vcpkg@8d0a74f4d3b353144b9655418cc3e0fc1279b872
+Downloading https://github.com/MuGdxy/muda/archive/2025.10.3-1.tar.gz -> MuGdxy-muda-2025.10.3-1.tar.gz
+error: https://github.com/MuGdxy/muda/archive/2025.10.3-1.tar.gz: failed: status code 404
+note: If you are using a proxy, please ensure your proxy settings are correct.
+Possible causes are:
+1. You are actually using an HTTP proxy, but setting HTTPS_PROXY variable to `https//address:port`.
+This is not correct, because `https://` prefix claims the proxy is an HTTPS proxy, while your proxy (v2ray, shadowsocksr, etc...) is an HTTP proxy.
+Try setting `http://address:port` to both HTTP_PROXY and HTTPS_PROXY instead.
+2. If you are using Windows, vcpkg will automatically use your Windows IE Proxy Settings set by your proxy software. See: https://github.com/microsoft/vcpkg-tool/pull/77
+The value set by your proxy might be wrong, or have same `https://` prefix issue.
+3. Your proxy's remote server is out of service.
+If you believe this is not a temporary download server failure and vcpkg needs to be changed to download this file from a different location, please submit an issue to https://github.com/Microsoft/vcpkg/issues
+CMake Error at scripts/cmake/vcpkg_download_distfile.cmake:136 (message):
+  Download failed, halting portfile.
+Call Stack (most recent call first):
+  scripts/cmake/vcpkg_from_github.cmake:120 (vcpkg_download_distfile)
+  C:/Users/haoxiang/AppData/Local/vcpkg/registries/git-trees/8d0a74f4d3b353144b9655418cc3e0fc1279b872/portfile.cmake:1 (vcpkg_from_github)
+  scripts/ports.cmake:206 (include)
+
+
+error: building muda:x64-windows failed with: BUILD_FAILED
+See https://learn.microsoft.com/vcpkg/troubleshoot/build-failures?WT.mc_id=vcpkg_inproduct_cli for more information.
+Elapsed time to handle muda:x64-windows: 1.3 s
+Please ensure you're using the latest port files with `git pull` and `vcpkg update`.
+Then check for known issues at:
+  https://github.com/microsoft/vcpkg/issues?q=is%3Aissue+is%3Aopen+in%3Atitle+muda
+You can submit a new issue at:
+  https://github.com/microsoft/vcpkg/issues/new?title=%5Bmuda%5D%20build%20error%20on%20x64-windows&body=Copy%20issue%20body%20from%20D%3A%2FProgramming%2Flibuipc%2FbuildGPU%2Fvcpkg_installed%2Fvcpkg%2Fissue_body.md
+

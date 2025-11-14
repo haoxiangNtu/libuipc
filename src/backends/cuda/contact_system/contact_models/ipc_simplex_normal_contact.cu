@@ -280,7 +280,7 @@ class IPCSimplexNormalContact final : public SimplexNormalContact
     {
         using namespace muda;
         using namespace sym::codim_ipc_simplex_contact;
-
+        //auto d_hats = info.d_hats();
         if(info.PTs().size())
         {
             // Compute Point-Triangle Gradient and Hessian

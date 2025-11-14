@@ -133,6 +133,11 @@ void ABDLineSearchReporter::do_step_forward(LineSearcher::StepInfo& info)
     m_impl.step_forward(info);
 }
 
+void ABDLineSearchReporter::do_step_forward_by_vertex(LineSearcher::StepInfo& info)
+{
+    m_impl.step_forward(info);
+}
+
 void ABDLineSearchReporter::do_compute_energy(LineSearcher::EnergyInfo& info)
 {
     m_impl.compute_energy(info);

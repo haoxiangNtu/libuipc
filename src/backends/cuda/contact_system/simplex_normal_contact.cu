@@ -230,6 +230,7 @@ muda::CTripletMatrixView<Float, 3> SimplexNormalContact::PP_hessians() const
 
 muda::CBufferView<Vector4i> SimplexNormalContact::BaseInfo::PTs() const
 {
+    //m_impl->simplex_trajectory_filter
     // return m_impl->PT_constraints.view();
     return m_impl->simplex_trajectory_filter->PTs();
 }

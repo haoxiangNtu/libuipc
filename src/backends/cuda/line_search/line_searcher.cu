@@ -48,7 +48,20 @@ void LineSearcher::step_forward(Float alpha)
     {
         StepInfo info;
         info.alpha = alpha;
+        //info.alpha_by_vertex = muda::BufferView<Float>{};
         R->step_forward(info);
+    }
+}
+
+void LineSearcher::step_forward_by_vertex(Float alpha, std::vector<Float> alpha_by_vertex)
+{
+    for(auto&& R : m_reporters.view())
+    {
+        StepInfo info;
+        info.alpha = alpha;
+        info.alpha_by_vertex = alpha_by_vertex;
+        //>step_forward(info);
+        R->step_forward_by_vertex(info);
     }
 }
 

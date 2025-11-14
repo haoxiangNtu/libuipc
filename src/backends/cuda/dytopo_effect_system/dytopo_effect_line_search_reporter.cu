@@ -52,6 +52,11 @@ void DyTopoEffectLineSearchReporter::do_step_forward(LineSearcher::StepInfo& inf
     // Do nothing, because GlobalVertexManager will do the step forward for all the vertices we need
 }
 
+void DyTopoEffectLineSearchReporter::do_step_forward_by_vertex(LineSearcher::StepInfo& info)
+{
+    // Do nothing, because GlobalVertexManager will do the step forward for all the vertices we need
+}
+
 void DyTopoEffectLineSearchReporter::do_compute_energy(LineSearcher::EnergyInfo& info)
 {
     using namespace muda;

@@ -116,7 +116,7 @@ class VertexHalfPlaneTrajectoryFilter : public TrajectoryFilter
     virtual void do_detect(DetectInfo& info)              = 0;
     virtual void do_filter_active(FilterActiveInfo& info) = 0;
     virtual void do_filter_toi(FilterTOIInfo& info)       = 0;
-
+    virtual void do_filter_d_v(FilterActiveInfo& info, std::vector<Float>& d_bv) = 0;
     virtual void do_build(BuildInfo& info){};
 
   private:
@@ -126,6 +126,8 @@ class VertexHalfPlaneTrajectoryFilter : public TrajectoryFilter
     virtual void do_detect(GlobalTrajectoryFilter::DetectInfo& info) override final;
     virtual void do_filter_active(GlobalTrajectoryFilter::FilterActiveInfo& info) override final;
     virtual void do_filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info) override final;
+    virtual void do_filter_d_v(GlobalTrajectoryFilter::FilterActiveInfo& info,
+                               std::vector<Float>& d_bv) override final;
     virtual void do_record_friction_candidates(
         GlobalTrajectoryFilter::RecordFrictionCandidatesInfo& info) override final;
     virtual void do_label_active_vertices(GlobalTrajectoryFilter::LabelActiveVerticesInfo& info) override final;

@@ -25,6 +25,7 @@ class GlobalTrajectoryFilter final : public SimSystem
         friend class GlobalTrajectoryFilter;
         Float                m_alpha = 0.0;
         muda::VarView<Float> m_toi;
+        std::vector<Float>   m_alpha_vec;
     };
 
     class DetectInfo
@@ -75,14 +76,17 @@ class GlobalTrajectoryFilter final : public SimSystem
       public:
         void  init();
         Float filter_toi(Float alpha);
-
+        std::vector<Float> filter_d_bv(Float alpha);
         SimSystemSlotCollection<TrajectoryFilter> filters;
         SimSystemSlot<GlobalContactManager>       global_contact_manager;
         bool                                      friction_enabled = false;
 
 
         muda::DeviceBuffer<Float> tois;
+        muda::DeviceBuffer<Float> vertices_bv;
         vector<Float>             h_tois;
+        vector<Float>             h_vertices_bv;
+        vector<Float>             h_alpha;
     };
 
     template <std::derived_from<SimSystem> T>
@@ -102,6 +106,7 @@ class GlobalTrajectoryFilter final : public SimSystem
     void filter_active();      // called by SimEngine and ContactExporterManager
 
     Float filter_toi(Float alpha);       // only called by SimEngine
+    std::vector<Float> filter_d_bv(Float alpha);  // only called by SimEngine
     void  record_friction_candidates();  // only called by SimEngine
     friend class GlobalContactManager;
     void label_active_vertices();  // only called by GlobalContactManager

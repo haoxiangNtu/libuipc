@@ -15,7 +15,7 @@ class TrajectoryFilter : public SimSystem
     virtual void do_filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info) = 0;
     virtual void do_record_friction_candidates(GlobalTrajectoryFilter::RecordFrictionCandidatesInfo&) = 0;
     virtual void do_label_active_vertices(GlobalTrajectoryFilter::LabelActiveVerticesInfo& info) = 0;
-
+    virtual void do_filter_d_v(GlobalTrajectoryFilter::FilterActiveInfo& info, std::vector<Float>& d_bv)=0;
   private:
     friend class GlobalTrajectoryFilter;
 
@@ -24,5 +24,6 @@ class TrajectoryFilter : public SimSystem
     void filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info);
     void record_friction_candidates(GlobalTrajectoryFilter::RecordFrictionCandidatesInfo& info);
     void label_active_vertices(GlobalTrajectoryFilter::LabelActiveVerticesInfo& info);
+    void filter_d_v(GlobalTrajectoryFilter::FilterActiveInfo& info, std::vector<Float> & d_bv);
 };
 }  // namespace uipc::backend::cuda

@@ -178,7 +178,7 @@ int main(int argc, char** argv)
 
 
     cloth_obj->geometries().create(cloth_mesh);
-    cloth_obj->geometries().create(cloth_mesh_2);
+    //cloth_obj->geometries().create(cloth_mesh_2);
     S<Object> bunny_obj = scene.objects().create("bunny");
     Transform T1         = Transform::Identity();
     T1.translate(Vector3::UnitX() + Vector3::UnitZ());
@@ -253,24 +253,25 @@ int main(int argc, char** argv)
         ground_obj->geometries().create(ground);
 
         //// === Cloth mesh bounding box ===
-        //{
-        //    auto pos_view = view(cloth_mesh.positions());
+        {
+            auto pos_view = view(cloth_mesh.positions());
 
-        //    Vector3 min_pos = pos_view[0];
-        //    Vector3 max_pos = pos_view[0];
+            Vector3 min_pos = pos_view[0];
+            Vector3 max_pos = pos_view[0];
 
-        //    for(const auto& v : pos_view)
-        //    {
-        //        min_pos = min_pos.cwiseMin(v);
-        //        max_pos = max_pos.cwiseMax(v);
-        //    }
+            for(const auto& v : pos_view)
+            {
+                min_pos = min_pos.cwiseMin(v);
+                max_pos = max_pos.cwiseMax(v);
+            }
 
-        //    Vector3 size = max_pos - min_pos;
-        //    std::cout << "Cloth mesh bounding box:\n";
-        //    std::cout << "  Min:  " << min_pos.transpose() << "\n";
-        //    std::cout << "  Max:  " << max_pos.transpose() << "\n";
-        //    std::cout << "  Size: " << size.transpose() << "\n\n";
-        //}
+            Vector3 size = max_pos - min_pos;
+            std::cout << "Cloth mesh bounding box:\n";
+            std::cout << "  Min:  " << min_pos.transpose() << "\n";
+            std::cout << "  Max:  " << max_pos.transpose() << "\n";
+            std::cout << "  Size: " << size.transpose() << "\n\n";
+            int tempstop = 0;
+        }
 
         //// === Ground mesh bounding box ===
         //{

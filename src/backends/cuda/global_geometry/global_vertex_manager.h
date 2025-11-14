@@ -156,6 +156,7 @@ class GlobalVertexManager final : public SimSystem
         void record_prev_positions();
         void record_start_point();
         void step_forward(Float alpha);
+        void step_forward_by_vertex(std::vector<Float> alpha);
 
         void collect_vertex_displacements();
 
@@ -185,6 +186,7 @@ class GlobalVertexManager final : public SimSystem
         muda::DeviceBuffer<IndexT>  contact_subscene_element_ids;
         muda::DeviceBuffer<Vector3> displacements;
         muda::DeviceBuffer<Float>   displacement_norms;
+        muda::DeviceBuffer<Float>   alpha_by_vertex;
 
         muda::DeviceVar<Float>   axis_max_disp;
         muda::DeviceVar<Float>   max_disp_norm;
@@ -221,6 +223,7 @@ class GlobalVertexManager final : public SimSystem
 
     AABB compute_vertex_bounding_box();
     void step_forward(Float alpha);
+    void step_forward_by_vertex(Float alpha, std::vector<Float> alpha_vec);
     void record_start_point();
     Impl m_impl;
 };

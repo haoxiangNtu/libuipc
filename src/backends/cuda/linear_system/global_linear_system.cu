@@ -114,17 +114,17 @@ void GlobalLinearSystem::solve_by_vertex()
     //m_impl.distribute_solution();
 
     ///////########################################
-    //m_impl.build_linear_system();
-    //// if the system is empty, skip the following steps
-    //if(m_impl.empty_system) [[unlikely]]
-    //    return;
-    //m_impl.solve_linear_system();
-    //m_impl.distribute_solution();
-    //#####################################################
-    m_impl.build_linear_system_by_vertex();
+    m_impl.build_linear_system();
+    // if the system is empty, skip the following steps
     if(m_impl.empty_system) [[unlikely]]
         return;
+    m_impl.solve_linear_system();
     m_impl.distribute_solution();
+    //#####################################################
+    //m_impl.build_linear_system_by_vertex();
+    //if(m_impl.empty_system) [[unlikely]]
+    //    return;
+    //m_impl.distribute_solution();
 }
 
 void GlobalLinearSystem::Impl::init()

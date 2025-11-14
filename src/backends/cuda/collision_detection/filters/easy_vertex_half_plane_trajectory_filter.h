@@ -35,5 +35,6 @@ class EasyVertexHalfPlaneTrajectoryFilter final : public VertexHalfPlaneTrajecto
     virtual void do_detect(DetectInfo& info) override;
     virtual void do_filter_active(FilterActiveInfo& info) override;
     virtual void do_filter_toi(FilterTOIInfo& info) override;
+    virtual void do_filter_d_v(FilterActiveInfo& info, std::vector<Float>& d_bv) override;
 };
 }  // namespace uipc::backend::cuda

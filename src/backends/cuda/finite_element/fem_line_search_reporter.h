@@ -16,10 +16,15 @@ class FEMLineSearchReporter final : public LineSearchReporter
       public:
         void record_start_point(LineSearcher::RecordInfo& info);
         void step_forward(LineSearcher::StepInfo& info);
+        void step_forward_by_vertex(LineSearcher::StepInfo& info);
         void compute_energy(LineSearcher::EnergyInfo& info);
 
         SimSystemSlot<FiniteElementMethod>   finite_element_method;
         SimSystemSlot<FiniteElementAnimator> finite_element_animator;
+
+        // Count of vertices clamped in the last step_forward_by_vertex
+        muda::DeviceVar<IndexT>    clamp_count{0};
+
         FiniteElementMethod::Impl&           fem()
         {
             return finite_element_method->m_impl;
@@ -31,6 +36,7 @@ class FEMLineSearchReporter final : public LineSearchReporter
     virtual void do_build(LineSearchReporter::BuildInfo& info) override;
     virtual void do_record_start_point(LineSearcher::RecordInfo& info) override;
     virtual void do_step_forward(LineSearcher::StepInfo& info) override;
+    virtual void do_step_forward_by_vertex(LineSearcher::StepInfo& info) override;
     virtual void do_compute_energy(LineSearcher::EnergyInfo& info) override;
 
   private:

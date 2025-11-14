@@ -58,6 +58,7 @@ class ABDLineSearchReporter final : public LineSearchReporter
     virtual void do_init(LineSearchReporter::InitInfo& info) override;
     virtual void do_record_start_point(LineSearcher::RecordInfo& info) override;
     virtual void do_step_forward(LineSearcher::StepInfo& info) override;
+    virtual void do_step_forward_by_vertex(LineSearcher::StepInfo& info) override;
     virtual void do_compute_energy(LineSearcher::EnergyInfo& info) override;
 
     friend class ABDLineSearchSubreporter;

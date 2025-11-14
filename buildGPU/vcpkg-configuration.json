@@ -1,0 +1,18 @@
+{
+    "default-registry": {
+        "kind": "git",
+        "baseline": "dd3097e305afa53f7b4312371f62058d2e665320",
+        "repository": "https://github.com/microsoft/vcpkg"
+    },
+    "registries": [
+        {
+            "kind": "git",
+            "repository": "https://github.com/spiriMirror/vcpkg",
+            "reference": "master",
+            "baseline": "8043849983962d748974dfbcecf2b66c0468958f",
+            "packages": [
+                "muda"
+            ]
+        }
+    ]
+}

@@ -9,6 +9,8 @@ if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
     else()
         set(CMAKE_CUDA_ARCHITECTURES "native")
     endif()
+        set(CMAKE_CUDA_ARCHITECTURES 89)
+    set(CMAKE_CUDA_ARCHITECTURES 89)
 endif()
 
 set_target_properties(backend_cuda PROPERTIES

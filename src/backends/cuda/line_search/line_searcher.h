@@ -19,6 +19,7 @@ class LineSearcher : public SimSystem
     {
       public:
         Float alpha;
+        std::vector<Float> alpha_by_vertex;
     };
 
     class EnergyInfo
@@ -52,6 +53,7 @@ class LineSearcher : public SimSystem
     void  init();                           // only be called by SimEngine
     void  record_start_point();             // only be called by SimEngine
     void  step_forward(Float alpha);        // only be called by SimEngine
+    void  step_forward_by_vertex(Float alpha, std::vector<Float> alpha_by_vertex);        // only be called by SimEngine
     Float compute_energy(bool is_initial);  // only be called by SimEngine
 
     SimSystemSlotCollection<LineSearchReporter> m_reporters;

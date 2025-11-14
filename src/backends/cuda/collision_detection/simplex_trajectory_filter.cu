@@ -109,6 +109,20 @@ void SimplexTrajectoryFilter::do_filter_toi(GlobalTrajectoryFilter::FilterTOIInf
     do_filter_toi(this_info);
 }
 
+void SimplexTrajectoryFilter::do_filter_d_v(GlobalTrajectoryFilter::FilterActiveInfo& info,
+                                            std::vector<Float>& d_bv)
+{
+    FilterActiveInfo this_info{&m_impl};
+    //do_filter_active(this_info);
+    do_filter_d_v(this_info, d_bv);
+
+
+    //FilterTOIInfo this_info{&m_impl};
+    //this_info.m_alpha = info.alpha();
+    //this_info.m_toi   = info.toi();
+    //do_filter_toi(this_info);
+}
+
 void SimplexTrajectoryFilter::Impl::record_friction_candidates(
     GlobalTrajectoryFilter::RecordFrictionCandidatesInfo& info)
 {

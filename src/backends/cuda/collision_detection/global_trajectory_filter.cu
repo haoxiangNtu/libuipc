@@ -2,6 +2,7 @@
 #include <collision_detection/trajectory_filter.h>
 #include <contact_system/global_contact_manager.h>
 #include <sim_engine.h>
+#include <collision_detection/filters/lbvh_simplex_trajectory_filter.h> // added
 
 namespace uipc::backend
 {
@@ -101,9 +102,34 @@ Float GlobalTrajectoryFilter::Impl::filter_toi(Float alpha)
     return min_toi < 1.0 ? min_toi : 1.0;
 }
 
+std::vector<Float> GlobalTrajectoryFilter::Impl::filter_d_bv(Float alpha)
+{
+    auto filter_view = filters.view();
+
+    std::vector<Float> d_bv;  // Temporary vector to hold d_bv values
+    // Only return the FEM-related filter's d_bv
+    for(auto&& [i, filter] : enumerate(filter_view))
+    {
+        if(dynamic_cast<LBVHSimplexTrajectoryFilter*>(filter) != nullptr)
+        {
+            FilterActiveInfo info(this);
+            filter->filter_d_v(info, d_bv);
+            //return std::vector<Float>{h_tois[i]};
+        }
+    }
+    return d_bv;
+    // Fallback: if FEM filter not found, keep the original behavior
+    //return h_tois;
+}
+
 Float GlobalTrajectoryFilter::filter_toi(Float alpha)
 {
     return m_impl.filter_toi(alpha);
+}
+
+std::vector<Float> GlobalTrajectoryFilter::filter_d_bv(Float alpha)
+{
+    return m_impl.filter_d_bv(alpha);
 }
 
 void GlobalTrajectoryFilter::record_friction_candidates()

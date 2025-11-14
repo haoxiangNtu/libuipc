@@ -24,6 +24,13 @@ void EasyVertexHalfPlaneTrajectoryFilter::do_filter_toi(FilterTOIInfo& info)
     m_impl.filter_toi(info);
 }
 
+void EasyVertexHalfPlaneTrajectoryFilter::do_filter_d_v(FilterActiveInfo& info,
+                                                        std::vector<Float>& d_bv)
+{
+    //m_impl.filter_d_v(info, d_bv);
+    //m_impl.filter_toi(info);
+}
+
 void EasyVertexHalfPlaneTrajectoryFilter::Impl::filter_active(FilterActiveInfo& info)
 {
     using namespace muda;

@@ -3,7 +3,7 @@
 #include <uipc/common/range.h>
 #include <muda/cub/device/device_reduce.h>
 #include <global_geometry/vertex_reporter.h>
-
+#include <finite_element/finite_element_vertex_reporter.h> 
 /*************************************************************************************************
 * Core Implementation
 *************************************************************************************************/
@@ -94,6 +94,53 @@ void GlobalVertexManager::Impl::step_forward(Float alpha)
                 disp     = displacements.viewer().name("disp"),
                 alpha    = alpha] __device__(int i) mutable
                { pos(i) = safe_pos(i) + alpha * disp(i); });
+}
+
+void GlobalVertexManager::Impl::step_forward_by_vertex(std::vector<Float> alpha)
+{
+    using namespace muda;
+    ///////////这里的公式要改一下，alpha 不是步长，而是最大允许移动的大小，如果超过这个大小，要进行缩放
+    //类似于x_v = (x_v - xprev_v) / ||x_v - xprev_v|| * b_v + xprev_v;
+    muda::DeviceBuffer<Float> alpha_by_vertex(alpha);
+    //ParallelFor()
+    //    .file_line(__FILE__, __LINE__)
+    //    .apply(positions.size(),
+    //           [pos      = positions.viewer().name("pos"),
+    //            safe_pos = safe_positions.viewer().name("safe_pos"),
+    //            disp     = displacements.viewer().name("disp"),
+    //            alpha = alpha_by_vertex.viewer().name("alpha_by_vertex")] __device__(int i) mutable
+    //           { pos(i) = safe_pos(i) + alpha(i) * disp(i); });
+
+
+        ParallelFor()
+        .file_line(__FILE__, __LINE__)
+        .apply(positions.size(),
+               [pos      = positions.viewer().name("pos"),
+                safe_pos = safe_positions.viewer().name("safe_pos"),
+                disp     = displacements.viewer().name("disp"),
+                alpha = alpha_by_vertex.viewer().name("alpha_by_vertex")] __device__(int i) mutable
+               {
+                   auto  d     = disp(i);   // Vector3 displacement
+                   Float limit = alpha(i);  // max allowed magnitude
+
+                   if(limit > Float(0))
+                   {
+                       const Float len2   = d.squaredNorm();
+                       const Float limit2 = limit * limit;
+                       if(len2 > limit2)
+                       {
+                           const Float len = sqrt(len2);
+                           d *= (limit / len);  // clamp
+                       }
+                   }
+                   // If limit <= 0, disallow movement:
+                   else
+                   {
+                       d.setZero();
+                   }
+
+                   pos(i) = safe_pos(i) + d;
+               });
 }
 
 void GlobalVertexManager::Impl::collect_vertex_displacements()
@@ -385,6 +432,48 @@ AABB GlobalVertexManager::compute_vertex_bounding_box()
 void GlobalVertexManager::step_forward(Float alpha)
 {
     m_impl.step_forward(alpha);
+}
+
+void GlobalVertexManager::step_forward_by_vertex(Float alpha, std::vector<Float> alpha_vec)
+{
+
+        // 1) Build alpha_all = [alpha,...,alpha] by default
+    const SizeT        total = m_impl.positions.size();
+    std::vector<Float> alpha_all(total, alpha);
+
+    // 2) Locate FEM reporter and its [offset, count]
+    SizeT fem_offset = 0;
+    SizeT fem_count  = 0;
+    bool  has_fem    = false;
+
+    auto reporter_view = m_impl.vertex_reporters.view();
+    auto offsets       = m_impl.reporter_vertex_offsets_counts.offsets();
+    auto counts        = m_impl.reporter_vertex_offsets_counts.counts();
+
+    for(auto&& [i, R] : enumerate(reporter_view))
+    {
+        // Only the FEM reporter should get per-vertex alpha
+        if(dynamic_cast<FiniteElementVertexReporter*>(R) != nullptr)
+        {
+            has_fem    = true;
+            fem_offset = static_cast<SizeT>(offsets[i]);
+            fem_count  = static_cast<SizeT>(counts[i]);
+            break;
+        }
+    }
+
+    // 3) Overwrite FEM segment with alpha_vec
+    if(has_fem)
+    {
+        UIPC_ASSERT(alpha_vec.size() == fem_count,
+                    "alpha_vec size mismatch: expected {}, got {}",
+                    fem_count,
+                    alpha_vec.size());
+        std::copy(alpha_vec.begin(), alpha_vec.end(), alpha_all.begin() + fem_offset);
+    }
+
+    // 4) Dispatch to device
+    m_impl.step_forward_by_vertex(std::move(alpha_all));
 }
 
 void GlobalVertexManager::record_start_point()
