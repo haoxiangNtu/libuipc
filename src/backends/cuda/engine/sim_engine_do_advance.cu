@@ -104,6 +104,34 @@ void SimEngine::do_advance()
         }
     };
 
+    auto detect_dcd_candidates_ogc = [this]
+    {
+        if(m_global_trajectory_filter)
+        {
+            Timer timer{"Detect DCD Candidates"};
+            m_global_trajectory_filter->detect_ogc(0.0);
+            m_global_trajectory_filter->filter_active_ogc();
+        }
+    };
+
+    auto detect_trajectory_candidates_ogc = [this](Float alpha)
+    {
+        if(m_global_trajectory_filter)
+        {
+            Timer timer{"Detect Trajectory Candidates"};
+            m_global_trajectory_filter->detect_ogc(alpha);
+        }
+    };
+
+    auto filter_dcd_candidates_ogc = [this]
+    {
+        if(m_global_trajectory_filter)
+        {
+            Timer timer{"Filter Contact Candidates"};
+            m_global_trajectory_filter->filter_active_ogc();
+        }
+    };
+
     auto record_friction_candidates = [this]
     {
         if(m_global_trajectory_filter && m_friction_enabled)
@@ -181,13 +209,13 @@ void SimEngine::do_advance()
         m_line_searcher->step_forward(alpha);
 
         // Update the collision pairs
-        //filter_dcd_candidates();
+        filter_dcd_candidates();
 
         // Compute New Energy => E
         return m_line_searcher->compute_energy(false);
     };
 
-    auto compute_energy_by_vertex = [this, filter_dcd_candidates](Float alpha, std::vector<Float> alpha_vec) -> Float
+    auto compute_energy_by_vertex = [this, filter_dcd_candidates_ogc](Float alpha, std::vector<Float> alpha_vec) -> Float
     {
         // Step Forward => x = x_0 + alpha * dx
         ////need to collect m_global_vertex_manager alpha_by_vertex first
@@ -196,7 +224,7 @@ void SimEngine::do_advance()
         m_line_searcher->step_forward_by_vertex(alpha, alpha_vec);
 
         // Update the collision pairs
-        filter_dcd_candidates();
+        filter_dcd_candidates_ogc();
 
         // Compute New Energy => E
         return m_line_searcher->compute_energy(false);
@@ -380,6 +408,178 @@ void SimEngine::do_advance()
 
         // Simulation:
         {
+            Timer timer{"Simulation"};
+            // 1. Adaptive Parameter Calculation
+            AABB vertex_bounding_box =
+                m_global_vertex_manager->compute_vertex_bounding_box();
+            detect_dcd_candidates();
+            compute_adaptive_kappa();
+
+            // 2. Record Friction Candidates at the beginning of the frame
+            record_friction_candidates();
+            m_global_vertex_manager->record_prev_positions();
+
+            // 3. Predict Motion => x_tilde = x + v * dt
+            m_state = SimEngineState::PredictMotion;
+            m_time_integrator_manager->predict_dof();
+            step_animation();
+
+            // 4. Nonlinear-Newton Iteration
+            Float box_size = vertex_bounding_box.diagonal().norm();
+            Float tol      = m_newton_scene_tol * box_size;
+            m_newton_tolerance_manager->pre_newton(m_current_frame);
+
+            auto newton_max_iter     = m_newton_max_iter->view()[0];
+            auto newton_min_iter     = m_newton_min_iter->view()[0];
+            newton_max_iter          = 20;
+            IndexT newton_iter       = 0;
+            Float  Itres_Energy_each = 0;
+            for(; newton_iter < newton_max_iter; ++newton_iter)
+            {
+                Timer timer{"Newton Iteration"};
+
+                // 1) Compute animation substep ratio
+                compute_animation_substep_ratio(newton_iter);
+
+                // 2) Build Collision Pairs
+                if(newton_iter > 0)
+                    detect_dcd_candidates();
+
+                // 3) Compute Dynamic Topo Effect Gradient and Hessian => G:Vector3, H:Matrix3x3
+                //    Including Contact Effect
+                m_state = SimEngineState::ComputeDyTopoEffect;
+                compute_dytopo_effect();
+
+                // 4) Solve Global Linear System => dx = A^-1 * b
+                // Call functions that may modify xs_position and x_update
+                m_state = SimEngineState::SolveGlobalLinearSystem;
+                {
+                    Timer timer{"Solve Global Linear System"};
+                    m_global_linear_system->solve();
+                }
+
+                // 5) Collect Vertex Displacements Globally, 
+                // Recalculate the update direction???? 
+                // As long as the update direction dxs is small enough, is it called convergence??????????
+                m_global_vertex_manager->collect_vertex_displacements();
+
+
+                // 6) Check Termination Condition
+                bool converged  = convergence_check(newton_iter);
+                bool terminated = converged && (newton_iter >= newton_min_iter);
+                auto testCC     = newton_iter;
+                if(terminated)
+                    break;
+
+                // 7) Begin Line Search
+                auto line_search_iter_global = 0;
+                m_state                      = SimEngineState::LineSearch;
+                {
+                    Timer timer{"Line Search"};
+
+                    // Reset Alpha
+                    alpha = 1.0;
+
+                    // Record Current State x to x_0
+                    m_line_searcher->record_start_point();
+                    m_global_vertex_manager->record_start_point();
+                    detect_trajectory_candidates(alpha);
+
+                    // Compute Current Energy => E_0
+                    Float E0 = m_line_searcher->compute_energy(true);  // initial energy
+                    // spdlog::info("Initial Energy: {}", E0);
+
+                    // CCD filter
+                    alpha = filter_toi(alpha);
+
+                    // CFL Condition
+                    alpha = cfl_condition(alpha);
+
+                    // * Step Forward => x = x_0 + alpha * dx
+                    // Compute Test Energy => E
+                    Float E = compute_energy(alpha);
+
+                    if(!converged)
+                    {
+                        SizeT line_search_iter = 0;
+                        while(line_search_iter < m_line_searcher->max_iter())
+                        {
+                            Timer timer{"Line Search Iteration"};
+
+                            // Check Energy Decrease
+                            // TODO: maybe better condition like Wolfe condition/Armijo condition in the future
+                            bool energy_decrease = (E <= E0);
+
+                            // Check Inversion
+                            // TODO: Inversion check if needed
+                            bool no_inversion = true;
+
+                            bool success = energy_decrease && no_inversion;
+
+                            if(success)
+                                break;
+
+                            // If not success, then shrink alpha
+                            alpha /= 2;
+                            E                 = compute_energy(alpha);
+                            Itres_Energy_each = E;
+                            line_search_iter++;
+                        }
+
+                        // Check Line Search Iteration
+                        // report warnings or throw exceptions if needed
+                        check_line_search_iter(line_search_iter);
+                        line_search_iter_global = line_search_iter;
+                    }
+                }
+                Iters_line_search.push_back(line_search_iter_global);
+            }
+            newton_iters_record.push_back(newton_iter);
+            Iters_energy.push_back(Itres_Energy_each);
+            // 5. Update Velocity => v = (x - x_0) / dt
+            m_state = SimEngineState::UpdateVelocity;
+            {
+                Timer timer{"Update Velocity"};
+                m_time_integrator_manager->update_state();
+            }
+            // Check Newton Iteration
+            // report warnings or throw exceptions if needed
+            check_newton_iter(newton_iter);
+        }
+
+        spdlog::info("<<< End Frame: {}", m_current_frame);
+    };
+
+    auto pipeline_vbd_ipc_contact = [&]() noexcept(AbortOnException)
+    {
+        Timer timer{"Pipeline"};
+
+        ++m_current_frame;
+
+        spdlog::info(R"(>>> Begin Frame: {})", m_current_frame);
+
+        // Rebuild Scene
+        {
+            Timer timer{"Rebuild Scene"};
+            // Trigger the rebuild_scene event, systems register their actions will be called here
+            m_state = SimEngineState::RebuildScene;
+            {
+                event_rebuild_scene();
+
+                // TODO: rebuild the vertex and surface info
+                // m_global_vertex_manager->rebuild_vertex_info();
+                // m_global_surface_manager->rebuild_surface_info();
+            }
+
+            // After the rebuild_scene event, the pending creation or deletion can be solved
+            world().scene().solve_pending();
+
+            // Update the diff parms
+            update_diff_parm();
+        }
+
+        // Simulation:
+        {
             //auto subtimestep_iter = 0;
             //auto subtiemstep_max = 10;
             //for(; subtimestep_iter < subtiemstep_max; ++subtimestep_iter)
@@ -428,8 +628,7 @@ void SimEngine::do_advance()
                 compute_dytopo_effect();
 
                 // 4) Solve Global Linear System => dx = A^-1 * b
-
-                // 2. 调用可能修改 xs_position 和 x_update 的函数
+                // Call functions that may modify xs_position and x_update
                 m_state = SimEngineState::SolveGlobalLinearSystem;
                 {
                     Timer timer{"Solve Global Linear System"};
@@ -437,8 +636,9 @@ void SimEngine::do_advance()
                     m_global_linear_system->solve_by_vertex();
                 }
 
-
-                // 5) Collect Vertex Displacements Globally, 重新计算更新方向？？？？只要更新方向dxs足够小就叫做收敛??????????
+                // 5) Collect Vertex Displacements Globally,
+                // Recalculate the update direction????
+                // As long as the update direction dxs is small enough, is it called convergence??????????
                 m_global_vertex_manager->collect_vertex_displacements();
 
 
@@ -556,8 +756,7 @@ void SimEngine::do_advance()
         spdlog::info("<<< End Frame: {}", m_current_frame);
     };
 
-
-    auto pipeline_vbd = [&]() noexcept(AbortOnException)
+    auto pipeline_vbd_ogc = [&]() noexcept(AbortOnException)
     {
         Timer timer{"Pipeline"};
 
@@ -591,7 +790,7 @@ void SimEngine::do_advance()
             // 1. Adaptive Parameter Calculation
             AABB vertex_bounding_box =
                 m_global_vertex_manager->compute_vertex_bounding_box();
-            detect_dcd_candidates();
+            detect_dcd_candidates_ogc();
             compute_adaptive_kappa();
 
             // 2. Record Friction Candidates at the beginning of the frame
@@ -610,7 +809,7 @@ void SimEngine::do_advance()
 
             auto newton_max_iter     = m_newton_max_iter->view()[0];
             auto newton_min_iter     = m_newton_min_iter->view()[0];
-            newton_max_iter          = 40;
+            newton_max_iter          = 20;
             IndexT newton_iter       = 0;
             Float  Itres_Energy_each = 0;
             for(; newton_iter < newton_max_iter; ++newton_iter)
@@ -622,7 +821,7 @@ void SimEngine::do_advance()
 
                 // 2) Build Collision Pairs
                 if(newton_iter > 0)
-                    detect_dcd_candidates();
+                    detect_dcd_candidates_ogc();
 
                 d_bv_by_vertex = filter_d_bv(alpha);
                 // 3) Compute Dynamic Topo Effect Gradient and Hessian => G:Vector3, H:Matrix3x3
@@ -631,17 +830,18 @@ void SimEngine::do_advance()
                 compute_dytopo_effect();
 
                 // 4) Solve Global Linear System => dx = A^-1 * b
-
-                // 2. 调用可能修改 xs_position 和 x_update 的函数
+                // Call functions that may modify xs_position and x_update
                 m_state = SimEngineState::SolveGlobalLinearSystem;
                 {
                     Timer timer{"Solve Global Linear System"};
-                    //m_global_linear_system->solve();
-                    m_global_linear_system->solve_by_vertex();
+                    m_global_linear_system->solve();
+                    //m_global_linear_system->solve_by_vertex();
                 }
 
 
-                // 5) Collect Vertex Displacements Globally, 重新计算更新方向？？？？只要更新方向dxs足够小就叫做收敛??????????
+                // 5) Collect Vertex Displacements Globally,
+                // Recalculate the update direction????
+                // As long as the update direction dxs is small enough, is it called convergence??????????
                 m_global_vertex_manager->collect_vertex_displacements();
 
                 ////////No Line search, direct update
@@ -651,7 +851,7 @@ void SimEngine::do_advance()
                 // Record Current State x to x_0
                 m_line_searcher->record_start_point();
                 m_global_vertex_manager->record_start_point();
-                detect_trajectory_candidates(alpha);
+                detect_trajectory_candidates_ogc(alpha);
 
                 // Compute Current Energy => E_0
                 Float E0 = m_line_searcher->compute_energy(true);  // initial energy
@@ -668,10 +868,10 @@ void SimEngine::do_advance()
                 //d_bv_by_vertex = filter_d_bv(alpha);
 
                 // Directly print all entries (may be large)
-                for(size_t i = 0; i < d_bv_by_vertex.size(); ++i)
-                {
-                    spdlog::info("d_bv_by_vertex[{}] = {}", i, d_bv_by_vertex[i]);
-                }
+                //for(size_t i = 0; i < d_bv_by_vertex.size(); ++i)
+                //{
+                //    spdlog::info("d_bv_by_vertex[{}] = {}", i, d_bv_by_vertex[i]);
+                //}
 
                 const float DebugThreshold = 0.0018f;
                 ////////////////////////=======================================================
@@ -706,32 +906,34 @@ void SimEngine::do_advance()
                 Timer timer{"Update Velocity"};
                 m_time_integrator_manager->update_state();
             }
-            std::cout << "Newton iteration counts: [";
-            for(size_t i = 0; i < newton_iters_record.size(); ++i)
-            {
-                std::cout << newton_iters_record[i];
-                if(i + 1 < newton_iters_record.size())
-                    std::cout << ", ";
-            }
-            std::cout << "]" << std::endl;
 
-            std::cout << "Line search counts: [";
-            for(size_t i = 0; i < Iters_line_search.size(); ++i)
-            {
-                std::cout << Iters_line_search[i];
-                if(i + 1 < Iters_line_search.size())
-                    std::cout << ", ";
-            }
-            std::cout << "]" << std::endl;
+            /////////output info
+            //std::cout << "Newton iteration counts: [";
+            //for(size_t i = 0; i < newton_iters_record.size(); ++i)
+            //{
+            //    std::cout << newton_iters_record[i];
+            //    if(i + 1 < newton_iters_record.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
 
-            std::cout << "Energy iteration counts: [";
-            for(size_t i = 0; i < Iters_energy.size(); ++i)
-            {
-                std::cout << Iters_energy[i];
-                if(i + 1 < Iters_energy.size())
-                    std::cout << ", ";
-            }
-            std::cout << "]" << std::endl;
+            //std::cout << "Line search counts: [";
+            //for(size_t i = 0; i < Iters_line_search.size(); ++i)
+            //{
+            //    std::cout << Iters_line_search[i];
+            //    if(i + 1 < Iters_line_search.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
+
+            //std::cout << "Energy iteration counts: [";
+            //for(size_t i = 0; i < Iters_energy.size(); ++i)
+            //{
+            //    std::cout << Iters_energy[i];
+            //    if(i + 1 < Iters_energy.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
 
             // Check Newton Iteration
             // report warnings or throw exceptions if needed
@@ -742,8 +944,9 @@ void SimEngine::do_advance()
 
     try
     {
-        pipeline_ipc();
-        //pipeline_vbd();
+        //pipeline_ipc();
+        //pipeline_vbd_ipc_contact();
+        pipeline_vbd_ogc();
         m_last_solved_frame = m_current_frame;
     }
     catch(const SimEngineException& e)

@@ -128,14 +128,3 @@ namespace sym::codim_vbd_contact
     }
 }  // namespace sym::codim_vbd_contact
 }  // namespace uipc::backend::cuda
-
-
-//
-//        __host__ __device__ T ComputePenetrationDepth(const T x_a[3], const T x_b[3], const T n_hat[3])
-//{
-//    // 计算(x_b - x_a) · n̂
-//    T dot = (x_b[0] - x_a[0]) * n_hat[0] + (x_b[1] - x_a[1]) * n_hat[1]
-//            + (x_b[2] - x_a[2]) * n_hat[2];
-//    // 穿透深度d = max(0, dot)（仅保留非负穿透）
-//    return dot > 1e-12 ? dot : static_cast<T>(0.0);
-//}

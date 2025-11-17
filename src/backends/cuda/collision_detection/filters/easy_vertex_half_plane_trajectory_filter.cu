@@ -14,7 +14,17 @@ void EasyVertexHalfPlaneTrajectoryFilter::do_detect(DetectInfo& info)
     // do nothing
 }
 
+void EasyVertexHalfPlaneTrajectoryFilter::do_detect_ogc(DetectInfo& info)
+{
+    // do nothing
+}
+
 void EasyVertexHalfPlaneTrajectoryFilter::do_filter_active(FilterActiveInfo& info)
+{
+    m_impl.filter_active(info);
+}
+
+void EasyVertexHalfPlaneTrajectoryFilter::do_filter_active_ogc(FilterActiveInfo& info)
 {
     m_impl.filter_active(info);
 }

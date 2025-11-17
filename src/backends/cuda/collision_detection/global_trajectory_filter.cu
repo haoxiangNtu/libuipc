@@ -61,6 +61,16 @@ void GlobalTrajectoryFilter::detect(Float alpha)
     }
 }
 
+void GlobalTrajectoryFilter::detect_ogc(Float alpha)
+{
+    for(auto filter : m_impl.filters.view())
+    {
+        DetectInfo info;
+        info.m_alpha = alpha;
+        filter->detect_ogc(info);
+    }
+}
+
 void GlobalTrajectoryFilter::filter_active()
 {
     if(m_impl.global_contact_manager->cfl_enabled())
@@ -74,6 +84,22 @@ void GlobalTrajectoryFilter::filter_active()
     {
         FilterActiveInfo info(&m_impl);
         filter->filter_active(info);
+    }
+}
+
+void GlobalTrajectoryFilter::filter_active_ogc()
+{
+    if(m_impl.global_contact_manager->cfl_enabled())
+    {
+        auto is_acitive =
+            m_impl.global_contact_manager->m_impl.vert_is_active_contact.view();
+        is_acitive.fill(0);  // clear the active flag
+    }
+
+    for(auto filter : m_impl.filters.view())
+    {
+        FilterActiveInfo info(&m_impl);
+        filter->filter_active_ogc(info);
     }
 }
 

@@ -114,7 +114,9 @@ class VertexHalfPlaneTrajectoryFilter : public TrajectoryFilter
 
   protected:
     virtual void do_detect(DetectInfo& info)              = 0;
+    virtual void do_detect_ogc(DetectInfo& info)              = 0;
     virtual void do_filter_active(FilterActiveInfo& info) = 0;
+    virtual void do_filter_active_ogc(FilterActiveInfo& info)     = 0;
     virtual void do_filter_toi(FilterTOIInfo& info)       = 0;
     virtual void do_filter_d_v(FilterActiveInfo& info, std::vector<Float>& d_bv) = 0;
     virtual void do_build(BuildInfo& info){};
@@ -124,7 +126,9 @@ class VertexHalfPlaneTrajectoryFilter : public TrajectoryFilter
     virtual void do_build() override final;
 
     virtual void do_detect(GlobalTrajectoryFilter::DetectInfo& info) override final;
+    virtual void do_detect_ogc(GlobalTrajectoryFilter::DetectInfo& info) override final;
     virtual void do_filter_active(GlobalTrajectoryFilter::FilterActiveInfo& info) override final;
+    virtual void do_filter_active_ogc(GlobalTrajectoryFilter::FilterActiveInfo& info) override final;
     virtual void do_filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info) override final;
     virtual void do_filter_d_v(GlobalTrajectoryFilter::FilterActiveInfo& info,
                                std::vector<Float>& d_bv) override final;

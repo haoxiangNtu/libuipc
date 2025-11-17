@@ -286,14 +286,13 @@ class GlobalLinearSystem : public SimSystem
         void init();
 
         void build_linear_system();
-        void build_linear_system_by_vertex();
+        void solve_system_by_vertex();
         bool _update_subsystem_extent();
         void _assemble_linear_system();
-        void _assemble_linear_system_by_vertex();
+        void _solve_linear_system_by_vertex();
         void _update_info();
         void _assemble_preconditioner();
         void solve_linear_system();
-        void solve_system_by_vertex();
         void distribute_solution();
 
         Float reserve_ratio = 1.1;

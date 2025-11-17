@@ -7,9 +7,19 @@ void TrajectoryFilter::detect(GlobalTrajectoryFilter::DetectInfo& info)
     do_detect(info);
 }
 
+void TrajectoryFilter::detect_ogc(GlobalTrajectoryFilter::DetectInfo& info)
+{
+    do_detect_ogc(info);
+}
+
 void TrajectoryFilter::filter_active(GlobalTrajectoryFilter::FilterActiveInfo& info)
 {
     do_filter_active(info);
+}
+
+void TrajectoryFilter::filter_active_ogc(GlobalTrajectoryFilter::FilterActiveInfo& info)
+{
+    do_filter_active_ogc(info);
 }
 
 void TrajectoryFilter::filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info)

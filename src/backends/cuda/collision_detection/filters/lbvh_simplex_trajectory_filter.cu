@@ -24,134 +24,23 @@ void LBVHSimplexTrajectoryFilter::do_build(BuildInfo& info)
     {
         throw SimSystemException("Linear BVH unused");
     }
-    // 新增：预处理几何体邻接关系（顶点相邻顶点、边相邻面顶点）
+    // New: Preprocess geometry adjacency relationships (vertex-adjacent vertices, edge-adjacent face vertices)
     auto m_ogc_contact_radius = 0.002;
-    //preprocess_adjacency(info);  // 后续实现
     //Impl.detect_ogc_contact(info);
 }
 
-//void LBVHSimplexTrajectoryFilter::Impl::preprocess_adjacency(FilterActiveInfo& info)
-//{
-//    auto Vs = info.surf_vertices();   // 表面顶点列表（全局顶点ID）
-//    auto Es = info.surf_edges();      // 表面边列表（e → (v0, v1)）
-//    auto Fs = info.surf_triangles();  // 表面面列表（t → (v0, v1, v2)）
-//    int   num_vertices = Vs.size();
-//    int   num_edges    = Es.size();
-//
-//    /****************************************************
-//    * 1. 预处理顶点邻接关系（m_vadj_offsets + m_vadj_indices，CSR 结构）
-//    * 用于 checkVertexFeasibleRegion：验证顶点偏移块的方向约束
-//    ****************************************************/
-//    // CPU 端构建邻接列表
-//    std::vector<IndexT> host_vadj_offsets(num_vertices + 1, 0);
-//    std::vector<IndexT> host_vadj_indices;
-//    std::vector<Vector3i> Fs_host(Fs.size());
-//    Fs.copy_to(Fs_host.data());
-//
-//    for(const auto& f : Fs_host)
-//    {
-//        int v0 = f[0], v1 = f[1], v2 = f[2];
-//        // 注意：每个三角形对每个顶点有2个邻居，计数应+2而不是+1
-//        host_vadj_offsets[v0] += 2;
-//        host_vadj_offsets[v1] += 2;
-//        host_vadj_offsets[v2] += 2;
-//    }
-//    // 统计每个顶点的相邻顶点数量
-//    for(auto& f : Fs_host)
-//    {
-//        int v0 = f[0], v1 = f[1], v2 = f[2];
-//        host_vadj_offsets[v0]++;
-//        host_vadj_offsets[v1]++;
-//        host_vadj_offsets[v2]++;
-//    }
-//    // 计算偏移（CSR 格式）
-//    for(int v = 1; v <= num_vertices; v++)
-//        host_vadj_offsets[v] += host_vadj_offsets[v - 1];
-//    // 填充相邻顶点索引（去重，避免重复存储）
-//    std::vector<int> temp_count(num_vertices, 0);
-//    host_vadj_indices.resize(host_vadj_offsets[num_vertices]);
-//    for(auto& f : Fs_host)
-//    {
-//        int v0 = f[0], v1 = f[1], v2 = f[2];
-//        // 为 v0 添加 v1、v2
-//        if(std::find(host_vadj_indices.begin() + host_vadj_offsets[v0],
-//                     host_vadj_indices.begin() + host_vadj_offsets[v0 + 1],
-//                     v1)
-//           == host_vadj_indices.end())
-//            host_vadj_indices[host_vadj_offsets[v0] + temp_count[v0]++] = v1;
-//        if(std::find(host_vadj_indices.begin() + host_vadj_offsets[v0],
-//                     host_vadj_indices.begin() + host_vadj_offsets[v0 + 1],
-//                     v2)
-//           == host_vadj_indices.end())
-//            host_vadj_indices[host_vadj_offsets[v0] + temp_count[v0]++] = v2;
-//        // 同理为 v1 添加 v0、v2；为 v2 添加 v0、v1（代码省略，逻辑同上）
-//        // ...
-//    }
-//    // 拷贝到 device 端
-//    m_vadj_offsets.resize(num_vertices + 1);
-//    m_vadj_indices.resize(host_vadj_indices.size());
-//    m_vadj_offsets.copy_from(host_vadj_offsets);
-//    m_vadj_indices.copy_from(host_vadj_indices);
-//
-//    /****************************************************
-//    * 2. 预处理边-only流形顶点所属边（m_v_edge_indices）
-//    * 用于 checkVertexFeasibleRegionEdgeOffset：验证边-边接触的顶点偏移块
-//    ****************************************************/
-//    std::vector<Vector2i> host_v_edge_indices(num_vertices, {-1, -1});
-//    std::unordered_map<int, std::vector<int>> vertex_to_edges;  // 顶点 → 包含该顶点的边列表
-//    for(int e = 0; e < num_edges; e++)
-//    {
-//        int v0 = Es[e][0], v1 = Es[e][1];
-//        vertex_to_edges[v0].push_back(e);
-//        vertex_to_edges[v1].push_back(e);
-//    }
-//    // 每个顶点在边-only流形中最多两条边（1维流形特性）
-//    for(int v = 0; v < num_vertices; v++)
-//    {
-//        auto& edges = vertex_to_edges[v];
-//        if(edges.size() >= 1)
-//            host_v_edge_indices[v][0] = edges[0];
-//        if(edges.size() >= 2)
-//            host_v_edge_indices[v][1] = edges[1];
-//    }
-//    // 拷贝到 device 端
-//    m_v_edge_indices.resize(num_vertices);
-//    //m_v_edge_indices.copy_from(host_v_edge_indices);
-//
-//    /****************************************************
-//    * 3. 初始化最小距离存储（m_d_min_v/m_d_min_t/m_d_min_e）
-//    * 对应 Algorithm 1 第1行、Algorithm 2 第1行：d_min = r_q
-//    ****************************************************/
-//    m_d_min_v.resize(num_vertices);
-//    m_d_min_t.resize(Fs.size());
-//    m_d_min_e.resize(num_edges);
-//    muda::ParallelFor()
-//        .file_line(__FILE__, __LINE__)
-//        .apply(num_vertices,
-//               [m_d_min_v = m_d_min_v.viewer(), 
-//            rq = m_ogc_rq] __device__(int v)
-//               { m_d_min_v(v) = rq; })
-//        .apply(Fs.size(),
-//               [m_d_min_t = m_d_min_t.viewer(), rq = m_ogc_rq] __device__(int t)
-//               { m_d_min_t(t) = rq; })
-//        .apply(num_edges,
-//               [m_d_min_e = m_d_min_e.viewer(), rq = m_ogc_rq] __device__(int e)
-//               { m_d_min_e(e) = rq; });
-//}
-
-
-// 假设在SimSystem的初始化函数中
+// Assume in the initialization function of SimSystem
 void LBVHSimplexTrajectoryFilter::Impl::init_ogc_data(DetectInfo& info)
 {
     int  num_vertices = info.surf_vertices().size();
     auto edges        = info.surf_edges();
     auto faces        = info.surf_triangles();
 
-    // 构建边-面邻接（你已实现）
+    // Build edge-face adjacency (already implemented by you)
     build_edge_face_adjacency(edges, faces);
-    // 构建顶点-邻居边/面邻接（新增）
+    // Build vertex-neighbor edge/face adjacency (newly added)
     build_vertex_adjacency(edges, faces, num_vertices);
-    // 初始化最小距离缓冲区（你已实现preinitialize_contact_data，需调用）
+    // Initialize minimum distance buffer (preinitialize_contact_data is already implemented by you, need to call it)
     preinitialize_contact_data(num_vertices, faces.size(), edges.size(), m_ogc_rq);
 
 
@@ -236,7 +125,7 @@ void LBVHSimplexTrajectoryFilter::Impl::build_edge_face_adjacency(
     std::vector<int> edge_face_counts(E, 0);
     std::vector<int> edge_face_vertices(E * 2, -1);
 
-    // 建立 (min,max) -> edge index 映射
+    // Establish (min,max) -> edge index mapping
     std::unordered_map<std::pair<int, int>, int, PairHash> edge_map;
     edge_map.reserve(E * 2);
 
@@ -281,25 +170,25 @@ void LBVHSimplexTrajectoryFilter::Impl::build_edge_face_adjacency(
     m_edge_face_counts.view().copy_from(edge_face_counts.data());
     m_edge_face_vertices.view().copy_from(edge_face_vertices.data());
 
-    // 【新增：复制临时edge_map到设备端成员变量m_edge_id_map】
-    //m_edge_id_map.resize(1);  // 若用DeviceBuffer存储，大小为1（存整个map）
-    //m_edge_id_map.view()[0] = edge_map;  // 复制CPU端edge_map到GPU端
+    // [New: Copy temporary edge_map to device-side member variable m_edge_id_map]
+    //m_edge_id_map.resize(1);  // If stored in DeviceBuffer, size is 1 (stores the entire map)
+    //m_edge_id_map.view()[0] = edge_map;  // Copy CPU-side edge_map to GPU-side
 }
 
 /**
- * 构建顶点-邻居边、顶点-邻居面的CSR邻接表
- * @param edges：全局边列表（e → (v0, v1)）
- * @param faces：全局面列表（t → (v0, v1, v2)）
- * @param num_vertices：全局顶点总数
+ * Build CSR adjacency lists for vertex-neighbor edges and vertex-neighbor faces
+ * @param edges：Global edge list (e => (v0, v1))
+ * @param faces：Global face list (t => (v0, v1, v2))
+ * @param num_vertices：Total number of global vertices
  */
 void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
     const muda::CBufferView<Vector2i>& edges, const muda::CBufferView<Vector3i>& faces, int num_vertices)
 {
-    // -------------------------- 步骤1：构建顶点-邻居边 --------------------------
-    std::vector<IndexT> v_edge_counts(num_vertices, 0);  // 每个顶点的邻居边数量
-    std::vector<IndexT> v_edge_indices_temp;  // 临时存储邻居边ID（全局）
+    // -------------------------- Step 1: Build vertex-neighbor edges --------------------------
+    std::vector<IndexT> v_edge_counts(num_vertices, 0);  // Number of neighbor edges for each vertex
+    std::vector<IndexT> v_edge_indices_temp;  // Temporarily store neighbor edge IDs (global)
 
-    // 先统计每个顶点的邻居边数量
+    // First count the number of neighbor edges for each vertex
     std::vector<Vector2i> edges_h(edges.size());
     edges.copy_to(edges_h.data());
     for(int e = 0; e < edges_h.size(); ++e)
@@ -309,8 +198,8 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
         v_edge_counts[v1]++;
     }
 
-    // 构建CSR偏移数组 m_v_edge_offsets
-    m_v_edge_offsets.resize(num_vertices + 1);  // 偏移数组长度=顶点数+1（最后一个元素是总长度）
+    // Build CSR offset array m_v_edge_offsets
+    m_v_edge_offsets.resize(num_vertices + 1);  // Offset array length = number of vertices + 1 (last element is total length)
     std::vector<int> v_edge_offsets_h(num_vertices + 1, 0);
     for(int v = 0; v < num_vertices; ++v)
     {
@@ -318,27 +207,27 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
     }
     m_v_edge_offsets.view().copy_from(v_edge_offsets_h.data());
 
-    // 填充邻居边索引（确保每个边被两个顶点记录）
+    // Fill neighbor edge indices (ensure each edge is recorded by two vertices)
     v_edge_indices_temp.resize(v_edge_offsets_h.back(), -1);
-    std::vector<int> v_edge_cursor(num_vertices, 0);  // 每个顶点的当前填充位置
+    std::vector<int> v_edge_cursor(num_vertices, 0);  // Current filling position for each vertex
     for(int e = 0; e < edges_h.size(); ++e)
     {
         int v0 = edges_h[e][0], v1 = edges_h[e][1];
-        // 顶点v0的邻居边
+        // Neighbor edge of vertex v0
         int pos0                  = v_edge_offsets_h[v0] + v_edge_cursor[v0]++;
         v_edge_indices_temp[pos0] = e;
-        // 顶点v1的邻居边
+        // Neighbor edge of vertex v1
         int pos1                  = v_edge_offsets_h[v1] + v_edge_cursor[v1]++;
         v_edge_indices_temp[pos1] = e;
     }
     m_v_edge_indices.resize(v_edge_indices_temp.size());
     m_v_edge_indices.view().copy_from(v_edge_indices_temp.data());
 
-    // -------------------------- 步骤2：构建顶点-邻居面 --------------------------
-    std::vector<int> v_face_counts(num_vertices, 0);  // 每个顶点的邻居面数量
-    std::vector<int> v_face_indices_temp;  // 临时存储邻居面ID（全局）
+    // -------------------------- Step 2: Build vertex-neighbor faces --------------------------
+    std::vector<int> v_face_counts(num_vertices, 0);  // Number of neighbor faces for each vertex
+    std::vector<int> v_face_indices_temp;  // Temporarily store neighbor face IDs (global)
 
-    // 统计每个顶点的邻居面数量
+    // Count the number of neighbor faces for each vertex
     std::vector<Vector3i> faces_h(faces.size());
     faces.copy_to(faces_h.data());
     for(int t = 0; t < faces_h.size(); ++t)
@@ -349,7 +238,7 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
         v_face_counts[v2]++;
     }
 
-    // 构建CSR偏移数组 m_v_face_offsets
+    // Build CSR offset array m_v_face_offsets
     m_v_face_offsets.resize(num_vertices + 1);
     std::vector<int> v_face_offsets_h(num_vertices + 1, 0);
     for(int v = 0; v < num_vertices; ++v)
@@ -358,49 +247,49 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
     }
     m_v_face_offsets.view().copy_from(v_face_offsets_h.data());
 
-    // 填充邻居面索引（每个面被三个顶点记录）
+    // Fill neighbor face indices (each face is recorded by three vertices)
     v_face_indices_temp.resize(v_face_offsets_h.back(), -1);
-    std::vector<int> v_face_cursor(num_vertices, 0);  // 每个顶点的当前填充位置
+    std::vector<int> v_face_cursor(num_vertices, 0);  // Current filling position for each vertex
     for(int t = 0; t < faces_h.size(); ++t)
     {
         int v0 = faces_h[t][0], v1 = faces_h[t][1], v2 = faces_h[t][2];
-        // 顶点v0的邻居面
+        // Neighbor face of vertex v0
         int pos0                  = v_face_offsets_h[v0] + v_face_cursor[v0]++;
         v_face_indices_temp[pos0] = t;
-        // 顶点v1的邻居面
+        // Neighbor face of vertex v1
         int pos1                  = v_face_offsets_h[v1] + v_face_cursor[v1]++;
         v_face_indices_temp[pos1] = t;
-        // 顶点v2的邻居面
+        // Neighbor face of vertex v2
         int pos2                  = v_face_offsets_h[v2] + v_face_cursor[v2]++;
         v_face_indices_temp[pos2] = t;
     }
     m_v_face_indices.resize(v_face_indices_temp.size());
     m_v_face_indices.view().copy_from(v_face_indices_temp.data());
 
-    // -------------------------- 步骤3：构建顶点-邻居顶点（直接存储，去重） --------------------------
-    std::vector<int> v_vertex_counts(num_vertices, 0);  // 每个顶点的邻居顶点数量（去重后）
-    std::vector<int> v_vertex_indices_temp;             // 临时存储邻居顶点索引
+    // -------------------------- Step 3: Build vertex-neighbor vertices (directly stored, deduplicated) --------------------------
+    std::vector<int> v_vertex_counts(num_vertices, 0);  // Number of neighbor vertices for each vertex (after deduplication)
+    std::vector<int> v_vertex_indices_temp;             // Temporarily store neighbor vertex indices
 
-    // 第一步：统计每个顶点的邻居顶点数量（去重）
+    // Step 1: Count the number of neighbor vertices for each vertex (after deduplication)
     for(int v = 0; v < num_vertices; ++v)
     {
-        // 获取顶点v的所有关联边
+        // Get all associated edges of vertex v
         int                     start = v_edge_offsets_h[v];
         int                     end   = v_edge_offsets_h[v + 1];
-        std::unordered_set<int> neighbors;  // 用集合去重
+        std::unordered_set<int> neighbors;  // Use set for deduplication
 
         for(int i = start; i < end; ++i)
         {
-            int   e_id = v_edge_indices_temp[i];         // 边的全局ID
-            auto& edge = edges_h[e_id];                  // 边的两个端点
-            int u = (edge[0] == v) ? edge[1] : edge[0];  // 另一个端点（邻居顶点）
+            int   e_id = v_edge_indices_temp[i];         // Global ID of the edge
+            auto& edge = edges_h[e_id];                  // Two endpoints of the edge
+            int u = (edge[0] == v) ? edge[1] : edge[0];  // The other endpoint (neighbor vertex)
             neighbors.insert(u);
         }
 
-        v_vertex_counts[v] = neighbors.size();  // 去重后的邻居数量
+        v_vertex_counts[v] = neighbors.size();  // Number of neighbors after deduplication
     }
 
-    // 第二步：构建CSR偏移数组 m_v_vertex_offsets
+    // Step 2: Build CSR offset array m_v_vertex_offsets
     m_v_vertex_offsets.resize(num_vertices + 1);
     std::vector<int> v_vertex_offsets_h(num_vertices + 1, 0);
     for(int v = 0; v < num_vertices; ++v)
@@ -409,9 +298,9 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
     }
     m_v_vertex_offsets.view().copy_from(v_vertex_offsets_h.data());
 
-    // 第三步：填充邻居顶点索引（去重后）
+    // Step 3: Fill neighbor vertex indices (after deduplication)
     v_vertex_indices_temp.resize(v_vertex_offsets_h.back());
-    std::vector<int> v_vertex_cursor(num_vertices, 0);  // 每个顶点的当前填充位置
+    std::vector<int> v_vertex_cursor(num_vertices, 0);  // Current filling position for each vertex
 
     for(int v = 0; v < num_vertices; ++v)
     {
@@ -419,7 +308,7 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
         int                     end   = v_edge_offsets_h[v + 1];
         std::unordered_set<int> neighbors;
 
-        // 先收集去重的邻居顶点
+        // First collect deduplicated neighbor vertices
         for(int i = start; i < end; ++i)
         {
             int   e_id = v_edge_indices_temp[i];
@@ -428,7 +317,7 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
             neighbors.insert(u);
         }
 
-        // 填充到临时数组
+        // Fill into temporary array
         int pos = v_vertex_offsets_h[v];
         for(int u : neighbors)
         {
@@ -440,14 +329,14 @@ void LBVHSimplexTrajectoryFilter::Impl::build_vertex_adjacency(
     m_v_vertex_indices.view().copy_from(v_vertex_indices_temp.data());
 }
 
-//// 3. 预初始化（在每次接触检测前调用，如filter_active的开头）
+//// 3. Pre-initialization (called before each contact detection, e.g., at the beginning of filter_active)
 void LBVHSimplexTrajectoryFilter::Impl::preinitialize_contact_data(int num_vertices,
                                                                    int num_facets,
                                                                    int num_edges,
                                                                    float r_q)
 {
-    // 初始化最小距离为查询半径r_q（文档Algorithm 1第1行、Algorithm 2第1行）
-    // 这里应该改成类似于m_d_min_v
+    // Initialize minimum distance to query radius r_q (Document Algorithm 1 Line 1, Algorithm 2 Line 1)
+    // This should be modified to be similar to m_d_min_v
     
     m_d_min_v.resize(num_vertices);
     m_d_min_t.resize(num_facets);
@@ -463,7 +352,7 @@ void LBVHSimplexTrajectoryFilter::Impl::preinitialize_contact_data(int num_verti
                [d_min_e = m_d_min_e.viewer(), r_q] __device__(int e)
                { d_min_e(e) = r_q; });
 
-    // 清空上一帧的接触集合
+    // Clear the contact set of the previous frame
     //d_FOGC.resize(num_vertices);
     //d_VOGC.resize(num_facets);
     //d_EOGC.resize(num_edges);
@@ -483,37 +372,37 @@ void LBVHSimplexTrajectoryFilter::Impl::preinitialize_contact_data(int num_verti
 void LBVHSimplexTrajectoryFilter::Impl::detect_ogc_contact(DetectInfo& info)
 {
     using namespace muda;
-    auto Vs = info.surf_vertices();   // 表面顶点列表（全局顶点ID）
-    auto Es = info.surf_edges();      // 表面边列表（e → (v0, v1)）
-    auto Fs = info.surf_triangles();  // 表面面列表（t → (v0, v1, v2)）
-    auto positions = info.positions();  // 顶点位置缓冲区（positions[v] = 3D坐标）
+    auto Vs = info.surf_vertices();   // Surface vertex list (global vertex ID)
+    auto Es = info.surf_edges();      // Surface edge list (e => (v0, v1))
+    auto Fs = info.surf_triangles();  // Surface face list (t => (v0, v1, v2))
+    auto positions = info.positions();  // Vertex position buffer (positions[v] = 3D coordinate)
 
-    //// 前置检查：确保邻接关系和BVH已初始化（由 preprocess_adjacency 和 detect 函数提前处理）
+    //// Pre-check: Ensure adjacency relationships and BVH are initialized (handled in advance by preprocess_adjacency and detect functions)
     //if(m_vadj_offsets.empty() || candidate_AllP_AllT_pairs.empty())
     //    throw SimSystemException("OGC contact detect: adjacency/BVH not initialized");
 
     /****************************************************
-    * 阶段1：顶点-面接触检测（对应文档 Algorithm 1）
-    * 输入：candidate_AllP_AllT_pairs（顶点-面候选对，由 lbvh_T 查询生成）
-    * 输出：temp_PTs/PEs/PPs（接触集合）、m_d_min_v/m_d_min_t（最小距离）
+    * Phase 1: Vertex-facet contact detection (corresponds to Document Algorithm 1)
+    * Input: candidate_AllP_AllT_pairs (vertex-face candidate pairs, generated by lbvh_T query)
+    * Output: temp_PTs/PEs/PPs (contact sets), m_d_min_v/m_d_min_t (minimum distances)
     ****************************************************/
     phase1_vertex_facet_contact(info);
 
     /***********************************
-    * 阶段2：边-边接触检测（对应文档 Algorithm 2）
-    * 输入：candidate_AllE_AllE_pairs（边-边候选对，由 lbvh_E 查询生成）
-    * 输出：temp_EEs/PEs/PPs（接触集合）、m_d_min_e（最小距离）
+    * Phase 2: Edge-edge contact detection (corresponds to Document Algorithm 2)
+    * Input: candidate_AllE_AllE_pairs (edge-edge candidate pairs, generated by lbvh_E query)
+    * Output: temp_EEs/PEs/PPs (contact sets), m_d_min_e (minimum distance)
     ****************************************************/
     phase2_edge_edge_contact(info);
 
     /****************************************************
-    * 新增阶段3：计算所有顶点的保守边界bv
+    * New Phase 3: Calculate conservative bounds bv for all vertices
     ****************************************************/
     int num_vertices = Vs.size();
     compute_conservative_bounds(num_vertices, m_gamma_p);
 
     /****************************************************
-    * 后续：筛选有效接触对（复用原有filter_active逻辑）
+    * Subsequent: Filter valid contact pairs (reuse existing filter_active logic)
     ****************************************************/
     // filter_active(info);
 }
@@ -521,22 +410,22 @@ void LBVHSimplexTrajectoryFilter::Impl::detect_ogc_contact(DetectInfo& info)
 
 
 /**
- * @brief OGC核心函数：验证待检测点是否落在某顶点的偏移块（Uₐ）内，对应文档公式(8)
- * @details 顶点偏移块Uₐ是"半径为r的球体，被所有相邻顶点的垂直平面切割"的区域，需满足两个核心约束：
- *          1. 待检测点到顶点a的距离 ≤ 接触半径r（距离约束）
- *          2. 待检测点与顶点a的连线，与顶点a到所有相邻顶点的连线夹角 ≥ 90°（方向约束）
- *          函数返回true表示点在偏移块内，可作为OGC的有效接触对；返回false则为无效接触
+ * @brief OGC core function: Verify whether the point to be detected falls within the offset block (Uₐ) of a vertex, corresponding to Document Equation (8)
+ * @details The vertex offset block Uₐ is a region of "a sphere with radius r, cut by the vertical planes of all adjacent vertices", which needs to satisfy two core constraints:
+ *          1. The distance from the point to be detected to vertex a <= contact radius r (distance constraint)
+ *          2. The angle between the line connecting the point to be detected and vertex a, and the line connecting vertex a to all adjacent vertices ≥ 90° (direction constraint)
+ *          The function returns true if the point is within the offset block (can be used as a valid OGC contact pair); returns false if it is invalid
  * 
- * @param x              待验证的点（如顶点-面接触中的顶点V、边-边接触的最近点）
- * @param a              顶点偏移块对应的顶点ID（即公式中的v，待验证的顶点子面）
- * @param positions      所有顶点的当前位置缓冲区（device端，存储每个顶点的3D坐标）
- * @param vadj_offsets   顶点邻接关系的偏移缓冲区（CSR-like结构，存储每个顶点邻接列表的起始索引）
- *                       结构说明：vadj_offsets[a]是顶点a的邻接列表在vadj_indices中的起始位置；
- *                                vadj_offsets[a+1]是顶点a的邻接列表的结束位置（下一个顶点的起始）
- * @param vadj_indices   顶点邻接关系的索引缓冲区（CSR-like结构，存储具体的邻接顶点ID）
- *                       结构说明：从vadj_offsets[a]到vadj_offsets[a+1]-1的元素，均为顶点a的相邻顶点ID
- * @param r              OGC接触半径（与文档中的偏移半径一致，控制顶点偏移块的大小）
- * @return bool          true：点在顶点a的偏移块Uₐ内；false：点不在偏移块内
+ * @param x              Point to be verified (e.g., vertex V in vertex-face contact, closest point in edge-edge contact)
+ * @param a              Vertex ID corresponding to the vertex offset block (i.e., v in the equation, the vertex sub-face to be verified)
+ * @param positions      Current position buffer of all vertices (device-side, stores 3D coordinates of each vertex)
+ * @param vadj_offsets   Offset buffer of vertex adjacency relationships (CSR-like structure, stores the start index of each vertex's adjacency list)
+ *                       Structure description: vadj_offsets[a] is the start position of vertex a's adjacency list in vadj_indices;
+ *                                vadj_offsets[a+1] is the end position of vertex a's adjacency list (start of the next vertex)
+ * @param vadj_indices   Index buffer of vertex adjacency relationships (CSR-like structure, stores specific adjacent vertex IDs)
+ *                       Structure description: Elements from vadj_offsets[a] to vadj_offsets[a+1]-1 are all adjacent vertex IDs of vertex a
+ * @param r              OGC contact radius (consistent with the offset radius in the document, controlling the size of the vertex offset block)
+ * @return bool          true: The point is within the offset block Uₐ of vertex a; false: The point is not within the offset block
  */
 //
 //__device__ bool checkVertexFeasibleRegionEdgeOffset(const Vector3& x_c,
@@ -546,353 +435,318 @@ void LBVHSimplexTrajectoryFilter::Impl::detect_ogc_contact(DetectInfo& info)
 //                                                    const muda::CDense1D<Vector2i>& v_edge_indices,
 //                                                    float ogc_r)
 
-// 【OGC核心函数】判断点x是否在边e的偏移块Uₑ内（对应文档3.2节Equation 9，Algorithm 1第15行checkEdgeFeasibleRegion）
-// 边偏移块Uₑ定义：半径r的圆柱（以e为轴）被4个平面切割后的区域，仅允许点在“边内部+相邻面片的有效侧”
-// 返回值：true=点x在边e的偏移块内（可产生正交接触力），false=不在（排除接触）
+// [OGC core function] Determine whether point x is within the offset block Uₑ of edge e (corresponds to Document Section 3.2 Equation 9, Algorithm 1 Line 15 checkEdgeFeasibleRegion)
+// Definition of edge offset block Uₑ: A cylinder with radius r (axis along e) cut by 4 planes, only allowing points in "inside the edge + valid side of adjacent faces"
+// Return value: true = point x is within the offset block of edge e (can generate orthogonal contact force), false = not within (exclude contact)
 //__device__ bool checkEdgeFeasibleRegion(
-//    const Vector3& x,  // 待判断的点（通常是算法1中的顶点v的位置x(v)）
-//    int            e,  // 当前待检查的边e（索引，对应网格边集E中的元素）
-//    const muda::CDense1D<Vector2i>& surf_edges,  // 网格边的顶点对：surf_edges(e) = (v1, v2)，存储边e的两个端点索引
-//    const muda::CDense1D<Vector3>& positions,  // 所有顶点的位置数据：positions(v) = 顶点v的3D坐标
-//    const muda::CDense1D<int>& edge_face_counts,  // 边e关联的面片数量：edge_face_counts(e) = k（流形网格中k≤2，边最多属于2个相邻面片）
-//    const muda::CDense1D<int>& edge_face_vertices,  // 边e关联面片的“对顶点”：edge_face_vertices(e*2 + k) = opp（面片v1v2opp中，除边e外的第三个顶点）
-//    float r  // OGC接触半径（边偏移块的圆柱半径，对应文档中的r）
+//    const Vector3& x,  // Point to be judged (usually the position x(v) of vertex v in Algorithm 1)
+//    int            e,  // Current edge e to be checked (index, corresponding to element in mesh edge set E)
+//    const muda::CDense1D<Vector2i>& surf_edges,  // Vertex pairs of mesh edges: surf_edges(e) = (v1, v2), stores the two endpoint indices of edge e
+//    const muda::CDense1D<Vector3>& positions,  // Position data of all vertices: positions(v) = 3D coordinate of vertex v
+//    const muda::CDense1D<int>& edge_face_counts,  // Number of faces associated with edge e: edge_face_counts(e) = k (k <= 2 in manifold meshes, an edge belongs to at most 2 adjacent faces)
+//    const muda::CDense1D<int>& edge_face_vertices,  // "Opposite vertex" of the face associated with edge e: edge_face_vertices(e*2 + k) = opp (the third vertex except edge e in face v1v2opp)
+//    float r  // OGC contact radius (cylinder radius of the edge offset block, corresponding to r in the document)
 //)
 //{
-//    // -------------------------- 步骤1：获取边e的基础几何信息 --------------------------
-//    // 从边集获取边e的两个端点v1、v2（文档3.2节：边e由顶点v_{e,1}和v_{e,2}构成）
-//    Vector2i e_vs = surf_edges(e);   // e_vs：边e的顶点索引对 (v1, v2)
-//    int v1 = e_vs[0], v2 = e_vs[1];  // v1 = 边e的起点，v2 = 边e的终点（Vector2i内部元素仍用[]访问，符合向量成员访问习惯）
-//    const Vector3& x1    = positions(v1);  // x1：顶点v1的当前位置
-//    const Vector3& x2    = positions(v2);  // x2：顶点v2的当前位置
-//    Vector3        vec_e = x2 - x1;        // vec_e：边e的方向向量（从v1指向v2）
-//    float len_e_sq = vec_e.squaredNorm();  // len_e_sq：边e的长度平方（避免开方，提升GPU效率）
+//    // -------------------------- Step 1: Get basic geometric information of edge e --------------------------
+//    // Get the two endpoints v1 and v2 of edge e from the edge set (Document Section 3.2: Edge e is composed of vertices v_{e,1} and v_{e,2})
+//    Vector2i e_vs = surf_edges(e);   // e_vs: Vertex index pair of edge e (v1, v2)
+//    int v1 = e_vs[0], v2 = e_vs[1];  // v1 = start point of edge e, v2 = end point of edge e (elements inside Vector2i are still accessed with [])
+//    const Vector3& x1    = positions(v1);  // x1: Current position of vertex v1
+//    const Vector3& x2    = positions(v2);  // x2: Current position of vertex v2
+//    Vector3        vec_e = x2 - x1;        // vec_e: Direction vector of edge e (from v1 to v2)
+//    float len_e_sq = vec_e.squaredNorm();  // len_e_sq: Squared length of edge e (avoids square root, improves GPU efficiency)
 //
-//    // 退化边检查：若边长度接近0（浮点误差范围内），边偏移块无意义，直接返回false
+//    // Degenerate edge check: If the edge length is close to 0 (within floating-point error range), the edge offset block is meaningless, return false directly
 //    //if(len_e_sq < 1e-12f)
 //    //    return false;
 //
 //
-//    // -------------------------- 步骤2：判断点x是否在边e的“圆柱范围内” --------------------------
-//    // 文档3.2节Equation 9条件1：dis(x, e) ≤ r（点x到边e的最短距离≤接触半径r，即x在以e为轴、r为半径的圆柱内）
-//    Vector3 vec_x1x = x - x1;  // vec_x1x：从v1指向x的向量
-//    float t = vec_x1x.dot(vec_e) / len_e_sq;  // t：x在边e上的投影参数（t∈[0,1]表示投影在边内部，t<0在v1外侧，t>1在v2外侧）
+//    // -------------------------- Step 2: Determine whether point x is within the "cylinder range" of edge e --------------------------
+//    // Document Section 3.2 Equation 9 Condition 1: dis(x, e) <= r (the shortest distance from point x to edge e <= contact radius r, i.e., x is inside the cylinder with e as axis and r as radius)
+//    Vector3 vec_x1x = x - x1;  // vec_x1x: Vector from v1 to x
+//    float t = vec_x1x.dot(vec_e) / len_e_sq;  // t: Projection parameter of x on edge e (t (belong to) [0,1] means projection is inside the edge, t < 0 is outside v1, t > 1 is outside v2)
 //
-//    // 【可选】强制投影范围到边内部（注释中保留，因后续dot1/dot2判断已等效实现此逻辑）
+//    // [Optional] Force projection range to inside the edge (retained in comments because the subsequent dot1/dot2 judgment has equivalently implemented this logic)
 //    // if(t < 0.f || t > 1.f) return false;
 //
-//    Vector3 closest = x1 + t * vec_e;  // closest：点x到边e的最短距离点（投影点）
-//    // 检查x到投影点的距离是否≤r（用平方距离避免开方，减少GPU计算开销，加1e-6浮点误差容差）
+//    Vector3 closest = x1 + t * vec_e;  // closest: The shortest distance point (projection point) from x to edge e
+//    // Check if the distance from x to the projection point is ≤ r (use squared distance to avoid square root, reduce GPU computation overhead, add 1e-6 floating-point error tolerance)
 //    if((x - closest).squaredNorm() > r * r)
 //        return false;
 //
 //
-//    // -------------------------- 步骤3：判断点x是否在边e的“内部圆柱段” --------------------------
-//    // 文档3.2节Equation 9条件2-3：排除x在边e的端点延长线上（仅保留边内部的圆柱段）
-//    // 条件2：(x - x_{e,1}) · (x_{e,2} - x_{e,1}) > 0 → x在v1的“远离v2”侧（非v1外侧）
+//    // -------------------------- Step 3: Determine whether point x is within the "internal cylinder segment" of edge e --------------------------
+//    // Document Section 3.2 Equation 9 Conditions 2-3: Exclude x on the extension line of the endpoints of edge e (only retain the internal cylinder segment of the edge)
+//    // Condition 2: (x - x_{e,1}) (dot) (x_{e,2} - x_{e,1}) > 0 => x is on the "side away from v2" of v1 (not outside v1)
 //    float dot1 = vec_x1x.dot(vec_e);
-//    // 条件3：(x - x_{e,2}) · (x_{e,1} - x_{e,2}) > 0 → x在v2的“远离v1”侧（非v2外侧）
-//    float dot2 = (x - x2).dot(-vec_e);  // -vec_e：从v2指向v1的方向向量
+//    // Condition 3: (x - x_{e,2}) (dot) (x_{e,1} - x_{e,2}) > 0 => x is on the "side away from v1" of v2 (not outside v2)
+//    float dot2 = (x - x2).dot(-vec_e);  // -vec_e: Direction vector from v2 to v1
 //
-//    // 若x在v1或v2的外侧（dot≤0，浮点误差容差1e-6），则不在边偏移块内，返回false
+//    // If x is outside v1 or v2 (dot ≤ 0, floating-point error tolerance 1e-6), then it is not within the edge offset block, return false
 //    if(dot1 <= 0 || dot2 <= 0)
 //        return false;
 //
 //
-//    // -------------------------- 步骤4：判断点x是否在“相邻面片的有效侧” --------------------------
-//    // 文档3.2节Equation 9条件4：排除x在边e相邻面片的“禁止侧”（边偏移块是圆柱被相邻面片的垂直平面切割后的区域）
-//    // 边e最多关联2个面片（流形网格），循环处理每个关联面片
-//    int cnt = edge_face_counts(e);  // cnt：边e关联的面片数量（k=0/1/2）
+//    // -------------------------- Step 4: Determine whether point x is on the "valid side of adjacent faces" --------------------------
+//    // Document Section 3.2 Equation 9 Condition 4: Exclude x on the "forbidden side" of the faces adjacent to edge e (the edge offset block is the region of the cylinder cut by the vertical planes of the adjacent faces)
+//    // An edge e is associated with at most 2 faces (manifold mesh), loop through each associated face
+//    int cnt = edge_face_counts(e);  // cnt: Number of faces associated with edge e (k=0/1/2)
 //    for(int k = 0; k < cnt; ++k)
 //    {
-//        // 获取边e在第k个关联面片中的“对顶点”opp（面片由v1、v2、opp构成，opp是除边e外的第三个顶点）
+//        // Get the "opposite vertex" opp of edge e in the k-th associated face (the face is composed of v1, v2, opp, opp is the third vertex except edge e)
 //        int opp = edge_face_vertices(e * 2 + k);
-//        if(opp < 0)  // 无效顶点索引（如边界边仅关联1个面片，另一个位置存-1），跳过
+//        if(opp < 0)  // Invalid vertex index (e.g., boundary edges are associated with only 1 face, the other position stores -1), skip
 //            continue;
 //
-//        // 计算对顶点opp在边e上的“垂足p”（文档3.2节中的p(x1,x2,x3)：x3在x1x2线上的垂直投影）
-//        Vector3 vec_v1opp = positions(opp) - x1;  // vec_v1opp：从v1指向opp的向量
-//        float t_p = vec_v1opp.dot(vec_e) / len_e_sq;  // t_p：opp在边e上的投影参数
-//        Vector3 p = x1 + t_p * vec_e;                 // p：opp在边e上的垂足
+//        // Calculate the "foot of perpendicular p" of the opposite vertex opp on edge e (p(x1,x2,x3) in Document Section 3.2: the vertical projection of x3 on the line x1x2)
+//        Vector3 vec_v1opp = positions(opp) - x1;  // vec_v1opp: Vector from v1 to opp
+//        float t_p = vec_v1opp.dot(vec_e) / len_e_sq;  // t_p: Projection parameter of opp on edge e
+//        Vector3 p = x1 + t_p * vec_e;                 // p: Foot of perpendicular of opp on edge e
 //
-//        // 文档3.2节条件4：(x - p) · (p - opp) ≥ 0 → x在面片v1v2opp的“外侧”（符合边偏移块的切割平面约束）
-//        Vector3 vec_xp = x - p;  // vec_xp：从p指向x的向量
-//        Vector3 vec_p_opp = p - positions(opp);  // vec_p_opp：从opp指向p的向量（面片的内侧方向）
-//        float dot_adj = vec_xp.dot(vec_p_opp);  // 点积判断x是否在切割平面的有效侧
+//        // Document Section 3.2 Condition 4: (x - p) (dot) (p - opp) ≥ 0 => x is on the "outside" of face v1v2opp (meets the cutting plane constraint of the edge offset block)
+//        Vector3 vec_xp = x - p;  // vec_xp: Vector from p to x
+//        Vector3 vec_p_opp = p - positions(opp);  // vec_p_opp: Vector from opp to p (inner direction of the face)
+//        float dot_adj = vec_xp.dot(vec_p_opp);  // Dot product to judge whether x is on the valid side of the cutting plane
 //
-//        // 若x在面片的“禁止侧”（dot_adj < -1e-6，浮点误差容差），返回false
+//        // If x is on the "forbidden side" of the face (dot_adj < -1e-6, floating-point error tolerance), return false
 //        if(dot_adj < 0)
 //            return false;
 //    }
 //
 //
-//    // -------------------------- 步骤5：所有条件满足，x在边e的偏移块Uₑ内 --------------------------
+//    // -------------------------- Step 5: All conditions are satisfied, x is within the offset block Uₑ of edge e --------------------------
 //    return true;
 //}
 
 
 /**
- * 验证点x是否在边的偏移块Uₑ内（直接传入边的两个顶点位置，无需边索引→顶点的映射）
- * 核心修改：
- * 1. 移除`surf_edges`和通过边索引`e`获取顶点的逻辑，直接接收边的两个顶点位置x1、x2
- * 2. 保留边索引`e`（因`edge_face_counts`和`edge_face_vertices`仍需通过e访问关联面片）
- * 3. 核心约束逻辑（圆柱范围、端点限制、相邻面片切割）完全不变
+ * Verify whether point x is within the offset block Uₑ of the edge (directly pass the positions of the two vertices of the edge, no need for edge index => vertex mapping)
+ * Core modifications:
+ * 1. Remove the logic of `surf_edges` and obtaining vertices through edge index `e`, directly receive the positions x1 and x2 of the two vertices of the edge
+ * 2. Retain edge index `e` (because `edge_face_counts` and `edge_face_vertices` still need to access associated faces through e)
+ * 3. The core constraint logic (cylinder range, endpoint restriction, adjacent face cutting) remains completely unchanged
  * 
- * @param x                     待判断的点（如顶点v的位置x(v)）
- * @param x1                    边的第一个顶点位置（直接传入，无需通过边索引获取）
- * @param x2                    边的第二个顶点位置（直接传入，无需通过边索引获取）
- * @param e                     边的全局索引（用于访问关联面片信息，不可省略）
- * @param positions             所有顶点的位置数据（用于获取关联面片的对顶点位置）
- * @param edge_face_counts      边e关联的面片数量（流形网格中k≤2）
- * @param edge_face_vertices    边e关联面片的“对顶点”（面片v1v2opp中除边外的第三个顶点）
- * @param r                     OGC接触半径（边偏移块的圆柱半径）
- * @return bool                 true=x在边的偏移块内；false=不在
+ * @param x                     Point to be judged (e.g., position x(v) of vertex v)
+ * @param x1                    Position of the first vertex of the edge (directly passed in)
+ * @param x2                    Position of the second vertex of the edge (directly passed in)
+ * @param e                     Global index of the edge (depends on associated face information)
+ * @param positions             Position data of all vertices (used to get the position of the opposite vertex opp of the associated face)
+ * @param edge_face_counts      Number of faces associated with edge e (k ≤ 2 in manifold meshes)
+ * @param edge_face_vertices    "Opposite vertex" of the face associated with edge e (the third vertex except the edge in face v1v2opp)
+ * @param r                     OGC contact radius (cylinder radius of the edge offset block)
+ * @return bool                 true = x is within the offset block of the edge; false = not within
  */
-__device__ bool checkEdgeFeasibleRegion(const Vector3& x,  // 待判断的点
-                                        const Vector3& x1,  // 边的第一个顶点位置（直接传入）
-                                        const Vector3& x2,  // 边的第二个顶点位置（直接传入）
-                                        int e,  // 边的全局索引（关联面片依赖）
-                                        const muda::CDense1D<Vector3>& positions,  // 所有顶点位置（获取对顶点opp的位置）
-                                        const muda::CDense1D<int>& edge_face_counts,  // 边e关联的面片数量
-                                        const muda::CDense1D<int>& edge_face_vertices,  // 边e关联面片的对顶点
-                                        float r  // 接触半径
+__device__ bool checkEdgeFeasibleRegion(const Vector3& x,  // Point to be judged
+                                        const Vector3& x1,  // Position of the first vertex of the edge (directly passed in)
+                                        const Vector3& x2,  // Position of the second vertex of the edge (directly passed in)
+                                        int e,  // Global index of the edge (depends on associated faces)
+                                        const muda::CDense1D<Vector3>& positions,  // Position of all vertices (get position of opposite vertex opp)
+                                        const muda::CDense1D<int>& edge_face_counts,  // Number of faces associated with edge e
+                                        const muda::CDense1D<int>& edge_face_vertices,  // Opposite vertex of the face associated with edge e
+                                        float r  // Contact radius
 )
 {
-    // -------------------------- 步骤1：获取边的基础几何信息（直接基于x1、x2计算） --------------------------
-    Vector3 vec_e = x2 - x1;               // 边的方向向量（从x1指向x2）
-    float len_e_sq = vec_e.squaredNorm();  // 边的长度平方（避免开方，提升GPU效率）
+    // -------------------------- Step 1: Get basic geometric information of the edge (calculated directly based on x1 and x2) --------------------------
+    Vector3 vec_e = x2 - x1;               // Direction vector of the edge (from x1 to x2)
+    float len_e_sq = vec_e.squaredNorm();  // Squared length of the edge (avoids square root, improves GPU efficiency)
 
-    // 退化边检查：长度接近0的边无偏移块意义（浮点误差容差1e-12）
+    // Degenerate edge check: Edges with length close to 0 have no meaning for offset blocks (floating-point error tolerance 1e-12)
     if(len_e_sq < 1e-12f)
         return false;
 
 
-    // -------------------------- 步骤2：判断点x是否在边的“圆柱范围内” --------------------------
-    // 条件：点x到边的最短距离 ≤ r（即x在以边为轴、r为半径的圆柱内）
-    Vector3 vec_x1x = x - x1;                 // 从x1指向x的向量
-    float t = vec_x1x.dot(vec_e) / len_e_sq;  // x在边上的投影参数（t∈[0,1]为边内部）
+    // -------------------------- Step 2: Determine whether point x is within the "cylinder range" of the edge --------------------------
+    // Condition: The shortest distance from point x to the edge ≤ r (i.e., x is inside the cylinder with the edge as axis and r as radius)
+    Vector3 vec_x1x = x - x1;                 // Vector from x1 to x
+    float t = vec_x1x.dot(vec_e) / len_e_sq;  // Projection parameter of x on the edge (t (belong to) [0,1] is inside the edge)
 
-    Vector3 closest = x1 + t * vec_e;  // x到边的最短距离点（投影点）
-    // 平方距离 > r² + 1e-12 → 不在圆柱内（容忍浮点误差）
+    Vector3 closest = x1 + t * vec_e;  // Shortest distance point (projection point) from x to the edge
+    // Squared distance > r square + 1e-12 => not inside the cylinder (tolerate floating-point errors)
     if((x - closest).squaredNorm() > r * r + 1e-12f)
         return false;
 
 
-    // -------------------------- 步骤3：判断点x是否在边的“内部圆柱段”（排除端点外侧） --------------------------
-    // 条件1：x不在x1的外侧（(x - x1) · (x2 - x1) > 0）
+    // -------------------------- Step 3: Determine whether point x is within the "internal cylinder segment" of the edge (exclude outside endpoints) --------------------------
+    // Condition 1: x is not outside x1 ((x - x1) (dot) (x2 - x1) > 0)
     float dot1 = vec_x1x.dot(vec_e);
-    // 条件2：x不在x2的外侧（(x - x2) · (x1 - x2) > 0 → 等价于(x - x2) · (-vec_e) > 0）
+    // Condition 2: x is not outside x2 ((x - x2) (dot) (x1 - x2) > 0 => equivalent to (x - x2) (dot) (-vec_e) > 0)
     float dot2 = (x - x2).dot(-vec_e);
 
-    // 若x在x1或x2的外侧（dot≤0），不在边偏移块内
-    if(dot1 <= 1e-6f || dot2 <= 1e-6f)  // 放宽至1e-6容差，兼容GPU浮点精度
+    // If x is outside x1 or x2 (dot ≤ 0), it is not within the edge offset block
+    if(dot1 <= 1e-6f || dot2 <= 1e-6f)  // Relax to 1e-6 tolerance to be compatible with GPU floating-point precision
         return false;
 
 
-    // -------------------------- 步骤4：判断点x是否在“相邻面片的有效侧” --------------------------
-    // 边偏移块需被相邻面片的垂直平面切割，仅保留外侧区域（文档3.2节Equation 9条件4）
-    int cnt = edge_face_counts(e);  // 边e关联的面片数量（0/1/2）
+    // -------------------------- Step 4: Determine whether point x is on the "valid side of adjacent faces" --------------------------
+    // The edge offset block needs to be cut by the vertical planes of adjacent faces, only retaining the outer region (Document Section 3.2 Equation 9 Condition 4)
+    int cnt = edge_face_counts(e);  // Number of faces associated with edge e (0/1/2)
     for(int k = 0; k < cnt; ++k)
     {
-        // 获取第k个关联面片的“对顶点”opp（面片由x1、x2、opp构成）
+        // Get the "opposite vertex" opp of the k-th associated face (the face is composed of x1, x2, opp)
         int opp = edge_face_vertices(e * 2 + k);
-        if(opp < 0)  // 无效对顶点（如边界边仅关联1个面片，另一个为-1），跳过
+        if(opp < 0)  // Invalid opposite vertex (e.g., boundary edges are associated with only 1 face, the other is -1), skip
             continue;
 
-        // 计算opp在边上的垂足p（用于确定切割平面）
-        const Vector3& x_opp     = positions(opp);      // 对顶点opp的位置
-        Vector3        vec_v1opp = x_opp - x1;          // 从x1指向opp的向量
-        float   t_p = vec_v1opp.dot(vec_e) / len_e_sq;  // opp在边上的投影参数
-        Vector3 p   = x1 + t_p * vec_e;                 // 垂足p的位置
+        // Calculate the foot of perpendicular p of opp on the edge (used to determine the cutting plane)
+        const Vector3& x_opp     = positions(opp);      // Position of opposite vertex opp
+        Vector3        vec_v1opp = x_opp - x1;          // Vector from x1 to opp
+        float   t_p = vec_v1opp.dot(vec_e) / len_e_sq;  // Projection parameter of opp on the edge
+        Vector3 p   = x1 + t_p * vec_e;                 // Position of foot of perpendicular p
 
-        // 条件：(x - p) · (p - x_opp) ≥ 0 → x在切割平面的有效侧（外侧）
-        Vector3 vec_xp    = x - p;      // 从p指向x的向量
-        Vector3 vec_p_opp = p - x_opp;  // 从opp指向p的向量（面片内侧方向）
+        // Condition: (x - p) (dot) (p - x_opp) ≥ 0 => x is on the valid side (outside) of the cutting plane
+        Vector3 vec_xp    = x - p;      // Vector from p to x
+        Vector3 vec_p_opp = p - x_opp;  // Vector from opp to p (inner direction of the face)
         float   dot_adj   = vec_xp.dot(vec_p_opp);
 
-        // 若x在面片的“禁止侧”（dot_adj < -1e-6），返回false
+        // If x is on the "forbidden side" of the face (dot_adj < -1e-6), return false
         if(dot_adj < 0)
             return false;
     }
 
 
-    // -------------------------- 所有条件满足，x在边的偏移块内 --------------------------
+    // -------------------------- All conditions are satisfied, x is within the offset block of the edge --------------------------
     return true;
 }
 
-
-// -------------------------- 附录：GPU并行调用示例（对应OGC的并行接触检测逻辑） --------------------------
-// 文档4.1节：OGC接触检测是“局部并行操作”，无全局同步，适合GPU大规模并行
-// 此处示例使用muda的ParallelFor，对所有边E并行调用checkEdgeFeasibleRegion
-// template <typename EsView, typename PsView, typename CountView, typename VertView>
-// void parallelCheckEdgeFeasibleRegion(
-//     const EsView& Es,          // 边集视图
-//     const PsView& Ps,          // 顶点位置视图
-//     const CountView& face_counts, // 边-面片数量视图
-//     const VertView& face_verts, // 边-面片对顶点视图
-//     float ogc_r,               // OGC接触半径r
-//     const Vector3& x_to_check  // 待判断的点x（需根据实际场景传入，如算法1中的顶点v的位置）
-// )
-// {
-//     ParallelFor().apply(
-//         Es.size(),  // 并行维度：边的总数（每个线程处理一条边e）
-//         [surf_edges  = Es.cviewer().name("edges"),    // 边集（设备端视图）
-//          positions   = Ps.cviewer().name("positions"),// 顶点位置（设备端视图）
-//          face_counts = face_counts.cviewer().name("edge_face_counts"), // 边-面片数量
-//          face_verts  = face_verts.cviewer().name("edge_face_vertices"),// 边-面片对顶点
-//          r           = ogc_r,                         // OGC接触半径
-//          x           = x_to_check]                    // 待判断的点x（如算法1中的顶点v）
-//         __device__(int e) mutable                     // GPU线程：处理第e条边
-//         {
-//             // 核心调用：判断点x是否在边e的偏移块内
-//             bool is_in_edge_block = checkEdgeFeasibleRegion(
-//                 x, e, surf_edges, positions, face_counts, face_verts, r
-//             );
-
-//             // 后续逻辑：若is_in_edge_block为true，将边e加入顶点x的接触面集FOGC(v)（算法1第16行）
-//             // （需结合原子操作避免线程竞争，如算法1第16-17行的FOGC/EOGC更新）
-//         }
-//     );
-// }
-
 __device__ bool checkVertexFeasibleRegion(
-    const Vector3& x,  // test oint：待检测的点（如碰撞检测中的候选点）
-    int            a,  // vertex id：顶点偏移块对应的顶点ID（公式中的v）
-    const muda::CDense1D<Vector3>& positions,  // 所有顶点的3D位置（device端，index为顶点ID）
-    const muda::CDense1D<IndexT>& vadj_offsets,  // 顶点邻接列表的偏移缓冲区（CSR起始索引）
-    const muda::CDense1D<IndexT>& vadj_indices,  // 顶点邻接列表的ID缓冲区（CSR具体ID）
-    float r)  // OGC接触半径（公式中的r，偏移块的球体半径）
+    const Vector3& x,  // test point：Point to be detected (e.g., candidate point in collision detection)
+    int            a,  // vertex id：Vertex ID corresponding to the vertex offset block (v in the equation)
+    const muda::CDense1D<Vector3>& positions,  // 3D positions of all vertices (device-side, index is vertex ID)
+    const muda::CDense1D<IndexT>& vadj_offsets,  // Offset buffer of vertex adjacency list (CSR start index)
+    const muda::CDense1D<IndexT>& vadj_indices,  // ID buffer of vertex adjacency list (CSR specific ID)
+    float r)  // OGC contact radius (r in the equation, sphere radius of the offset block)
 {
-    // 1. 提取顶点a的位置，计算待检测点x到顶点a的向量（对应公式中的x - x_v）
-    const Vector3& x_a = positions(a);  // x_a：顶点a的当前位置（公式中的x_v）
-    Vector3 vec_xa = x - x_a;  // vec_xa：待检测点x到顶点a的向量（公式中的x - x_v）
+    // 1. Extract the position of vertex a and calculate the vector from the point x to be detected to vertex a (corresponds to x - x_v in the equation)
+    const Vector3& x_a = positions(a);  // x_a：Current position of vertex a (x_v in the equation)
+    Vector3 vec_xa = x - x_a;  // vec_xa：Vector from the point x to be detected to vertex a (x - x_v in the equation)
 
-    // 2. 约束1：距离约束（公式8的||x - x_v|| ≤ r）
-    // 优化点：用平方模（squaredNorm）替代模长（norm），避免开方运算，提升GPU计算效率
-    // 容忍微小浮点误差：若平方距离略大于r²（如因精度导致），仍判定为超出范围
+    // 2. Constraint 1: Distance constraint (||x - x_v|| <= r in Equation 8)
+    // Optimization point: Use squaredNorm instead of norm to avoid square root operation and improve GPU computation efficiency
+    // Tolerate small floating-point errors: If the squared distance is slightly larger than r square (e.g., caused by precision), it is still judged as out of range
     if(vec_xa.squaredNorm() > r * r)
-        return false;  // 距离超出接触半径，点不在偏移块内
+        return false;  // Distance exceeds contact radius, point is not within the offset block
 
-    // 3. 约束2：方向约束（公式8的(x - x_v)·(x_v - x_{v'}) ≥ 0，对所有相邻顶点v'）
-    // 3.1 解析顶点a的邻接列表范围（基于CSR-like结构）
-    const int start = (int)vadj_offsets(a);  // 顶点a的邻接列表在vadj_indices中的起始索引
-    const int end = (int)vadj_offsets(a + 1);  // 顶点a的邻接列表的结束索引（下一个顶点的起始）
-    // 遍历顶点a的所有相邻顶点v'（v_prime）
+    // 3. Constraint 2: Direction constraint ((x - x_v)(dot)(x_v - x_{v'}) ≥ 0 in Equation 8, for all adjacent vertices v')
+    // 3.1 Parse the range of the adjacency list of vertex a (based on CSR-like structure)
+    const int start = (int)vadj_offsets(a);  // Start index of the adjacency list of vertex a in vadj_indices
+    const int end = (int)vadj_offsets(a + 1);  // End index of the adjacency list of vertex a (start of the next vertex)
+    // Traverse all adjacent vertices v' (v_prime) of vertex a
     for(int p = start; p < end; ++p)
     {
-        // 3.2 提取当前相邻顶点v'的ID和位置
-        const int v_prime = (int)vadj_indices(p);  // v_prime：顶点a的一个相邻顶点（公式中的v'）
-        const Vector3& x_vp = positions(v_prime);  // x_vp：相邻顶点v'的位置（公式中的x_{v'}）
+        // 3.2 Extract the ID and position of the current adjacent vertex v'
+        const int v_prime = (int)vadj_indices(p);  // v_prime：An adjacent vertex of vertex a (v' in the equation)
+        const Vector3& x_vp = positions(v_prime);  // x_vp：Position of adjacent vertex v' (x_{v'} in the equation)
 
-        // 3.3 计算方向约束的向量（公式中的x_v - x_{v'}）
-        Vector3 vec_av = x_a - x_vp;  // vec_av：顶点a指向相邻顶点v'的向量（a到v'的反方向）
+        // 3.3 Calculate the vector for the direction constraint (x_v - x_{v'} in the equation)
+        Vector3 vec_av = x_a - x_vp;  // vec_av：Vector from vertex a to adjacent vertex v' (reverse direction from a to v')
 
-        // 3.4 计算点积，验证方向约束（公式中的(x - x_v)·(x_v - x_{v'}) ≥ 0）
-        float dot = vec_xa.dot(vec_av);  // 点积结果：若≥0，说明夹角≤90°，满足方向约束
-        // 浮点误差处理：允许-1e-6的偏差（避免GPU浮点精度误差导致的误判，如理论0变为-1e-15）
+        // 3.4 Calculate the dot product to verify the direction constraint ((x - x_v)(dot)(x_v - x_{v'}) ≥ 0 in the equation)
+        float dot = vec_xa.dot(vec_av);  // Dot product result: If ≥ 0, the angle <= 90°, satisfying the direction constraint
+        // Floating-point error handling: Allow a deviation of -1e-6 (avoid misjudgment caused by GPU floating-point precision errors, e.g., theoretical 0 becomes -1e-15)
         //if(dot < -1e-6f)
-        //    return false;  // 方向约束不满足，点不在偏移块内
+        //    return false;  // Direction constraint not satisfied, point is not within the offset block
         if(dot < 0)
-            return false;  // 方向约束不满足，点不在偏移块内
+            return false;  // Direction constraint not satisfied, point is not within the offset block
     }
 
-    // 4. 所有约束均满足：待检测点x在顶点a的偏移块Uₐ内，返回有效
+    // 4. All constraints are satisfied: The point x to be detected is within the offset block Uₐ of vertex a, return valid
     return true;
 
-    // ------------------------------ 并行调用示例（注释部分说明）------------------------------
-    // 以下是函数在GPU并行环境中的典型调用方式（基于muda的ParallelFor）
-    // ParallelFor().apply(num_queries,  // num_queries：并行查询的数量（如待检测点的总数）
-    //                     [positions = info.positions().cviewer().name("positions"),  // 顶点位置（const视图）
-    //                      vadj_offsets = m_vadj_offsets.cviewer().name("vadj_offsets"),  // 邻接偏移（const视图）
-    //                      vadj_indices = m_vadj_indices.cviewer().name("vadj_indices"),  // 邻接ID（const视图）
-    //                      r = ogc_radius] __device__(int i) mutable  // i：并行线程索引
+    // ------------------------------ Parallel call example (explanation in comments) ------------------------------
+    // The following is a typical calling method of the function in a GPU parallel environment (based on muda's ParallelFor)
+    // ParallelFor().apply(num_queries,  // num_queries：Number of parallel queries (e.g., total number of points to be detected)
+    //                     [positions = info.positions().cviewer().name("positions"),  // Vertex positions (const view)
+    //                      vadj_offsets = m_vadj_offsets.cviewer().name("vadj_offsets"),  // Adjacency offsets (const view)
+    //                      vadj_indices = m_vadj_indices.cviewer().name("vadj_indices"),  // Adjacency IDs (const view)
+    //                      r = ogc_radius] __device__(int i) mutable  // i：Parallel thread index
     //                     {
-    //                         // 假设x是第i个待检测点的位置，v是待验证的顶点ID
+    //                         // Assume x is the position of the i-th point to be detected, v is the vertex ID to be verified
     //                         // bool ok = checkVertexFeasibleRegion(x, v, positions, vadj_offsets, vadj_indices, r);
-    //                         // 根据ok的结果，标记接触对是否有效（如加入FOGC接触集合）
+    //                         // Mark whether the contact pair is valid according to the result of ok (e.g., add to FOGC contact set)
     //                     });
 }
 
 /**
- * 【重构版】验证边-边接触的最近点x_c是否在顶点v_idx的偏移块Uₐ内（支持多相邻顶点）
- * 核心修改：
- * 1. 用CSR结构（vadj_offsets/vadj_indices）替代v_edge_indices/surf_edges，遍历所有相邻顶点
- * 2. 方向约束验证覆盖顶点v_idx的所有邻居，不再局限于2个边邻居
- * 3. 适配多相邻顶点场景（如非边-only流形的分叉顶点）
+ * [Refactored version] Verify whether the closest point x_c of edge-edge contact is within the offset block Uₐ of vertex v_idx (supports multiple adjacent vertices)
+ * Core modifications:
+ * 1. Use CSR structure (vadj_offsets/vadj_indices) instead of v_edge_indices/surf_edges to traverse all adjacent vertices
+ * 2. Direction constraint verification covers all neighbors of vertex v_idx, no longer limited to 2 edge neighbors
+ * 3. Adapt to scenarios with multiple adjacent vertices (e.g., bifurcated vertices in non-edge-only manifolds)
  * 
- * @param x_c           边-边接触的最近点（待验证的点）
- * @param v_idx         顶点偏移块对应的顶点ID（待验证的顶点）
- * @param positions     所有顶点的3D位置（device端，index=顶点ID）
- * @param vadj_offsets  顶点邻接表的CSR偏移缓冲区（vadj_offsets[v] = 邻居列表起始索引）
- * @param vadj_indices  顶点邻接表的CSR索引缓冲区（vadj_indices[p] = 相邻顶点ID）
- * @param ogc_r         OGC接触半径（顶点偏移块的球体半径）
- * @return bool         true=x_c在顶点v_idx的偏移块内；false=不在
+ * @param x_c           Closest point of edge-edge contact (point to be verified)
+ * @param v_idx         Vertex ID corresponding to the vertex offset block (vertex to be verified)
+ * @param positions     3D positions of all vertices (device-side, index=vertex ID)
+ * @param vadj_offsets  CSR offset buffer of vertex adjacency list (vadj_offsets[v] = start index of neighbor list)
+ * @param vadj_indices  CSR index buffer of vertex adjacency list (vadj_indices[p] = adjacent vertex ID)
+ * @param ogc_r         OGC contact radius (sphere radius of the vertex offset block)
+ * @return bool         true = x_c is within the offset block of vertex v_idx; false = not within
  */
 __device__ bool checkVertexFeasibleRegionEdgeOffset(
     const Vector3&                 x_c,
     int                            v_idx,
     const muda::CDense1D<Vector3>& positions,
-    const muda::CDense1D<IndexT>& vadj_offsets,  // 新增：CSR偏移（替代v_edge_indices）
-    const muda::CDense1D<IndexT>& vadj_indices,  // 新增：CSR索引（替代surf_edges）
+    const muda::CDense1D<IndexT>& vadj_offsets,  // New: CSR offsets (replace v_edge_indices)
+    const muda::CDense1D<IndexT>& vadj_indices,  // New: CSR indices (replace surf_edges)
     float ogc_r)
 {
-    // -------------------------- 步骤1：基础校验与顶点位置提取 --------------------------
-    // 1.2 提取顶点v_idx的当前位置（偏移块的球心）
+    // -------------------------- Step 1: Basic verification and vertex position extraction --------------------------
+    // 1.2 Extract the current position of vertex v_idx (center of the offset block)
     const Vector3& x_v = positions(v_idx);
 
-    // -------------------------- 步骤2：距离约束验证（||x_c - x_v|| ≤ ogc_r） --------------------------
-    Vector3 vec_cv = x_c - x_v;             // x_c到x_v的向量
-    float dist_sq  = vec_cv.squaredNorm();  // 平方距离（避免开方，提升GPU效率）
-    float r_sq     = ogc_r * ogc_r;         // 接触半径的平方
+    // -------------------------- Step 2: Distance constraint verification (||x_c - x_v|| <= ogc_r) --------------------------
+    Vector3 vec_cv = x_c - x_v;             // Vector from x_c to x_v
+    float dist_sq  = vec_cv.squaredNorm();  // Squared distance (avoids square root, improves GPU efficiency)
+    float r_sq     = ogc_r * ogc_r;         // Squared contact radius
 
-    // 容忍微小浮点误差（如GPU精度导致的略超范围），平方距离>r²+1e-12视为超出
+    // Tolerate small floating-point errors (e.g., slight out-of-range caused by GPU precision), squared distance > r_sq + 1e-12 is considered out of range
     if(dist_sq > r_sq + 1e-12f)
         return false;
 
-    // -------------------------- 步骤3：遍历所有相邻顶点，验证方向约束 --------------------------
-    // 3.1 从CSR结构中解析顶点v_idx的邻居范围（start=起始索引，end=结束索引）
+    // -------------------------- Step 3: Traverse all adjacent vertices and verify direction constraints --------------------------
+    // 3.1 Parse the neighbor range of vertex v_idx from the CSR structure (start=start index, end=end index)
     const int start = static_cast<int>(vadj_offsets(v_idx));
-    const int end = static_cast<int>(vadj_offsets(v_idx + 1));  // CSR偏移的“下一个顶点起始”即当前结束
+    const int end = static_cast<int>(vadj_offsets(v_idx + 1));  // "Start of next vertex" in CSR offsets is the end of current
 
-    // 3.2 若无相邻顶点（孤立顶点），仅需满足距离约束（特殊场景，如单个顶点碰撞）
+    // 3.2 If there are no adjacent vertices (isolated vertex), only need to satisfy the distance constraint (special scenario)
     if(start >= end)
         return true;
 
-    // 3.3 对每个相邻顶点v_prime，验证方向约束：(x_c - x_v) · (x_v - x_v_prime) ≥ 0
-    // （含义：x_c在“x_v指向v_prime”的反方向侧，避免进入邻居的偏移块重叠区）
+    // 3.3 For each adjacent vertex v_prime, verify the direction constraint: (x_c - x_v) (dot) (x_v - x_v_prime) ≥ 0
+    // (Meaning: x_c is on the opposite side of x_v pointing to v_prime, avoiding entering the overlapping area of neighbors' offset blocks)
     for(int p = start; p < end; ++p)
     {
-        // 3.3.1 提取相邻顶点ID（注意IndexT到int的转换，适配muda容器）
+        // 3.3.1 Extract adjacent vertex ID (note conversion from IndexT to int to adapt to muda containers)
         int v_prime = static_cast<int>(vadj_indices(p));
-        // 跳过自身（理论上CSR邻接表不含自身，此处防异常）
+        // Skip self (CSR adjacency list theoretically does not contain self, here to prevent exceptions)
         if(v_prime == v_idx)
             continue;
 
-        // 3.3.2 提取相邻顶点v_prime的位置
+        // 3.3.2 Extract the position of adjacent vertex v_prime
         const Vector3& x_vp = positions(v_prime);
 
-        // 3.3.3 计算方向约束的向量与点积
-        Vector3 vec_v_vp = x_v - x_vp;  // x_v到v_prime的向量（反方向）
-        float   dot      = vec_cv.dot(vec_v_vp);  // 点积判断方向
+        // 3.3.3 Calculate the vector and dot product for the direction constraint
+        Vector3 vec_v_vp = x_v - x_vp;  // Vector from x_v to v_prime (reverse direction)
+        float   dot      = vec_cv.dot(vec_v_vp);  // Dot product to judge direction
 
-        // 浮点误差容忍：点积<0视为不满足（避免GPU精度导致的误判）
-        if(dot < 0)  // 放宽1e-6容差，兼容微小浮点波动
+        // Tolerate floating-point errors: dot < 0 is considered unsatisfied (avoid misjudgment caused by GPU precision)
+        if(dot < 0)  // Relax to 1e-6 tolerance to be compatible with small floating-point fluctuations
             return false;
     }
 
-    // -------------------------- 步骤4：退化情况补充校验（多邻居重合） --------------------------
-    // 若存在多个相邻顶点位置重合（如退化边），视为无效偏移块
+    // -------------------------- Step 4: Supplementary verification for degenerate cases (multiple overlapping neighbors) --------------------------
+    // If multiple adjacent vertices have overlapping positions (e.g., degenerate edges), the offset block is considered invalid
     Vector3 first_neighbor_pos = positions(static_cast<int>(vadj_indices(start)));
     for(int p = start + 1; p < end; ++p)
     {
         int     v_prime           = static_cast<int>(vadj_indices(p));
         Vector3 curr_neighbor_pos = positions(v_prime);
-        // 相邻顶点位置重合（平方距离<1e-24，视为完全重合）
+        // Adjacent vertices have overlapping positions (squared distance < 1e-24, considered completely overlapping)
         if((curr_neighbor_pos - first_neighbor_pos).squaredNorm() < 1e-24f)
             return false;
     }
 
-    // -------------------------- 所有约束满足 --------------------------
+    // -------------------------- All constraints are satisfied --------------------------
     return true;
 }
 
@@ -904,45 +758,45 @@ __device__ bool checkVertexFeasibleRegionEdgeOffset(
 //                                                    const muda::CDense1D<Vector2i>& v_edge_indices,
 //                                                    float ogc_r)
 //{
-//    // -------------------------- 步骤1：获取顶点v的位置和相邻顶点 --------------------------
-//    const Vector3& x_v = positions(v_idx);  // 容器索引改用()
+//    // -------------------------- Step 1: Get the position of vertex v and adjacent vertices --------------------------
+//    const Vector3& x_v = positions(v_idx);  // Container index uses () instead
 //
-//    // 提取顶点v在边-only流形中所属的两条边
-//    Vector2i v_edges = v_edge_indices(v_idx);           // 容器索引改用()
-//    int      e1_idx = v_edges[0], e2_idx = v_edges[1];  // Vector2i内部仍用[]
+//    // Extract the two edges that vertex v belongs to in the edge-only manifold
+//    Vector2i v_edges = v_edge_indices(v_idx);           // Container index uses () instead
+//    int      e1_idx = v_edges[0], e2_idx = v_edges[1];  // Elements inside Vector2i still use []
 //
-//    // 从边e1中提取相邻顶点v1（排除v自身）
-//    Vector2i e1_vs = surf_edges(e1_idx);                 // 容器索引改用()
-//    int v1 = (e1_vs[0] == v_idx) ? e1_vs[1] : e1_vs[0];  // Vector2i内部仍用[]
+//    // Extract adjacent vertex v1 from edge e1 (exclude v itself)
+//    Vector2i e1_vs = surf_edges(e1_idx);                 // Container index uses () instead
+//    int v1 = (e1_vs[0] == v_idx) ? e1_vs[1] : e1_vs[0];  // Elements inside Vector2i still use []
 //
-//    // 从边e2中提取相邻顶点v2（排除v自身）
-//    Vector2i e2_vs = surf_edges(e2_idx);                 // 容器索引改用()
-//    int v2 = (e2_vs[0] == v_idx) ? e2_vs[1] : e2_vs[0];  // Vector2i内部仍用[]
+//    // Extract adjacent vertex v2 from edge e2 (exclude v itself)
+//    Vector2i e2_vs = surf_edges(e2_idx);                 // Container index uses () instead
+//    int v2 = (e2_vs[0] == v_idx) ? e2_vs[1] : e2_vs[0];  // Elements inside Vector2i still use []
 //
-//    // 退化情况：两个相邻顶点重合（边为点，无意义）
-//    if(v1 == v2 || (positions(v1) - positions(v2)).squaredNorm() < 1e-12f)  // 容器索引改用()
+//    // Degenerate case: Two adjacent vertices are coincident (edge is a point, meaningless)
+//    if(v1 == v2 || (positions(v1) - positions(v2)).squaredNorm() < 1e-12f)  // Container index uses () instead
 //        return false;
 //
-//    // -------------------------- 步骤2：验证距离约束（||x_c - x_v|| ≤ r） --------------------------
+//    // -------------------------- Step 2: Verify distance constraint (||x_c - x_v|| <= r) --------------------------
 //    Vector3 vec_cv  = x_c - x_v;
 //    float   dist_sq = vec_cv.squaredNorm();
-//    if(dist_sq > ogc_r * ogc_r + 1e-12f)  // 平方距离 > r²，不满足
+//    if(dist_sq > ogc_r * ogc_r + 1e-12f)  // Squared distance > r square, not satisfied
 //        return false;
 //
-//    // -------------------------- 步骤3：验证方向约束（两个相邻顶点） --------------------------
-//    // 3.1 与v1的方向约束：(x_c - x_v) · (x_v - x_v1) ≥ 0
-//    Vector3 vec_vv1 = x_v - positions(v1);  // 容器索引改用()
+//    // -------------------------- Step 3: Verify direction constraints (for two adjacent vertices) --------------------------
+//    // 3.1 Direction constraint with v1: (x_c - x_v) (dot) (x_v - x_v1) ≥ 0
+//    Vector3 vec_vv1 = x_v - positions(v1);  // Container index uses () instead
 //    float   dot1    = vec_cv.dot(vec_vv1);
 //
-//    // 3.2 与v2的方向约束：(x_c - x_v) · (x_v - x_v2) ≥ 0
-//    Vector3 vec_vv2 = x_v - positions(v2);  // 容器索引改用()
+//    // 3.2 Direction constraint with v2: (x_c - x_v) (dot) (x_v - x_v2) ≥ 0
+//    Vector3 vec_vv2 = x_v - positions(v2);  // Container index uses () instead
 //    float   dot2    = vec_cv.dot(vec_vv2);
 //
-//    // 浮点误差容忍：点积 < 0 视为不满足（避免因精度误判）
+//    // Tolerate floating-point errors: dot < 0 is considered unsatisfied (avoid misjudgment due to precision)
 //    if(dot1 < 0 || dot2 < 0)
 //        return false;
 //
-//    // -------------------------- 所有约束满足 --------------------------
+//    // -------------------------- All constraints are satisfied --------------------------
 //    return true;
 //}
 
@@ -951,8 +805,8 @@ __device__ bool checkVertexFeasibleRegionEdgeOffset(
 //    const Vector3&                 x_c,
 //    int                            v_idx,
 //    const muda::CDense1D<Vector3>& positions,
-//    const muda::CDense1D<IndexT>& vadj_offsets,  // 新增：CSR偏移（替代v_edge_indices）
-//    const muda::CDense1D<IndexT>& vadj_indices,  // 新增：CSR索引（替代surf_edges）
+//    const muda::CDense1D<IndexT>& vadj_offsets,  // New: CSR offsets (replace v_edge_indices)
+//    const muda::CDense1D<IndexT>& vadj_indices,  // New: CSR indices (replace surf_edges)
 //    float ogc_r)
     
 __device__ int find_edge_id(int             a,
@@ -965,7 +819,7 @@ __device__ int find_edge_id(int             a,
         return -1;
     int va = a;
     int vb = b;
-    // 遍历 a 的邻接边
+    // Traverse the adjacent edges of a
     for(IndexT k = v_edge_offsets(va); k < v_edge_offsets(va + 1); ++k)
     {
         IndexT e  = v_edge_indices(k);
@@ -981,234 +835,224 @@ __device__ int find_edge_id(int             a,
 void LBVHSimplexTrajectoryFilter::Impl::phase1_vertex_facet_contact(DetectInfo& info)
 {
     using namespace muda;
-    auto Vs                 = info.surf_vertices();
-    auto Fs                 = info.surf_triangles();
-    auto Es                 = info.surf_edges();
-    auto positions          = info.positions();
+    auto Vs        = info.surf_vertices();
+    auto Fs        = info.surf_triangles();
+    auto Es        = info.surf_edges();
+    auto positions = info.positions();
     ///////////this is not added yet
     // ///////
-    //auto edge_face_counts   = info.edge_face_counts();    // 原有边-面关联数量
-    //auto edge_face_vertices = info.edge_face_vertices();  // 原有边-面关联顶点
+    //auto edge_face_counts   = info.edge_face_counts();    // Original edge-face association count
+    //auto edge_face_vertices = info.edge_face_vertices();  // Original edge-face association vertices
 
-    // 候选对数量：每个候选对是 (v_idx_in_Vs, t_idx)（Vs 是表面顶点列表，v_idx_in_Vs 是 Vs 的索引）
+    // Number of candidate pairs: each candidate pair is (v_idx_in_Vs, t_idx) (Vs is the list of surface vertices, v_idx_in_Vs is the index in Vs)
     SizeT num_candidates = candidate_AllP_AllT_pairs.size();
     if(num_candidates == 0)
         return;
 
-    // 初始化临时接触集合（清空上一帧数据）
+    // Initialize temporary contact sets (clear data from previous frame)
     temp_PTs.resize(num_candidates);
     temp_PEs.resize(num_candidates);
     temp_PPs.resize(num_candidates);
 
     ParallelFor()
         .file_line(__FILE__, __LINE__)
-        .apply(num_candidates,
-               [  // 输入参数（OGC 配置）
-                   ogc_r  = m_ogc_r,
-                   ogc_rq = m_ogc_rq,
-                   // 输入参数（几何数据）
-                   Vs        = Vs.cviewer().name("Vs"),
-                   Fs        = Fs.cviewer().name("Fs"),
-                   Es        = Es.cviewer().name("Es"),  // 新增
-                   edge_face_counts = m_edge_face_counts.cviewer().name("edge_face_counts"),
-                   edge_face_vertices = m_edge_face_vertices.cviewer().name("edge_face_vertices"),
-                   //m_edge_id_map = m_edge_id_map.cviewer().name("edge_id_map"),
-                   positions = positions.cviewer().name("positions"),
-                   // 顶点→邻接边 CSR（新增）
-                   v_edge_offsets = m_v_edge_offsets.cviewer().name("v_edge_offsets"),
-                   v_edge_indices = m_v_edge_indices.cviewer().name("v_edge_indices"),
-                   // 输入参数（邻接关系）
-   /*                vadj_offsets = m_vadj_offsets.cviewer().name("vadj_offsets"),
+        .apply(
+            num_candidates,
+            [  // Input parameters (OGC configuration)
+                ogc_r  = m_ogc_r,
+                ogc_rq = m_ogc_rq,
+                // Input parameters (geometric data)
+                Vs = Vs.cviewer().name("Vs"),
+                Fs = Fs.cviewer().name("Fs"),
+                Es = Es.cviewer().name("Es"),  // Added
+                edge_face_counts = m_edge_face_counts.cviewer().name("edge_face_counts"),
+                edge_face_vertices = m_edge_face_vertices.cviewer().name("edge_face_vertices"),
+                //m_edge_id_map = m_edge_id_map.cviewer().name("m_edge_id_map"),
+                positions = positions.cviewer().name("positions"),
+                // Vertex=>adjacent edge CSR (added)
+                v_edge_offsets = m_v_edge_offsets.cviewer().name("v_edge_offsets"),
+                v_edge_indices = m_v_edge_indices.cviewer().name("v_edge_indices"),
+                // Input parameters (adjacency relationship)
+                /*                vadj_offsets = m_vadj_offsets.cviewer().name("vadj_offsets"),
                    vadj_indices = m_vadj_indices.cviewer().name("vadj_indices"),*/
-                   //vadj_offsets = m_v_edge_offsets.cviewer().name("vadj_offsets"),
-                   //vadj_indices = m_v_edge_indices.cviewer().name("vadj_indices"),
+                //vadj_offsets = m_v_edge_offsets.cviewer().name("vadj_offsets"),
+                //vadj_indices = m_v_edge_indices.cviewer().name("vadj_indices"),
 
-                   vertex_offsets = m_v_vertex_offsets.cviewer().name("vadj_offsets"),
-                   vertex_indices = m_v_vertex_indices.cviewer().name("vadj_indices"),
+                vertex_offsets = m_v_vertex_offsets.cviewer().name("vadj_offsets"),
+                vertex_indices = m_v_vertex_indices.cviewer().name("vadj_indices"),
 
-                   // 输入参数（候选对）
-                   candidates = candidate_AllP_AllT_pairs.viewer().name("candidates"),
-                   // 输出参数（接触集合）
-                   temp_PTs = temp_PTs.viewer().name("temp_PTs"),
-                   temp_PEs = temp_PEs.viewer().name("temp_PEs"),
-                   temp_PPs = temp_PPs.viewer().name("temp_PPs"),
-                   // 输出参数（最小距离）
-                   d_min_v = m_d_min_v.viewer().name("d_min_v"),
-                   d_min_t = m_d_min_t.viewer().name("d_min_t")] __device__(int idx) mutable
-               {
-                   // 1. 解析候选对：(v_idx_in_Vs, t_idx) → 全局顶点ID v，面ID t
-                   Vector2i cand        = candidates(idx);
-                   int      v_idx_in_Vs = cand[0];
-                   int      t_idx       = cand[1];
-                   int v = Vs(v_idx_in_Vs);    // 全局顶点ID（positions 的索引）
-                   Vector3i t_vs = Fs(t_idx);  // 面t的三个顶点（v0, v1, v2）
+                // Input parameters (candidate pairs)
+                candidates = candidate_AllP_AllT_pairs.viewer().name("candidates"),
+                // Output parameters (contact sets)
+                temp_PTs = temp_PTs.viewer().name("temp_PTs"),
+                temp_PEs = temp_PEs.viewer().name("temp_PEs"),
+                temp_PPs = temp_PPs.viewer().name("temp_PPs"),
+                // Output parameters (minimum distance)
+                d_min_v = m_d_min_v.viewer().name("d_min_v"),
+                d_min_t = m_d_min_t.viewer().name("d_min_t")] __device__(int idx) mutable
+            {
+                // 1. Parse candidate pair: (v_idx_in_Vs, t_idx) => global vertex ID v, face ID t
+                Vector2i cand        = candidates(idx);
+                int      v_idx_in_Vs = cand[0];
+                int      t_idx       = cand[1];
+                int v = Vs(v_idx_in_Vs);  // Global vertex ID (index of positions)
+                Vector3i t_vs = Fs(t_idx);  // Three vertices of face t (v0, v1, v2)
 
-                   // 2. Algorithm 1 第3行：跳过 v 所属的面（v ⊂ t）
-                   if(t_vs[0] == v || t_vs[1] == v || t_vs[2] == v)
-                   {
-                       temp_PTs(idx).setConstant(-1);
-                       temp_PEs(idx).setConstant(-1);
-                       temp_PPs(idx).setConstant(-1);
-                       return;
-                   }
+                // 2. Algorithm 1 Line 3: Skip the face that v belongs to (v ⊂ t)
+                if(t_vs[0] == v || t_vs[1] == v || t_vs[2] == v)
+                {
+                    temp_PTs(idx).setConstant(-1);
+                    temp_PEs(idx).setConstant(-1);
+                    temp_PPs(idx).setConstant(-1);
+                    return;
+                }
 
-                   // 3. Algorithm 1 第4行：计算顶点v到面t的距离 d
-                   const Vector3& v_pos    = positions(v);
-                   const Vector3& t_v0_pos = positions(t_vs[0]);
-                   const Vector3& t_v1_pos = positions(t_vs[1]);
-                   const Vector3& t_v2_pos = positions(t_vs[2]);
+                // 3. Algorithm 1 Line 4: Calculate distance d from vertex v to face t
+                const Vector3& v_pos    = positions(v);
+                const Vector3& t_v0_pos = positions(t_vs[0]);
+                const Vector3& t_v1_pos = positions(t_vs[1]);
+                const Vector3& t_v2_pos = positions(t_vs[2]);
 
-                   //distance::point_triangle_distance_flag
-                   Vector4i flag = distance::point_triangle_distance_flag(
-                       v_pos, t_v0_pos, t_v1_pos, t_v2_pos);
+                //distance::point_triangle_distance_flag
+                Vector4i flag =
+                    distance::point_triangle_distance_flag(v_pos, t_v0_pos, t_v1_pos, t_v2_pos);
 
-                   /////////edge edge 传入的永远是顶点位置，里面好像不涉及到id？？？？？？？
-                   Float d_square;
-                   distance::point_triangle_distance2(
-                       flag, v_pos, t_v0_pos, t_v1_pos, t_v2_pos, d_square);
-                   Float d_update = sqrtf(d_square);
+                /////////For edge-edge, vertex positions are always passed in; it seems there's no involvement of IDs??????
+                Float d_square;
+                distance::point_triangle_distance2(
+                    flag, v_pos, t_v0_pos, t_v1_pos, t_v2_pos, d_square);
+                Float d_update = sqrtf(d_square);
 
-                   //////////////////////please note that we use d_square instead of d!!!!!!!!!!!!!!!!!!!!!!!
-                   //// 4. Algorithm 1 第5行：更新 d_min_v（顶点v到面的最小距离）
-                   //atomic_min(&d_min_v(v), d_update);
-                   //// 5. Algorithm 1 第6行：原子更新 d_min_t（面t到顶点的最小距离，避免多线程竞争）
-                   //atomic_min(&d_min_t(t_idx), d_update);
+                //////////////////////please note that we use d_square instead of d!!!!!!!!!!!!!!!!!!!!!!!
+                //// 4. Algorithm 1 Line 5: Update d_min_v (minimum distance from vertex v to a face)
+                //atomic_min(&d_min_v(v), d_update);
+                //// 5. Algorithm 1 Line 6: Atomically update d_min_t (minimum distance from face t to a vertex, avoiding multi-thread competition)
+                //atomic_min(&d_min_t(t_idx), d_update);
 
-                   // 6. Algorithm 1 第7行：距离 ≥ r，不构成接触，跳过
-                   if(d_square >= ogc_r * ogc_r)  // 容忍浮点误差
-                   {
-                       temp_PTs(idx).setConstant(-1);
-                       temp_PEs(idx).setConstant(-1);
-                       temp_PPs(idx).setConstant(-1);
-                       return;
-                   }
+                // 6. Algorithm 1 Line 7: Distance ≥ r, no contact formed, skip
+                if(d_square >= ogc_r * ogc_r)  // Tolerate floating-point errors
+                {
+                    temp_PTs(idx).setConstant(-1);
+                    temp_PEs(idx).setConstant(-1);
+                    temp_PPs(idx).setConstant(-1);
+                    return;
+                }
 
-                   // 7. Algorithm 1 第8行：找到面t上离v最近的子面 a（顶点/边/面内部\
-                   ///// now flag has successfully reflected by the position relation between point and triangle
-                   //ContactFace a = find_closest_subface(v_pos, t_idx, Fs, positions);
-                   // Now we do not need this corner case, will be tested later
-                   //if(a == -1)  // 退化子面（如无效边）
-                   //{
-                   //    temp_PTs(idx).setConstant(-1);
-                   //    temp_PEs(idx).setConstant(-1);
-                   //    temp_PPs(idx).setConstant(-1);
-                   //    return;
-                   //}
+                // 7. Algorithm 1 Line 8: Find the closest subface a on face t to v (vertex/edge/interior of the face)
+                ///// now flag has successfully reflected by the position relation between point and triangle
+                //ContactFace a = find_closest_subface(v_pos, t_idx, Fs, positions);
+                // Now we do not need this corner case, will be tested later
+                //if(a == -1)  // Degenerate subface (e.g., invalid edge)
+                //{
+                //    temp_PTs(idx).setConstant(-1);
+                //    temp_PEs(idx).setConstant(-1);
+                //    temp_PPs(idx).setConstant(-1);
+                //    return;
+                //}
 
-                   // 8. Algorithm 1 第9行：过滤重复接触（简化：利用候选对唯一性，避免多线程遍历）
-                   // （注：若需严格去重，可新增标记缓冲区，此处省略以简化逻辑）
+                // 8. Algorithm 1 Line 9: Filter duplicate contacts (simplification: utilize uniqueness of candidate pairs to avoid multi-thread traversal)
+                // (Note: To strictly remove duplicates, an additional flag buffer can be added; omitted here to simplify logic)
 
-                   // 计算活跃点数量（dim决定退化类型）
-                   int dim = distance::detail::active_count(flag);
+                // Calculate the number of active points (dim determines the degeneracy type)
+                int dim = distance::detail::active_count(flag);
 
 
-                   // 9. Algorithm 1 第10-21行：按子面类型调用 check 函数，验证偏移块
-                   bool is_valid = false;
-                   Vector4i pt_pair = {-1, -1, -1, -1};  // PT：(v, t_v0, t_v1, t_v2)
-                   Vector3i pe_pair = {-1, -1, -1};  // PE：(v, e_v0, e_v1)
-                   Vector2i pp_pair = {-1, -1};      // PP：(v, a_vertex)
+                // 9. Algorithm 1 Lines 10-21: Call check function according to subface type to verify offset block
+                bool is_valid = false;
+                Vector4i pt_pair = {-1, -1, -1, -1};  // PT: (v, t_v0, t_v1, t_v2)
+                Vector3i pe_pair = {-1, -1, -1};      // PE: (v, e_v0, e_v1)
+                Vector2i pp_pair = {-1, -1};          // PP: (v, a_vertex)
 
-                   if(dim == 2)  // 退化类型：点到点（子面是三角形的某个顶点）
-                   {
-                       //// 从flag获取参与计算的两个点的索引（P数组：[v, t0, t1, t2]）
-                       Vector2i offsets = distance::detail::pp_from_pt(flag);
-                       // 其中offsets[0]应为v（索引0），offsets[1]为三角形的某个顶点（索引1/2/3）
-                       int tri_vertex_idx_in_P = offsets[1];  // 三角形顶点在P数组中的索引
-                       int a_vertex = t_vs[tri_vertex_idx_in_P - 1];  // 映射到三角形的顶点ID（t_vs是[0:t0,1:t1,2:t2]）
+                if(dim == 2)  // Degeneracy type: point-to-point (subface is a vertex of the triangle)
+                {
+                    //// Get indices of the two points involved in calculation from flag (P array: [v, t0, t1, t2])
+                    Vector2i offsets = distance::detail::pp_from_pt(flag);
+                    // Among them, offsets[0] should be v (index 0), offsets[1] is a vertex of the triangle (index 1/2/3)
+                    int tri_vertex_idx_in_P = offsets[1];  // Index of the triangle vertex in the P array
+                    int a_vertex = t_vs[tri_vertex_idx_in_P - 1];  // Map to the vertex ID of the triangle (t_vs is [0:t0,1:t1,2:t2])
 
-                       is_valid = checkVertexFeasibleRegion(
-                           v_pos, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
-                       if(is_valid)
-                       {
-                           pp_pair       = {v, a_vertex};  // 记录点-点接触对
-                           temp_PPs(idx) = pp_pair;
-                       }
-                   }
-                   else if(dim == 3)  // 退化类型：点到边（子面是三角形的某条边）
-                   {
-                       // 从flag获取参与计算的三个点的索引（P数组：[v, t0, t1, t2]）
-                       Vector3i offsets = distance::detail::pe_from_pt(flag);
-                       // 其中offsets[0]应为v（索引0），offsets[1]和offsets[2]为三角形的两个顶点（构成边）
-                       int tri_v0_idx_in_P = offsets[1];  // 边的第一个顶点在P数组中的索引
-                       int tri_v1_idx_in_P = offsets[2];  // 边的第二个顶点在P数组中的索引
-                       Vector2i e_vs = {t_vs[tri_v0_idx_in_P - 1],  // 映射到三角形的顶点ID
-                                        t_vs[tri_v1_idx_in_P - 1]};
+                    is_valid = checkVertexFeasibleRegion(
+                        v_pos, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
+                    if(is_valid)
+                    {
+                        pp_pair = {v, a_vertex};  // Record point-point contact pair
+                        temp_PPs(idx) = pp_pair;
+                    }
+                }
+                else if(dim == 3)  // Degeneracy type: point-to-edge (subface is an edge of the triangle)
+                {
+                    // Get indices of the three points involved in calculation from flag (P array: [v, t0, t1, t2])
+                    Vector3i offsets = distance::detail::pe_from_pt(flag);
+                    // Among them, offsets[0] should be v (index 0), offsets[1] and offsets[2] are two vertices of the triangle (forming an edge)
+                    int tri_v0_idx_in_P = offsets[1];  // Index of the first vertex of the edge in the P array
+                    int tri_v1_idx_in_P = offsets[2];  // Index of the second vertex of the edge in the P array
+                    Vector2i e_vs = {t_vs[tri_v0_idx_in_P - 1],  // Map to the vertex ID of the triangle
+                                     t_vs[tri_v1_idx_in_P - 1]};
 
-                       // ... 前面的逻辑 ...
-                       int v0 = e_vs[0], v1 = e_vs[1];
-                       int edge_id =
-                           find_edge_id(v0, v1, v_edge_offsets, v_edge_indices, Es);
+                    // ... Previous logic ...
+                    int v0 = e_vs[0], v1 = e_vs[1];
+                    int edge_id =
+                        find_edge_id(v0, v1, v_edge_offsets, v_edge_indices, Es);
 
-                       // 调用checkEdgeFeasibleRegion时传入：
-                       is_valid = checkEdgeFeasibleRegion(v_pos,
-                                                          positions(v0),
-                                                          positions(v1),
-                                                          edge_id,
-                                                          positions,
-                                                          edge_face_counts,  // 直接用设备端成员变量
-                                                          edge_face_vertices,
-                                                          ogc_r);
-                       if(is_valid)
-                       {
-                           pe_pair       = {v, v0, v1};  // 记录点-边接触对
-                           temp_PEs(idx) = pe_pair;
-                       }
+                    // Pass when calling checkEdgeFeasibleRegion:
+                    is_valid = checkEdgeFeasibleRegion(v_pos,
+                                                       positions(v0),
+                                                       positions(v1),
+                                                       edge_id,
+                                                       positions,
+                                                       edge_face_counts,  // Directly use device-side member variable
+                                                       edge_face_vertices,
+                                                       ogc_r);
+                    if(is_valid)
+                    {
+                        pe_pair = {v, v0, v1};  // Record point-edge contact pair
+                        temp_PEs(idx) = pe_pair;
+                    }
 
-                       ///////////////////////////////////=====================================
-                       //// 验证点-边接触的可行性（假设check函数可直接用顶点对，或传入边ID）
-                       //is_valid = checkEdgeFeasibleRegion(
-                       //    v_pos, e_vs, Es, positions, edge_face_counts, edge_face_vertices, ogc_r);
-                       ////////////////////////////////=========================================
-                   }
-                   else if(dim == 4)  // 非退化：点到三角形内部（子面是面本身）
-                   {
-                       is_valid = true;  // 面内部接触无需额外验证
-                       pt_pair = {v, t_vs[0], t_vs[1], t_vs[2]};  // 记录点-面接触对
-                       temp_PTs(idx) = pt_pair;
-                   }
-                   else  // 无效flag（理论上不会触发，原距离计算函数已做校验）
-                   {
-                       temp_PTs(idx).setConstant(-1);
-                       temp_PEs(idx).setConstant(-1);
-                       temp_PPs(idx).setConstant(-1);
-                       return;
-                   }
-                   //// 10. 写入临时接触集合
-                   //temp_PTs(idx) = pt_pair;
-                   //temp_PEs(idx) = pe_pair;
-                   //temp_PPs(idx) = pp_pair;
-               });
+                    ///////////////////////////////////=====================================
+                    //// Verify the feasibility of point-edge contact (assuming the check function can directly use vertex pairs or pass edge IDs)
+                    //is_valid = checkEdgeFeasibleRegion(
+                    //    v_pos, e_vs, Es, positions, edge_face_counts, edge_face_vertices, ogc_r);
+                    ////////////////////////////////=========================================
+                }
+                else if(dim == 4)  // Non-degenerate: point to the interior of the triangle (subface is the face itself)
+                {
+                    is_valid = true;  // No additional verification needed for interior face contact
+                    pt_pair = {v, t_vs[0], t_vs[1], t_vs[2]};  // Record point-face contact pair
+                    temp_PTs(idx) = pt_pair;
+                }
+                else  // Invalid flag (theoretically will not be triggered, the original distance calculation function has performed verification)
+                {
+                    temp_PTs(idx).setConstant(-1);
+                    temp_PEs(idx).setConstant(-1);
+                    temp_PPs(idx).setConstant(-1);
+                    return;
+                }
+                //// 10. Write to temporary contact set
+                //temp_PTs(idx) = pt_pair;
+                //temp_PEs(idx) = pe_pair;
+                //temp_PPs(idx) = pp_pair;
+            });
 }
-//
-//// 辅助函数：根据两个顶点找边ID（复用 preprocess_adjacency 中构建的映射）
-//__device__ int Impl::get_edge_id(int v0, int v1)
-//{
-//    // 注：需提前构建顶点对→边ID的device映射（如 m_edge_id_map），此处简化
-//    if(v0 > v1)
-//        std::swap(v0, v1);
-//    auto it = m_edge_id_map.find({v0, v1});
-//    return it != m_edge_id_map.end() ? it->second : -1;
-//}
 
-
-// 典型的 clamp 函数定义（项目全局）
+// Typical clamp function definition (global in the project)
 template <typename T>
 __device__ T clamp(T val, T min_val, T max_val)
 {
     return val < min_val ? min_val : (val > max_val ? max_val : val);
 }
-// 辅助函数：计算边-边最近点（对应 Algorithm 2 第8行 C(e,e')）
+// Auxiliary function: Calculate edge-edge closest point (corresponds to Algorithm 2 Line 8 C(e,e'))
 __device__ Vector3 edge_edge_closest_point(Vector2i e_vs,
                                            Vector2i ep_vs,
                                            const muda::CDense1D<Vector3>& positions)
 {
     const Vector3 &p0 = positions(e_vs[0]), p1 = positions(e_vs[1]);
     const Vector3 &q0 = positions(ep_vs[0]), q1 = positions(ep_vs[1]);
-    // 标准边-边最近点计算（参数化求解）
+    // Standard edge-edge closest point calculation (parametric solution)
     Vector3 d1 = p1 - p0, d2 = q1 - q0, d3 = p0 - q0;
     float a = d1.dot(d1), b = d1.dot(d2), c = d2.dot(d2), e = d1.dot(d3), f = d2.dot(d3);
     float denom = a * c - b * b;
-    float s     = 0.5f;  // 默认中点（退化边处理）
+    float s     = 0.5f;  // Default midpoint (degenerate edge handling)
     if(denom > 1e-12f)
     {
         s = clamp((b * f - c * e) / denom, 0.0f, 1.0f);
@@ -1222,230 +1066,231 @@ void LBVHSimplexTrajectoryFilter::Impl::phase2_edge_edge_contact(DetectInfo& inf
     auto Es        = info.surf_edges();
     auto positions = info.positions();
 
-    // 候选对数量：每个候选对是 (e_idx, e_prime_idx)
+    // Number of candidate pairs: each candidate pair is (e_idx, e_prime_idx)
     SizeT num_candidates = candidate_AllE_AllE_pairs.size();
     if(num_candidates == 0)
         return;
 
-    // 初始化临时边-边接触集合
+    // Initialize temporary edge-edge contact set
     temp_EEs.resize(num_candidates);
     ParallelFor()
         .file_line(__FILE__, __LINE__)
-        .apply(num_candidates,
-               [  // 输入参数（OGC 配置）
-                   ogc_r  = m_ogc_r,
-                   ogc_rq = m_ogc_rq,
-                   // 输入参数（几何数据）
-                   Es        = Es.viewer().name("Es"),
-                   positions = positions.viewer().name("positions"),
-                   //v_edge_indices = m_v_edge_indices.viewer().name("v_edge_indices"),
-                   //vadj_offsets = m_v_edge_offsets.cviewer().name("vadj_offsets"),
-                   //vadj_indices = m_v_edge_indices.cviewer().name("vadj_indices"),
+        .apply(
+            num_candidates,
+            [  // Input parameters (OGC configuration)
+                ogc_r  = m_ogc_r,
+                ogc_rq = m_ogc_rq,
+                // Input parameters (geometric data)
+                Es        = Es.viewer().name("Es"),
+                positions = positions.viewer().name("positions"),
+                //v_edge_indices = m_v_edge_indices.viewer().name("v_edge_indices"),
+                //vadj_offsets = m_v_edge_offsets.cviewer().name("vadj_offsets"),
+                //vadj_indices = m_v_edge_indices.cviewer().name("vadj_indices"),
 
-                   vertex_offsets = m_v_vertex_offsets.cviewer().name("vadj_offsets"),
-                   vertex_indices = m_v_vertex_indices.cviewer().name("vadj_indices"),
-                   // 输入参数（候选对）
-                   candidates = candidate_AllE_AllE_pairs.viewer().name("candidates"),
-                   // 输出参数（接触集合）
-                   temp_EEs = temp_EEs.viewer().name("temp_EEs"),
-                   temp_PEs = temp_PEs.viewer().name("temp_PEs"),
-                   temp_PPs = temp_PPs.viewer().name("temp_PPs"),
-                   // 输出参数（最小距离）
-                   d_min_e = m_d_min_e.viewer().name("d_min_e")] __device__(int idx) mutable
-               {
-                   // 1. 解析候选对：(e_idx, e_prime_idx)
-                   Vector2i cand        = candidates(idx);
-                   int      e_idx       = cand[0];
-                   int      e_prime_idx = cand[1];
-                   Vector2i e_vs        = Es(e_idx);  // 边e的顶点（v0, v1）
-                   Vector2i ep_vs = Es(e_prime_idx);  // 边e'的顶点（v0', v1'）
-                   int      e_v0 = e_vs[0], e_v1 = e_vs[1];
-                   int      ep_v0 = ep_vs[0], ep_v1 = ep_vs[1];
+                vertex_offsets = m_v_vertex_offsets.cviewer().name("vadj_offsets"),
+                vertex_indices = m_v_vertex_indices.cviewer().name("vadj_indices"),
+                // Input parameters (candidate pairs)
+                candidates = candidate_AllE_AllE_pairs.viewer().name("candidates"),
+                // Output parameters (contact sets)
+                temp_EEs = temp_EEs.viewer().name("temp_EEs"),
+                temp_PEs = temp_PEs.viewer().name("temp_PEs"),
+                temp_PPs = temp_PPs.viewer().name("temp_PPs"),
+                // Output parameters (minimum distance)
+                d_min_e = m_d_min_e.viewer().name("d_min_e")] __device__(int idx) mutable
+            {
+                // 1. Parse candidate pair: (e_idx, e_prime_idx)
+                Vector2i cand        = candidates(idx);
+                int      e_idx       = cand[0];
+                int      e_prime_idx = cand[1];
+                Vector2i e_vs = Es(e_idx);  // Vertices of edge e (v0, v1)
+                Vector2i ep_vs = Es(e_prime_idx);  // Vertices of edge e' (v0', v1')
+                int e_v0 = e_vs[0], e_v1 = e_vs[1];
+                int ep_v0 = ep_vs[0], ep_v1 = ep_vs[1];
 
-                   // 2. Algorithm 2 第5行：跳过相邻边（e 和 e' 有公共顶点）
-                   if(e_v0 == ep_v0 || e_v0 == ep_v1 || e_v1 == ep_v0 || e_v1 == ep_v1)
-                   {
-                       temp_EEs(idx).setConstant(-1);
-                       return;
-                   }
+                // 2. Algorithm 2 Line 5: Skip adjacent edges (e and e' share a common vertex)
+                if(e_v0 == ep_v0 || e_v0 == ep_v1 || e_v1 == ep_v0 || e_v1 == ep_v1)
+                {
+                    temp_EEs(idx).setConstant(-1);
+                    return;
+                }
 
-                   // 3. Algorithm 2 第6行：计算边e到边e'的距离 d
-                   const Vector3 &e_p0 = positions(e_v0), e_p1 = positions(e_v1);
-                   const Vector3 &ep_p0 = positions(ep_v0), ep_p1 = positions(ep_v1);
+                // 3. Algorithm 2 Line 6: Calculate distance d from edge e to edge e'
+                const Vector3 &e_p0 = positions(e_v0), e_p1 = positions(e_v1);
+                const Vector3 &ep_p0 = positions(ep_v0), ep_p1 = positions(ep_v1);
 
-                   Vector4i flag = distance::edge_edge_distance_flag(e_p0, e_p1, ep_p0, ep_p1);
-                   Float d_square;
-                   distance::edge_edge_distance2(
-                       flag, e_p0, e_p1, ep_p0, ep_p1, d_square);
+                Vector4i flag =
+                    distance::edge_edge_distance_flag(e_p0, e_p1, ep_p0, ep_p1);
+                Float d_square;
+                distance::edge_edge_distance2(flag, e_p0, e_p1, ep_p0, ep_p1, d_square);
 
-                   Float d_update = sqrtf(d_square);
-                   // 4. Algorithm 2 第7行：更新 d_min_e（边e到边的最小距离）
-                   //atomic_min(&d_min_e(e_idx), d_update);
-                   //atomic_min(&d_min_e(e_prime_idx), d_update);  // e' 的最小距离也更新
+                Float d_update = sqrtf(d_square);
+                // 4. Algorithm 2 Line 7: Update d_min_e (minimum distance from edge e to another edge)
+                //atomic_min(&d_min_e(e_idx), d_update);
+                //atomic_min(&d_min_e(e_prime_idx), d_update);  // Also update the minimum distance of e'
 
-                   //// 5. Algorithm 1 第6行：原子更新 d_min_t（面t到顶点的最小距离，避免多线程竞争）
-
-
-                   // 5. Algorithm 2 第8行：距离 ≥ r，不构成接触，跳过
-                   if(d_square >= ogc_r * ogc_r)
-                   {
-                       temp_EEs(idx).setConstant(-1);
-                       return;
-                   }
-
-                   // 6. Algorithm 2 第8行：计算边-边最近点 x_c（边e上的最近点）
-                   Vector3 x_c = edge_edge_closest_point(e_vs, ep_vs, positions);
+                //// 5. Algorithm 1 Line 6: Atomically update d_min_t (minimum distance from face t to a vertex, avoiding multi-thread competition)
 
 
-                   // 计算活跃点数量（dim决定退化类型）
-                   int dim = distance::detail::active_count(flag);
+                // 5. Algorithm 2 Line 8: Distance ≥ r, no contact formed, skip
+                if(d_square >= ogc_r * ogc_r)
+                {
+                    temp_EEs(idx).setConstant(-1);
+                    return;
+                }
 
-                   // 7. 按退化类型（dim）处理接触对，替代原find_edge_closest_subface
-                   bool is_valid = false;
-                   Vector4i ee_pair = {-1, -1, -1, -1};  // EE：(e_v0, e_v1, ep_v0, ep_v1)
-                   Vector2i pp_pair = {-1, -1};  // PP：(a_vertex, ep_vertex)
+                // 6. Algorithm 2 Line 8: Calculate edge-edge closest point x_c (closest point on edge e)
+                Vector3 x_c = edge_edge_closest_point(e_vs, ep_vs, positions);
 
-                   if(dim == 2)  // 完全退化：点-点接触（两条边均退化为点）
-                   {
-                       // 从flag获取2个有效点的索引（P数组：[ea0,ea1,eb0,eb1]）
-                       Vector2i offsets = distance::detail::pp_from_ee(flag);
-                       // 映射到原始顶点ID（offsets[0]对应e边的点，offsets[1]对应ep边的点）
-                       int a_vertex = (offsets[0] == 0) ? e_v0 : e_v1;  // e边退化后的点
-                       int ep_vertex = (offsets[1] == 2) ? ep_v0 : ep_v1;  // ep边退化后的点
 
-                       // 验证顶点可行性（复用原check逻辑）
-                       is_valid = checkVertexFeasibleRegionEdgeOffset(
-                           x_c, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
+                // Calculate the number of active points (dim determines the degeneracy type)
+                int dim = distance::detail::active_count(flag);
 
-                       if(is_valid)
-                           pp_pair = {a_vertex, ep_vertex};
-                   }
-                   else if(dim == 3)  // 部分退化：点-边接触（一条边退化，一条边正常）
-                   {
-                       // 从flag获取3个有效点的索引（1个退化点 + 2个边端点）
-                       Vector3i offsets = distance::detail::pe_from_ee(flag);
-                       // 判断哪个是退化点（仅出现1次的索引）：0/1属于e边，2/3属于ep边
-                       int point_idx = -1, edge_v0_idx = -1, edge_v1_idx = -1;
-                       if(offsets[0] == offsets[1])  // 前两个索引相同→e边退化
-                       {
-                           point_idx   = offsets[0];
-                           edge_v0_idx = offsets[1];
-                           edge_v1_idx = offsets[2];
-                       }
-                       else  // 后两个索引相同→ep边退化
-                       {
-                           point_idx   = offsets[2];
-                           edge_v0_idx = offsets[0];
-                           edge_v1_idx = offsets[1];
-                       }
+                // 7. Process contact pairs according to degeneracy type (dim), replacing the original find_edge_closest_subface
+                bool is_valid = false;
+                Vector4i ee_pair = {-1, -1, -1, -1};  // EE: (e_v0, e_v1, ep_v0, ep_v1)
+                Vector2i pp_pair = {-1, -1};  // PP: (a_vertex, ep_vertex)
 
-                       // 映射到原始顶点ID
-                       int a_vertex = (point_idx == 0) ? e_v0 :
-                                      (point_idx == 1) ? e_v1 :
-                                      (point_idx == 2) ? ep_v0 :
-                                                         ep_v1;
+                if(dim == 2)  // Fully degenerate: point-point contact (both edges degenerate to points)
+                {
+                    // Get indices of 2 valid points from flag (P array: [ea0,ea1,eb0,eb1])
+                    Vector2i offsets = distance::detail::pp_from_ee(flag);
+                    // Map to original vertex IDs (offsets[0] corresponds to a point on edge e, offsets[1] corresponds to a point on edge ep)
+                    int a_vertex = (offsets[0] == 0) ? e_v0 : e_v1;  // Degenerated point on edge e
+                    int ep_vertex = (offsets[1] == 2) ? ep_v0 : ep_v1;  // Degenerated point on edge ep
 
-                       // 验证顶点可行性（复用原check逻辑）
-                       //is_valid = checkVertexFeasibleRegionEdgeOffset(
-                       //    x_c, a_vertex, positions, Es, v_edge_indices, ogc_r);
-                       //is_valid = checkVertexFeasibleRegionEdgeOffset(
-                       //    x_c, a_vertex, positions, vadj_offsets, vadj_indices, ogc_r);
-                       is_valid = checkVertexFeasibleRegionEdgeOffset(
-                           x_c, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
-                       
-                       if(is_valid)
-                       {
-                           // 点-边接触仍记录为点-点对（匹配原逻辑）
-                           int ep_closest_v = (edge_v0_idx == 2) ? ep_v0 :
-                                              (edge_v0_idx == 3) ? ep_v1 :
-                                              (edge_v0_idx == 0) ? e_v0 :
-                                                                   e_v1;
-                           pp_pair          = {a_vertex, ep_closest_v};
-                       }
-                   }
-                   else if(dim == 4)  // 非退化：边-边接触（两条边均正常）
-                   {
-                       is_valid = true;  // 边内部接触无需验证，直接有效
-                       ee_pair  = {e_v0, e_v1, ep_v0, ep_v1};
-                   }
-                   else  // 无效flag（原距离计算函数已校验，理论不触发）
-                   {
-                       temp_EEs(idx).setConstant(-1);
-                       return;
-                   }
+                    // Verify vertex feasibility (reuse original check logic)
+                    is_valid = checkVertexFeasibleRegionEdgeOffset(
+                        x_c, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
 
-                   // 8. 写入临时接触集合
-                   temp_EEs(idx) = ee_pair;
-                   if(is_valid && pp_pair[0] != -1)
-                       temp_PPs(idx) = pp_pair;  // 顶点-顶点接触写入PP集合
-               });
+                    if(is_valid)
+                        pp_pair = {a_vertex, ep_vertex};
+                }
+                else if(dim == 3)  // Partially degenerate: point-edge contact (one edge degenerates, one edge is normal)
+                {
+                    // Get indices of 3 valid points from flag (1 degenerate point + 2 edge endpoints)
+                    Vector3i offsets = distance::detail::pe_from_ee(flag);
+                    // Determine which is the degenerate point (index appearing only once): 0/1 belong to edge e, 2/3 belong to edge ep
+                    int point_idx = -1, edge_v0_idx = -1, edge_v1_idx = -1;
+                    if(offsets[0] == offsets[1])  // First two indices are the same => edge e degenerates
+                    {
+                        point_idx   = offsets[0];
+                        edge_v0_idx = offsets[1];
+                        edge_v1_idx = offsets[2];
+                    }
+                    else  // Last two indices are the same => edge ep degenerates
+                    {
+                        point_idx   = offsets[2];
+                        edge_v0_idx = offsets[0];
+                        edge_v1_idx = offsets[1];
+                    }
+
+                    // Map to original vertex ID
+                    int a_vertex = (point_idx == 0) ? e_v0 :
+                                   (point_idx == 1) ? e_v1 :
+                                   (point_idx == 2) ? ep_v0 :
+                                                      ep_v1;
+
+                    // Verify vertex feasibility (reuse original check logic)
+                    //is_valid = checkVertexFeasibleRegionEdgeOffset(
+                    //    x_c, a_vertex, positions, Es, v_edge_indices, ogc_r);
+                    //is_valid = checkVertexFeasibleRegionEdgeOffset(
+                    //    x_c, a_vertex, positions, vadj_offsets, vadj_indices, ogc_r);
+                    is_valid = checkVertexFeasibleRegionEdgeOffset(
+                        x_c, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
+
+                    if(is_valid)
+                    {
+                        // Point-edge contact is still recorded as a point-point pair (matching original logic)
+                        int ep_closest_v = (edge_v0_idx == 2) ? ep_v0 :
+                                           (edge_v0_idx == 3) ? ep_v1 :
+                                           (edge_v0_idx == 0) ? e_v0 :
+                                                                e_v1;
+                        pp_pair          = {a_vertex, ep_closest_v};
+                    }
+                }
+                else if(dim == 4)  // Non-degenerate: edge-edge contact (both edges are normal)
+                {
+                    is_valid = true;  // No verification needed for interior edge contact, directly valid
+                    ee_pair = {e_v0, e_v1, ep_v0, ep_v1};
+                }
+                else  // Invalid flag (verified by original distance calculation function, theoretically not triggered)
+                {
+                    temp_EEs(idx).setConstant(-1);
+                    return;
+                }
+
+                // 8. Write to temporary contact set
+                temp_EEs(idx) = ee_pair;
+                if(is_valid && pp_pair[0] != -1)
+                    temp_PPs(idx) = pp_pair;  // Vertex-vertex contact is written to PP set
+            });
 }
 
 void LBVHSimplexTrajectoryFilter::Impl::compute_conservative_bounds(int num_vertices, float gamma_p)
 {
-    // 初始化bv缓冲区（长度=顶点数）
+    // Initialize bv buffer (length = number of vertices)
     m_bv.resize(num_vertices);
 
-    // 并行计算每个顶点的bv（每个线程处理一个顶点v）
+    // Parallelly compute bv for each vertex (each thread processes one vertex v)
     using namespace muda;
     ParallelFor()
         .file_line(__FILE__, __LINE__)
         .apply(num_vertices,
-               [  // 输入：CSR邻接表（顶点-邻居边/面）
+               [  // Input: CSR adjacency list (vertex-neighbor edges/faces)
                    v_edge_offsets = m_v_edge_offsets.cviewer().name("v_edge_offsets"),
                    v_edge_indices = m_v_edge_indices.cviewer().name("v_edge_indices"),
                    v_face_offsets = m_v_face_offsets.cviewer().name("v_face_offsets"),
                    v_face_indices = m_v_face_indices.cviewer().name("v_face_indices"),
-                   // 输入：碰撞检测更新的最小距离
+                   // Input: Minimum distances updated by collision detection
                    d_min_v = m_d_min_v.viewer().name("d_min_v"),
                    d_min_e = m_d_min_e.viewer().name("d_min_e"),
                    d_min_t = m_d_min_t.viewer().name("d_min_t"),
-                   // 输入：参数
+                   // Input: Parameters
                    gamma = gamma_p,
-                   // 输出：保守边界bv
-                   bv = m_bv.viewer().name("bv"),
+                   // Output: Conservative boundary bv
+                   bv   = m_bv.viewer().name("bv"),
                    cout = KernelCout::viewer()] __device__(int v) mutable
                {
-                   // -------------------------- 步骤1：获取d_min_v[v]（顶点到其他面的最小距离） --------------------------
-                   float min_v = d_min_v(v);  // phase1中更新的d_min_v
+                   // -------------------------- Step 1: Get d_min_v[v] (minimum distance from vertex to other faces) --------------------------
+                   float min_v = d_min_v(v);  // d_min_v updated in phase1
 
-                   // -------------------------- 步骤2：计算d_min_v^E（顶点邻居边到其他边的最小距离的最小值） --------------------------
-                   float min_v_E = FLT_MAX;  // 初始化为最大浮点数
-                   int   e_start = v_edge_offsets(v);
-                   int   e_end   = v_edge_offsets(v + 1);
+                   // -------------------------- Step 2: Calculate d_min_v^E (minimum of minimum distances from vertex's neighboring edges to other edges) --------------------------
+                   float min_v_E = FLT_MAX;  // Initialize to maximum float value
+                   int e_start = v_edge_offsets(v);
+                   int e_end   = v_edge_offsets(v + 1);
                    for(int p = e_start; p < e_end; ++p)
                    {
-                       int e = v_edge_indices(p);  // 顶点v的一个邻居边ID
+                       int e = v_edge_indices(p);  // A neighboring edge ID of vertex v
                        if(d_min_e(e) < min_v_E)
-                       {  // 取邻居边d_min_e的最小值
+                       {  // Take the minimum value of neighboring edges' d_min_e
                            min_v_E = d_min_e(e);
                        }
                    }
-                   // 边界处理：若没有邻居边（理论不发生），用min_v替代
+                   // Boundary handling: If there are no neighboring edges (theoretically not happening), replace with min_v
                    if(min_v_E == FLT_MAX)
                        min_v_E = min_v;
 
-                   // -------------------------- 步骤3：计算d_min_v^T（顶点邻居面到其他顶点的最小距离的最小值） --------------------------
-                   float min_v_T = FLT_MAX;  // 初始化为最大浮点数
-                   int   t_start = v_face_offsets(v);
-                   int   t_end   = v_face_offsets(v + 1);
+                   // -------------------------- Step 3: Calculate d_min_v^T (minimum of minimum distances from vertex's neighboring faces to other vertices) --------------------------
+                   float min_v_T = FLT_MAX;  // Initialize to maximum float value
+                   int t_start = v_face_offsets(v);
+                   int t_end   = v_face_offsets(v + 1);
                    for(int p = t_start; p < t_end; ++p)
                    {
-                       int t = v_face_indices(p);  // 顶点v的一个邻居面ID
+                       int t = v_face_indices(p);  // A neighboring face ID of vertex v
                        if(d_min_t(t) < min_v_T)
-                       {  // 取邻居面d_min_t的最小值
+                       {  // Take the minimum value of neighboring faces' d_min_t
                            min_v_T = d_min_t(t);
                        }
                    }
-                   // 边界处理：若没有邻居面（理论不发生），用min_v替代
+                   // Boundary handling: If there are no neighboring faces (theoretically not happening), replace with min_v
                    if(min_v_T == FLT_MAX)
                        min_v_T = min_v;
 
-                   // -------------------------- 步骤4：计算bv = γₚ * min(三个最小距离) --------------------------
-                   // 取三个值的最小值，避免负距离（浮点误差）
-                   //这里再gpu中输出min_v, min_v_E 和min_v_T三个值
+                   // -------------------------- Step 4: Calculate bv = γₚ * min(three minimum distances) --------------------------
+                   // Take the minimum of the three values to avoid negative distances (floating-point errors)
+                   // Output min_v, min_v_E, and min_v_T values in GPU here
                    float min_all = std::min(std::min(min_v, min_v_E), min_v_T);
-                   min_all = std::max(min_all, 1e-12f);  // 防止min_all为0或负数（避免bv=0）
+                   min_all = std::max(min_all, 1e-12f);  // Prevent min_all from being 0 or negative (to avoid bv=0)
                    bv(v) = gamma * min_all;
                    // Throttled debug output from device
                    //if(v < 64)
@@ -1472,13 +1317,26 @@ void LBVHSimplexTrajectoryFilter::do_detect(DetectInfo& info)
     m_impl.detect(info);
 }
 
+void LBVHSimplexTrajectoryFilter::do_detect_ogc(DetectInfo& info)
+{
+    m_impl.init_ogc_data(info);
+    m_impl.detect(info);
+}
+
 void LBVHSimplexTrajectoryFilter::do_filter_active(FilterActiveInfo& info)
 {
+    m_impl.filter_active(info);
+}
+
+void LBVHSimplexTrajectoryFilter::do_filter_active_ogc(FilterActiveInfo& info)
+{
     //=============m_impl.detect_ogc_contact(info);
-    //m_impl.filter_active_dcd_distance(info);
-    //m_impl.compute_conservative_bounds(info.surf_vertices().size(), m_impl.m_gamma_p);
-    //=============original filter active does not compute bv
-    //这里导致最后的计算结果会有一点不太一样，会是潜在的问题吗??????????
+    //m_impl.detect(info);
+
+    m_impl.filter_active_dcd_distance(info);
+    m_impl.compute_conservative_bounds(info.surf_vertices().size(), m_impl.m_gamma_p);
+    //=============Original filter active does not compute bv
+    //This causes the final calculation result to be slightly different; could this be a potential issue??????????
     m_impl.filter_active(info);
 }
 
@@ -2431,7 +2289,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active(FilterActiveInfo& info)
 __device__ float atomicMinFloat(float* addr, float value)
 {
     if(isnan(value))
-        return *addr;  // 忽略 NaN
+        return *addr;  // Ignore NaN
 
     int*  addr_i = reinterpret_cast<int*>(addr);
     int   old_i  = *addr_i, assumed_i;
@@ -2454,7 +2312,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
 {
     using namespace muda;
 
-    // we will filter-out the active pairs
+    // We will filter out the active pairs
     auto positions = info.positions();
 
     SizeT N_PCoimP  = candidate_AllP_CodimP_pairs.size();
@@ -2462,9 +2320,9 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
     SizeT N_PTs     = candidate_AllP_AllT_pairs.size();
     SizeT N_EEs     = candidate_AllE_AllE_pairs.size();
 
-    // PT, EE, PT, PP can degenerate to PP
+    // PT, EE, PT, and PP can degenerate to PP
     temp_PPs.resize(N_PCoimP + N_CodimPE + N_PTs + N_EEs);
-    // PT, EE, PT can degenerate to PE
+    // PT, EE, and PT can degenerate to PE
     temp_PEs.resize(N_CodimPE + N_PTs + N_EEs);
 
     temp_PTs.resize(N_PTs);
@@ -2487,17 +2345,16 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                     codim_vertices = info.codim_vertices().viewer().name("codim_vertices"),
                     thicknesses = info.thicknesses().viewer().name("thicknesses"),
                     temp_PPs = PP_view.viewer().name("temp_PPs"),
-                    d_hats = info.d_hats().viewer().name("d_hats"),
-                    // 传入OGC依赖的邻接表（顶点-邻居顶点CSR）
+                    d_hats   = info.d_hats().viewer().name("d_hats"),
+                    // Pass OGC-dependent adjacency list (vertex-neighbor vertex CSR)
                     vertex_offsets = m_v_vertex_offsets.cviewer().name("vertex_offsets"),
                     vertex_indices = m_v_vertex_indices.cviewer().name("vertex_indices"),
-                    ogc_r = m_ogc_r,
+                    ogc_r   = m_ogc_r,
                     d_min_v = m_d_min_v.viewer().name("d_min_v"),
                     d_min_t = m_d_min_t.viewer().name("d_min_t"),
-                    d_min_e = m_d_min_e.viewer().name("d_min_e")
-                   ] __device__(int i) mutable
+                    d_min_e = m_d_min_e.viewer().name("d_min_e")] __device__(int i) mutable
                    {
-                       // default invalid
+                       // Default to invalid
                        auto& PP = temp_PPs(i);
                        PP.setConstant(-1);
 
@@ -2520,34 +2377,35 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
 
 
                        if(!is_active_D(range, D))
-                           return;  // early return
+                           return;  // Early return
 
-                       // 【新增OGC逻辑】验证V0是否在P1的偏移块内（点-点偏移块验证）
-                       bool is_ogc_valid =
-                           checkVertexFeasibleRegion(V0,  // 待检测点（表面顶点P0的位置）
-                                                     P1,  // 偏移块顶点（余维顶点P1）
-                                                     positions,  // 所有顶点位置
-                                                     vertex_offsets,  // 顶点邻接表CSR偏移
-                                                     vertex_indices,  // 顶点邻接表CSR索引
-                                                     ogc_r  // OGC接触半径
-                           );
+                       // [Added OGC Logic]Verify if V0 is within the offset block of P1 (point-point offset block verification)
+                       bool is_ogc_valid = checkVertexFeasibleRegion(
+                           V0,  // Point to be detected (position of surface vertex P0)
+                           P1,  // Offset block vertex (codimension vertex P1)
+                           positions,       // All vertex positions
+                           vertex_offsets,  // Vertex adjacency list CSR offsets
+                           vertex_indices,  // Vertex adjacency list CSR indices
+                           ogc_r            // OGC contact radius
+                       );
 
-                       // OGC验证有效才标记为有效接触对
-                       if(is_ogc_valid){
+                       // Mark as valid contact pair only if OGC verification passes
+                       if(is_ogc_valid)
+                       {
                            PP = {P0, P1};
-                           // 在“distance::point_point_distance2(V0, V1, D);”之后添加：
-                           Float d_update = sqrtf(D);  // 注意：原D是距离平方，需开方
-                           // 原子更新：顶点P0到其他点的最小距离
+                           // Add after "distance::point_point_distance2(V0, V1, D);":
+                           Float d_update = sqrtf(D);  // Note: Original D is squared distance, need to take square root
+                           // Atomic update: Minimum distance from vertex P0 to other points
                            //atomicMin(&d_min_v(P0), d_update);
                            atomicMinFloat(&d_min_v(P0), d_update);
-                           // after (CUDA atomic)
+                           // After (CUDA atomic)
 
                            //atomic_min(d_min_v.data() + P0, d_update);
                            //atomicMin(d_min_v.data() + P0, d_update);
 
                            //atomic_min
                            //atomic_min(&d_min_v(P0), d_update);
-                           // 原子更新：顶点P1到其他点的最小距离（如果是余维顶点也需要记录）
+                           // Atomic update: Minimum distance from vertex P1 to other points (also need to record if it's a codimension vertex)
                            //atomic_min(&d_min_v(P1), d_update);
                            atomicMinFloat(&d_min_v(P1), d_update);
                        }
@@ -2573,19 +2431,18 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                  thicknesses = info.thicknesses().viewer().name("thicknesses"),
                  temp_PPs    = PP_view.viewer().name("temp_PPs"),
                  temp_PEs    = PE_view.viewer().name("temp_PEs"),
-                 d_hats = info.d_hats().viewer().name("d_hats"),
-                 // 传入OGC依赖的边-面关联、顶点-邻接边CSR
+                 d_hats      = info.d_hats().viewer().name("d_hats"),
+                 // Pass OGC-dependent edge-face associations and vertex-adjacent edge CSR
                  edge_face_counts = m_edge_face_counts.cviewer().name("edge_face_counts"),
                  edge_face_vertices = m_edge_face_vertices.cviewer().name("edge_face_vertices"),
                  v_edge_offsets = m_v_edge_offsets.cviewer().name("v_edge_offsets"),
                  v_edge_indices = m_v_edge_indices.cviewer().name("v_edge_indices"),
                  v_vertex_offsets = m_v_vertex_offsets.cviewer().name("v_vertex_offsets"),
                  v_vertex_indices = m_v_vertex_indices.cviewer().name("v_vertex_indices"),
-                 ogc_r = m_ogc_r,
+                 ogc_r   = m_ogc_r,
                  d_min_v = m_d_min_v.viewer().name("d_min_v"),
                  d_min_t = m_d_min_t.viewer().name("d_min_t"),
-                 d_min_e = m_d_min_e.viewer().name("d_min_e")
-                ] __device__(int i) mutable
+                 d_min_e = m_d_min_e.viewer().name("d_min_e")] __device__(int i) mutable
                 {
                     auto& PP = temp_PPs(i);
                     PP.setConstant(-1);
@@ -2614,66 +2471,65 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                     distance::point_edge_distance2(flag, Ps[0], Ps[1], Ps[2], D);
 
                     if(!is_active_D(range, D))
-                        return;  // early return
+                        return;  // Early return
 
 
-
-                    // 【OGC逻辑】退化分类+偏移块验证
+                    // [OGC Logic]Degeneracy classification + offset block verification
                     Vector3i offsets;
                     auto dim = distance::degenerate_point_edge(flag, offsets);
                     bool is_ogc_valid = false;
 
                     switch(dim)
                     {
-                        case 2:  // 退化PP（点-点）
+                        case 2:  // Degenerate PP (point-point)
                         {
-                            IndexT V0 = vIs(offsets(0));  // 余维顶点
-                            IndexT V1 = vIs(offsets(1));  // 边顶点
-                            // OGC：验证V0是否在V1的偏移块内
+                            IndexT V0 = vIs(offsets(0));  // Codimension vertex
+                            IndexT V1 = vIs(offsets(1));  // Edge vertex
+                            // OGC: Verify if V0 is within the offset block of V1
                             is_ogc_valid = checkVertexFeasibleRegion(
                                 positions(V0), V1, positions, v_vertex_offsets, v_vertex_indices, ogc_r);
                             if(is_ogc_valid)
                             {
                                 PP = {V0, V1};
-                                // 在“distance::point_edge_distance2(flag, Ps[0], Ps[1], Ps[2], D);”之后添加：
+                                // Add after "distance::point_edge_distance2(flag, Ps[0], Ps[1], Ps[2], D);":
                                 Float d_update = sqrtf(D);
-                                // 原子更新：余维顶点V到边的最小距离
+                                // Atomic update: Minimum distance from codimension vertex V to the edge
                                 //atomic_min(&d_min_v(V), d_update);
                                 atomicMinFloat(&d_min_v(V), d_update);
-                                // 原子更新：边E的最小距离（E是surf_edges(indices(1))，需先获取边ID）
-                                int e_idx = indices(1);  // 边在surf_edges中的索引即边ID
+                                // Atomic update: Minimum distance of edge E (E is surf_edges(indices(1)), need to get edge ID first)
+                                int e_idx = indices(1);  // The index of the edge in surf_edges is the edge ID
                                 //atomic_min(&d_min_e(e_idx), d_update);
                                 atomicMinFloat(&d_min_e(e_idx), d_update);
                             }
                         }
                         break;
-                        case 3:  // 非退化PE（点-边）
+                        case 3:  // Non-degenerate PE (point-edge)
                         {
                             int v0 = E(0), v1 = E(1);
-                            // OGC：通过顶点对找边ID（复用你写的find_edge_id）
+                            // OGC: Find edge ID by vertex pair (reuse your find_edge_id)
                             int edge_id =
                                 find_edge_id(v0, v1, v_edge_offsets, v_edge_indices, surf_edges);
                             if(edge_id == -1)
                                 break;
-                            // OGC：验证余维顶点V是否在边的偏移块内
-                            is_ogc_valid =
-                                checkEdgeFeasibleRegion(positions(V),  // 待检测点（余维顶点V）
-                                                        positions(v0),  // 边顶点v0位置
-                                                        positions(v1),  // 边顶点v1位置
-                                                        edge_id,  // 边ID
-                                                        positions,
-                                                        edge_face_counts,
-                                                        edge_face_vertices,
-                                                        ogc_r);
+                            // OGC: Verify if codimension vertex V is within the edge's offset block
+                            is_ogc_valid = checkEdgeFeasibleRegion(
+                                positions(V),  // Point to be detected (codimension vertex V)
+                                positions(v0),  // Position of edge vertex v0
+                                positions(v1),  // Position of edge vertex v1
+                                edge_id,        // Edge ID
+                                positions,
+                                edge_face_counts,
+                                edge_face_vertices,
+                                ogc_r);
                             if(is_ogc_valid)
                             {
                                 PE = vIs;
-                                // 在“distance::point_edge_distance2(flag, Ps[0], Ps[1], Ps[2], D);”之后添加：
+                                // Add after "distance::point_edge_distance2(flag, Ps[0], Ps[1], Ps[2], D);":
                                 Float d_update = sqrtf(D);
-                                // 原子更新：余维顶点V到边的最小距离
+                                // Atomic update: Minimum distance from codimension vertex V to the edge
                                 atomicMinFloat(&d_min_v(V), d_update);
-                                // 原子更新：边E的最小距离（E是surf_edges(indices(1))，需先获取边ID）
-                                int e_idx = indices(1);  // 边在surf_edges中的索引即边ID
+                                // Atomic update: Minimum distance of edge E (E is surf_edges(indices(1)), need to get edge ID first)
+                                int e_idx = indices(1);  // The index of the edge in surf_edges is the edge ID
                                 atomicMinFloat(&d_min_e(e_idx), d_update);
                             }
                         }
@@ -2727,8 +2583,8 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                  temp_PPs    = PP_view.viewer().name("temp_PPs"),
                  temp_PEs    = PE_view.viewer().name("temp_PEs"),
                  temp_PTs    = temp_PTs.viewer().name("temp_PTs"),
-                 d_hats = info.d_hats().viewer().name("d_hats"),
-                 // 传入OGC依赖的所有参数（和phase1一致）
+                 d_hats      = info.d_hats().viewer().name("d_hats"),
+                 // Pass all OGC-dependent parameters (consistent with phase1)
                  Es = info.surf_edges().viewer().name("Es"),
                  edge_face_counts = m_edge_face_counts.cviewer().name("edge_face_counts"),
                  edge_face_vertices = m_edge_face_vertices.cviewer().name("edge_face_vertices"),
@@ -2736,11 +2592,10 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                  v_edge_indices = m_v_edge_indices.cviewer().name("v_edge_indices"),
                  vertex_offsets = m_v_vertex_offsets.cviewer().name("vertex_offsets"),
                  vertex_indices = m_v_vertex_indices.cviewer().name("vertex_indices"),
-                 ogc_r = m_ogc_r,
+                 ogc_r   = m_ogc_r,
                  d_min_v = m_d_min_v.viewer().name("d_min_v"),
                  d_min_t = m_d_min_t.viewer().name("d_min_t"),
-                 d_min_e = m_d_min_e.viewer().name("d_min_e")
-                ] __device__(int i) mutable
+                 d_min_e = m_d_min_e.viewer().name("d_min_e")] __device__(int i) mutable
                 {
                     auto& PP = temp_PPs(i);
                     PP.setConstant(-1);
@@ -2779,49 +2634,50 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                         D > 0.0, "D=%f, V F = (%d,%d,%d,%d)", D, vIs(0), vIs(1), vIs(2), vIs(3));
 
                     if(!is_active_D(range, D))
-                        return;  // early return
+                        return;  // Early return
 
-                    // 【嵌入phase1的OGC逻辑】退化分类+偏移块验证
+                    // [Embed OGC logic from phase1]Degeneracy classification + offset block verification
                     Vector4i offsets;
                     auto dim = distance::degenerate_point_triangle(flag, offsets);
                     bool is_ogc_valid = false;
 
                     switch(dim)
                     {
-                        case 2:  // 退化PP（点-点）
+                        case 2:  // Degenerate PP (point-point)
                         {
-                            IndexT V0 = vIs(offsets(0));  // 表面顶点V
-                            IndexT V1 = vIs(offsets(1));  // 面的顶点（t0/t1/t2）
-                            // OGC：验证V0是否在V1的偏移块内（复用phase1逻辑）
+                            IndexT V0 = vIs(offsets(0));  // Surface vertex V
+                            IndexT V1 = vIs(offsets(1));  // Vertex of the face (t0/t1/t2)
+                            // OGC: Verify if V0 is within the offset block of V1 (reuse phase1 logic)
                             is_ogc_valid = checkVertexFeasibleRegion(
                                 positions(V0), V1, positions, vertex_offsets, vertex_indices, ogc_r);
-                            if(is_ogc_valid){
+                            if(is_ogc_valid)
+                            {
                                 PP = {V0, V1};
-                                // 在“distance::point_triangle_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);”之后添加：
+                                // Add after "distance::point_triangle_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);":
                                 Float d_update = sqrtf(D);
-                                // 原子更新：表面顶点V到面的最小距离
+                                // Atomic update: Minimum distance from surface vertex V to the face
                                 //atomic_min(&d_min_v(V), d_update);
                                 atomicMinFloat(&d_min_v(V), d_update);
-                                // 原子更新：面t_idx到顶点的最小距离
-                                int t_idx = indices(1);  // 面在surf_triangles中的索引即面ID
+                                // Atomic update: Minimum distance from face t_idx to the vertex
+                                int t_idx = indices(1);  // The index of the face in surf_triangles is the face ID
                                 // atomic_min(&d_min_t(t_idx), d_update);
                                 atomicMinFloat(&d_min_t(t_idx), d_update);
                             }
                         }
                         break;
-                        case 3:  // 退化PE（点-边）
+                        case 3:  // Degenerate PE (point-edge)
                         {
-                            IndexT   V0   = vIs(offsets(0));  // 表面顶点V
-                            IndexT   V1   = vIs(offsets(1));  // 边顶点1
-                            IndexT   V2   = vIs(offsets(2));  // 边顶点2
+                            IndexT   V0 = vIs(offsets(0));  // Surface vertex V
+                            IndexT   V1 = vIs(offsets(1));  // Edge vertex 1
+                            IndexT   V2 = vIs(offsets(2));  // Edge vertex 2
                             Vector2i e_vs = {V1, V2};
                             int      v0 = e_vs[0], v1 = e_vs[1];
-                            // OGC：找边ID（复用phase1的find_edge_id）
+                            // OGC: Find edge ID (reuse find_edge_id from phase1)
                             int edge_id =
                                 find_edge_id(v0, v1, v_edge_offsets, v_edge_indices, Es);
                             if(edge_id == -1)
                                 break;
-                            // OGC：验证V0是否在边的偏移块内（复用phase1逻辑）
+                            // OGC: Verify if V0 is within the edge's offset block (reuse phase1 logic)
                             is_ogc_valid = checkEdgeFeasibleRegion(positions(V0),
                                                                    positions(v0),
                                                                    positions(v1),
@@ -2830,33 +2686,35 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                                                                    edge_face_counts,
                                                                    edge_face_vertices,
                                                                    ogc_r);
-                            if(is_ogc_valid){
+                            if(is_ogc_valid)
+                            {
                                 PE = {V0, V1, V2};
-                                // 在“distance::point_triangle_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);”之后添加：
+                                // Add after "distance::point_triangle_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);":
                                 Float d_update = sqrtf(D);
-                                // 原子更新：表面顶点V到面的最小距离
+                                // Atomic update: Minimum distance from surface vertex V to the face
                                 //atomic_min(&d_min_v(V), d_update);
                                 atomicMinFloat(&d_min_v(V), d_update);
-                                // 原子更新：面t_idx到顶点的最小距离
-                                int t_idx = indices(1);  // 面在surf_triangles中的索引即面ID
+                                // Atomic update: Minimum distance from face t_idx to the vertex
+                                int t_idx = indices(1);  // The index of the face in surf_triangles is the face ID
                                 // atomic_min(&d_min_t(t_idx), d_update);
                                 atomicMinFloat(&d_min_t(t_idx), d_update);
                             }
                         }
                         break;
-                        case 4:  // 非退化PT（点-面）
+                        case 4:  // Non-degenerate PT (point-face)
                         {
-                            // OGC：面内部接触无需额外验证（复用phase1逻辑）
+                            // OGC: No additional verification needed for face interior contact (reuse phase1 logic)
                             is_ogc_valid = true;
-                            if(is_ogc_valid){
+                            if(is_ogc_valid)
+                            {
                                 PT = vIs;
-                                // 在“distance::point_triangle_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);”之后添加：
+                                // Add after "distance::point_triangle_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);":
                                 Float d_update = sqrtf(D);
-                                // 原子更新：表面顶点V到面的最小距离
+                                // Atomic update: Minimum distance from surface vertex V to the face
                                 //atomic_min(&d_min_v(V), d_update);
                                 atomicMinFloat(&d_min_v(V), d_update);
-                                // 原子更新：面t_idx到顶点的最小距离
-                                int t_idx = indices(1);  // 面在surf_triangles中的索引即面ID
+                                // Atomic update: Minimum distance from face t_idx to the vertex
+                                int t_idx = indices(1);  // The index of the face in surf_triangles is the face ID
                                 // atomic_min(&d_min_t(t_idx), d_update);
                                 atomicMinFloat(&d_min_t(t_idx), d_update);
                             }
@@ -2866,7 +2724,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                             MUDA_ERROR_WITH_LOCATION("unexpected degenerate case dim=%d", dim);
                             break;
                     }
-                    /////原本的ipc逻辑/////
+                    /////Original IPC logic/////
                     //Vector4i offsets;
                     //auto dim = distance::degenerate_point_triangle(flag, offsets);
 
@@ -2919,15 +2777,14 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                  temp_PPs    = PP_view.viewer().name("temp_PPs"),
                  temp_PEs    = PE_view.viewer().name("temp_PEs"),
                  temp_EEs    = temp_EEs.viewer().name("temp_EEs"),
-                 d_hats = info.d_hats().viewer().name("d_hats"),
-                 // 传入OGC依赖的参数（和phase2一致）
+                 d_hats      = info.d_hats().viewer().name("d_hats"),
+                 // Pass OGC-dependent parameters (consistent with phase2)
                  vertex_offsets = m_v_vertex_offsets.cviewer().name("vertex_offsets"),
                  vertex_indices = m_v_vertex_indices.cviewer().name("vertex_indices"),
-                 ogc_r = m_ogc_r,
+                 ogc_r   = m_ogc_r,
                  d_min_v = m_d_min_v.viewer().name("d_min_v"),
                  d_min_t = m_d_min_t.viewer().name("d_min_t"),
-                 d_min_e = m_d_min_e.viewer().name("d_min_e")
-                ] __device__(int i) mutable
+                 d_min_e = m_d_min_e.viewer().name("d_min_e")] __device__(int i) mutable
                 {
                     auto& PP = temp_PPs(i);
                     PP.setConstant(-1);
@@ -2963,10 +2820,10 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                     distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);
 
                     if(!is_active_D(range, D))
-                        return;  // early return
+                        return;  // Early return
 
 
-                                        // 【原IPC逻辑】软化判断
+                    // [Original IPC Logic]Softening judgment
                     Float eps_x;
                     distance::edge_edge_mollifier_threshold(rest_positions(vIs(0)),
                                                             rest_positions(vIs(1)),
@@ -2978,7 +2835,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                         EE = vIs;
                         return;
                     }
-                    else  // 【嵌入phase2的OGC逻辑】退化分类+偏移块验证
+                    else  // [Embed OGC logic from phase2]Degeneracy classification + offset block verification
                     {
                         Vector4i offsets;
                         auto dim = distance::degenerate_edge_edge(flag, offsets);
@@ -2986,33 +2843,34 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
 
                         switch(dim)
                         {
-                            case 2:  // 完全退化PP（点-点）
+                            case 2:  // Fully degenerate PP (point-point)
                             {
-                                // 复用phase2逻辑：从flag获取退化点
+                                // Reuse phase2 logic: Get degenerate points from flag
                                 int a_vertex = (offsets[0] == 0) ? E0(0) : E0(1);
                                 int ep_vertex = (offsets[1] == 2) ? E1(0) : E1(1);
-                                // OGC：验证边-边最近点是否在偏移块内（复用phase2的check函数）
+                                // OGC: Verify if the edge-edge closest point is within the offset block (reuse check function from phase2)
                                 Vector3 x_c = edge_edge_closest_point(E0, E1, positions);
                                 is_ogc_valid = checkVertexFeasibleRegionEdgeOffset(
                                     x_c, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
-                                if(is_ogc_valid){
+                                if(is_ogc_valid)
+                                {
                                     PP = {a_vertex, ep_vertex};
-                                    // 在“distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);”之后添加：
+                                    // Add after "distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);":
                                     Float d_update = sqrtf(D);
-                                    // 原子更新：边e_idx的最小距离
+                                    // Atomic update: Minimum distance of edge e_idx
                                     int e_idx = indices(0);
                                     //atomic_min(&d_min_e(e_idx), d_update);
                                     atomicMinFloat(&d_min_e(e_idx), d_update);
-                                    // 原子更新：边e_prime_idx的最小距离
+                                    // Atomic update: Minimum distance of edge e_prime_idx
                                     int e_prime_idx = indices(1);
                                     //atomic_min(&d_min_e(e_prime_idx), d_update);
                                     atomicMinFloat(&d_min_e(e_prime_idx), d_update);
                                 }
                             }
                             break;
-                            case 3:  // 部分退化PE（点-边）
+                            case 3:  // Partially degenerate PE (point-edge)
                             {
-                                // 复用phase2逻辑：判断退化点和边
+                                // Reuse phase2 logic: Determine degenerate point and edge
                                 int point_idx = -1, edge_v0_idx = -1, edge_v1_idx = -1;
                                 if(offsets[0] == offsets[1])
                                 {
@@ -3030,7 +2888,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                                                (point_idx == 1) ? E0(1) :
                                                (point_idx == 2) ? E1(0) :
                                                                   E1(1);
-                                // OGC：验证最近点是否在偏移块内
+                                // OGC: Verify if the closest point is within the offset block
                                 Vector3 x_c = edge_edge_closest_point(E0, E1, positions);
                                 is_ogc_valid = checkVertexFeasibleRegionEdgeOffset(
                                     x_c, a_vertex, positions, vertex_offsets, vertex_indices, ogc_r);
@@ -3041,32 +2899,32 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                                                        (edge_v0_idx == 0) ? E0(0) :
                                                                             E0(1);
                                     PP = {a_vertex, ep_closest_v};
-                                    // 在“distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);”之后添加：
+                                    // Add after "distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);":
                                     Float d_update = sqrtf(D);
-                                    // 原子更新：边e_idx的最小距离
+                                    // Atomic update: Minimum distance of edge e_idx
                                     int e_idx = indices(0);
                                     //atomic_min(&d_min_e(e_idx), d_update);
-                                    //// 原子更新：边e_prime_idx的最小距离
+                                    //// Atomic update: Minimum distance of edge e_prime_idx
                                     int e_prime_idx = indices(1);
                                     //atomic_min(&d_min_e(e_prime_idx), d_update);
                                     atomicMinFloat(&d_min_e(e_prime_idx), d_update);
                                 }
                             }
                             break;
-                            case 4:  // 非退化EE（边-边）
+                            case 4:  // Non-degenerate EE (edge-edge)
                             {
-                                // OGC：边-边接触无需额外验证（复用phase2逻辑）
+                                // OGC: No additional verification needed for edge-edge contact (reuse phase2 logic)
                                 is_ogc_valid = true;
                                 if(is_ogc_valid)
                                 {
                                     EE = vIs;
-                                    // 在“distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);”之后添加：
+                                    // Add after "distance::edge_edge_distance2(flag, Ps[0], Ps[1], Ps[2], Ps[3], D);":
                                     Float d_update = sqrtf(D);
-                                    // 原子更新：边e_idx的最小距离
+                                    // Atomic update: Minimum distance of edge e_idx
                                     int e_idx = indices(0);
                                     //atomic_min(&d_min_e(e_idx), d_update);
                                     atomicMinFloat(&d_min_e(e_idx), d_update);
-                                    // 原子更新：边e_prime_idx的最小距离
+                                    // Atomic update: Minimum distance of edge e_prime_idx
                                     int e_prime_idx = indices(1);
                                     //atomic_min(&d_min_e(e_prime_idx), d_update);
                                     atomicMinFloat(&d_min_e(e_prime_idx), d_update);
@@ -3079,7 +2937,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                         }
                     }
 
-                    ////////////原本ipc的逻辑////////////
+                    ////////////Original IPC logic////////////
                     //Float eps_x;
                     //distance::edge_edge_mollifier_threshold(rest_positions(vIs(0)),
                     //                                        rest_positions(vIs(1)),
@@ -3092,7 +2950,7 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
                     //    EE = vIs;
                     //    return;
                     //}
-                    //else  // classify to EE/PE/PP
+                    //else  // Classify to EE/PE/PP
                     //{
                     //    Vector4i offsets;
                     //    auto dim = distance::degenerate_edge_edge(flag, offsets);
@@ -3131,8 +2989,6 @@ void LBVHSimplexTrajectoryFilter::Impl::filter_active_dcd_distance(FilterActiveI
         temp_PP_offset += N_EEs;
         temp_PE_offset += N_EEs;
     }
-
-    
     // ===== DEBUG PRINT: per-vertex distances (vertex -> nearest face distance, its incident faces' min distances, its incident edges' min distances)
     // NOTE:
     // 1) Do NOT re-resize m_d_min_v/m_d_min_t/m_d_min_e here (that would erase computed values).

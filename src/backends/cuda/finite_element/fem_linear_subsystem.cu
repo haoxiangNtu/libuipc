@@ -15,10 +15,10 @@ namespace uipc::backend::cuda
 {
 REGISTER_SIM_SYSTEM(FEMLinearSubsystem);
 
-// 对比单个顶点的对角Hessian矩阵
+// Compare the diagonal Hessian matrix of a single vertex
 void compare_hessian_hii(IndexT vertexId, const Matrix3x3& cpu_h, const Matrix3x3& gpu_h)
 {
-    const Float eps   = 1e-6f;  // 浮点误差容忍度
+    const Float eps   = 1e-6f;  // Floating point error tolerance
     bool        match = true;
     for(int r = 0; r < 3; ++r)
     {
@@ -46,86 +46,86 @@ void compare_hessian_hii(IndexT vertexId, const Matrix3x3& cpu_h, const Matrix3x
     }
 }
 
-// 读取.t文件并构建邻接表
+// Read .t file and build adjacency list
 std::vector<std::vector<int>> readTetFileAndBuildAdjacency(const std::string& filename)
 {
-    // 数据结构定义
-    std::unordered_map<int, int> external_to_internal;  // 外部索引 to 内部ID（0,1,2...）
-    std::vector<int> internal_to_external;  // 内部ID to 外部索引（可选，用于调试）
-    std::vector<std::vector<int>> adjacency;  // 顶点邻接表（内部ID）
-    int num_vertices = 0;                     // 顶点总数（内部ID从0开始）
+    // Data structure definitions
+    std::unordered_map<int, int> external_to_internal;  // External index to internal ID (0,1,2...)
+    std::vector<int> internal_to_external;  // Internal ID to external index (optional, for debugging)
+    std::vector<std::vector<int>> adjacency;  // Vertex adjacency list (internal IDs)
+    int num_vertices = 0;  // Total number of vertices (internal IDs start from 0)
 
-    // 打开文件
+    // Open the file
     std::ifstream file(filename);
     if(!file.is_open())
     {
-        throw std::runtime_error("Failed to open file: " + filename);  // 中文替换为英文
+        throw std::runtime_error("Failed to open file: " + filename);  // English translation
     }
 
     std::string line;
     while(std::getline(file, line))
     {
-        // 忽略空行
+        // Ignore empty lines
         if(line.empty())
             continue;
 
-        // 解析行首标识（Vertex或Tet）
+        // Parse the line header (Vertex or Tet)
         std::istringstream iss(line);
         std::string        token;
         iss >> token;
 
-        // 1. 解析顶点行（Vertex）
+        // 1. Parse vertex lines (Vertex)
         if(token == "Vertex")
         {
             int   external_idx;
             float x, y, z;
-            iss >> external_idx >> x >> y >> z;  // 提取外部索引和坐标（坐标着色时暂不用）
+            iss >> external_idx >> x >> y >> z;  // Extract external index and coordinates (coordinates not used temporarily for coloring)
 
-            // 若外部索引未映射，分配内部ID
+            // If the external index is not mapped, assign an internal ID
             if(external_to_internal.find(external_idx) == external_to_internal.end())
             {
                 external_to_internal[external_idx] = num_vertices;
                 internal_to_external.push_back(external_idx);
-                adjacency.emplace_back();  // 为新顶点创建空邻接列表
+                adjacency.emplace_back();  // Create empty adjacency list for new vertex
                 num_vertices++;
             }
         }
-        // 2. 解析四面体行（Tet）
+        // 2. Parse tetrahedron lines (Tet)
         else if(token == "Tet")
         {
             int tet_idx, v0_ext, v1_ext, v2_ext, v3_ext;
-            iss >> tet_idx >> v0_ext >> v1_ext >> v2_ext >> v3_ext;  // 提取四面体索引和4个顶点外部索引
+            iss >> tet_idx >> v0_ext >> v1_ext >> v2_ext >> v3_ext;  // Extract tetrahedron index and 4 vertex external indices
 
-            // 检查4个顶点是否已在映射表中（避免无效顶点）
+            // Check if the 4 vertices are in the mapping table (to avoid invalid vertices)
             auto check_and_get = [&](int ext) -> int
             {
                 if(external_to_internal.find(ext) == external_to_internal.end())
                 {
-                    // 中文替换为英文
+                    // English translation
                     throw std::runtime_error("Tetrahedron " + std::to_string(tet_idx) + " contains undefined vertex index: "
                                              + std::to_string(ext));
                 }
                 return external_to_internal[ext];
             };
 
-            // 转换为内部ID
+            // Convert to internal IDs
             int v0 = check_and_get(v0_ext);
             int v1 = check_and_get(v1_ext);
             int v2 = check_and_get(v2_ext);
             int v3 = check_and_get(v3_ext);
 
-            // 四面体的4个顶点两两相邻，添加邻接关系（去重）
+            // The 4 vertices of the tetrahedron are adjacent to each other; add adjacency relationships (remove duplicates)
             std::vector<std::pair<int, int>> pairs = {
                 {v0, v1}, {v0, v2}, {v0, v3}, {v1, v2}, {v1, v3}, {v2, v3}};
             for(auto [u, v] : pairs)
             {
-                // 向u的邻接表添加v（去重）
+                // Add v to u's adjacency list (remove duplicates)
                 if(std::find(adjacency[u].begin(), adjacency[u].end(), v)
                    == adjacency[u].end())
                 {
                     adjacency[u].push_back(v);
                 }
-                // 向v的邻接表添加u（去重）
+                // Add u to v's adjacency list (remove duplicates)
                 if(std::find(adjacency[v].begin(), adjacency[v].end(), u)
                    == adjacency[v].end())
                 {
@@ -133,7 +133,7 @@ std::vector<std::vector<int>> readTetFileAndBuildAdjacency(const std::string& fi
                 }
             }
         }
-        // 忽略其他无关行（如注释）
+        // Ignore other irrelevant lines (e.g., comments)
         else
         {
             continue;
@@ -141,7 +141,7 @@ std::vector<std::vector<int>> readTetFileAndBuildAdjacency(const std::string& fi
     }
 
     file.close();
-    // 中文替换为英文
+    // English translation
     std::cout << "File read completed: " << filename << std::endl;
     std::cout << "Total vertices: " << num_vertices
               << ", adjacency list built successfully" << std::endl;
@@ -152,35 +152,35 @@ std::vector<std::vector<int>> readTetFileAndBuildAdjacency(const std::string& fi
 class McsGraphColoring
 {
   public:
-    bool  balance_enabled_    = true;  // 默认不启用
-    float goal_max_min_ratio_ = 1.05f;  // 默认目标比例
-    // 构造函数：接收邻接表
+    bool  balance_enabled_    = true;   // By default not enabled
+    float goal_max_min_ratio_ = 1.05f;  // Default target ratio
+    // Constructor: receives adjacency list
     McsGraphColoring(const std::vector<std::vector<int>>& adjacency)
         : graph(adjacency)
         , num_vertices(adjacency.size())
     {
-        graph_colors.resize(num_vertices, -1);  // 初始化颜色数组
-        verbose = false;                       // 默认不打印进度
+        graph_colors.resize(num_vertices, -1);  // Initialize color array
+        verbose = false;  // By default, do not print progress
     }
     const std::vector<std::vector<int>>& get_categories() const
     {
         return categories;
     }
 
-    // 执行着色，返回颜色数组
+    // Perform coloring and return color array
     std::vector<int>& color()
     {
-        // 阶段1：MCS排序（生成顶点处理顺序）
+        // Stage 1: MCS sorting (generate vertex processing order)
         std::vector<int> temp_graph;
         for(size_t i = 0; i < graph.size(); ++i)
         {
             temp_graph.push_back(i);
         }
 
-        std::vector<int> weight(num_vertices, 0);  // 顶点权重（初始为0）
-        std::queue<int>  ordering;                 // 存储MCS排序结果
+        std::vector<int> weight(num_vertices, 0);  // Vertex weights (initialized to 0)
+        std::queue<int> ordering;                  // Store MCS sorting results
 
-        // 随机打乱初始顺序（避免权重相同时的固定偏好）
+        // Randomly shuffle the initial order (to avoid fixed preference when weights are equal)
         std::vector<int> coloringOrder(num_vertices);
         for(int i = 0; i < num_vertices; ++i)
         {
@@ -196,12 +196,12 @@ class McsGraphColoring
             int max_vertex = -1;
             int maxWId     = -1;
 
-            // 从剩余顶点中找权重最大的顶点
+            // Find the vertex with the maximum weight from remaining vertices
             for(int j = 0; j < temp_graph.size(); ++j)
             {
                 int nodeId = temp_graph[j];
                 if(nodeId < 0)
-                    continue;  // 已处理的顶点标记为-1
+                    continue;  // Processed vertices are marked as -1
                 if(weight[nodeId] > max_weight)
                 {
                     max_weight = weight[nodeId];
@@ -217,19 +217,19 @@ class McsGraphColoring
                 return graph_colors;
             }
 
-            // 将最大权重顶点加入排序队列，并更新其邻居权重
+            // Add the maximum weight vertex to the ordering queue and update its neighbors' weights
             ordering.push(max_vertex);
             for(int neighbor : graph[max_vertex])
             {
-                weight[neighbor] += 1;  // 邻居权重+1
+                weight[neighbor] += 1;  // Increment neighbor weight by 1
             }
 
-            // 标记该顶点为已处理
+            // Mark this vertex as processed
             temp_graph[maxWId] = -1;
 
-            // 优化临时顶点列表（移除已处理的顶点）
+            // Optimize the temporary vertex list (remove processed vertices)
             if(i % 100 == 0)
-            {  // 每100步清理一次，避免频繁操作
+            {  // Clean up every 100 steps to avoid frequent operations
                 std::vector<int> temp_graph_new;
                 for(int node : temp_graph)
                 {
@@ -240,7 +240,7 @@ class McsGraphColoring
             }
         }
 
-        // 阶段2：按MCS排序进行贪心着色
+        // Stage 2: Greedy coloring according to MCS order
         percentage = 0;
         int total  = ordering.size();
         while(!ordering.empty())
@@ -248,23 +248,23 @@ class McsGraphColoring
             int current_vertex = ordering.front();
             ordering.pop();
 
-            // 收集邻居已使用的颜色
+            // Collect colors used by neighbors
             std::vector<int> used_colors;
             for(int neighbor : graph[current_vertex])
             {
                 int neighbor_color = graph_colors[neighbor];
                 if(neighbor_color != -1)
-                {  // 邻居已着色
+                {  // Neighbor is already colored
                     used_colors.push_back(neighbor_color);
                 }
             }
 
-            // 去重并排序
+            // Remove duplicates and sort
             std::sort(used_colors.begin(), used_colors.end());
             used_colors.erase(std::unique(used_colors.begin(), used_colors.end()),
                               used_colors.end());
 
-            // 找到最小可用颜色
+            // Find the smallest available color
             int min_color = 0;
             for(int c : used_colors)
             {
@@ -280,11 +280,11 @@ class McsGraphColoring
 
             graph_colors[current_vertex] = min_color;
         }
-        // 新增：根据配置启用负载均衡
+        // Added: Enable load balancing according to configuration
         if(balance_enabled_)
-        {  // 可通过setter设置（如set_balance_enabled(true)）
-            balanceColoredCategories(goal_max_min_ratio_);  // 目标比例（如1.2）
-            // 验证负载均衡后的有效性
+        {  // Can be set via setter (e.g., set_balance_enabled(true))
+            balanceColoredCategories(goal_max_min_ratio_);  // Target ratio (e.g., 1.2)
+            // Verify validity after load balancing
             if(!is_valid())
             {
                 std::cerr << "Error: Invalid coloring after balancing!" << std::endl;
@@ -293,11 +293,11 @@ class McsGraphColoring
         return graph_colors;
     }
 
-    public:
-    // 负载均衡：调整颜色组，使最大/最小比例≤goalMaxMinRatio
+  public:
+    // Load balancing: adjust color groups so that max/min ratio ≤ goalMaxMinRatio
     void balanceColoredCategories(float goalMaxMinRatio)
     {
-        // 先初始化分组（必须在负载均衡前调用）
+        // First initialize groups (must be called before load balancing)
         convertToColoredCategories();
 
         float maxMinRatio = -1.0f;
@@ -307,11 +307,11 @@ class McsGraphColoring
             int smallestCategory = -1;
             maxMinRatio = findLargestSmallestCategories(biggestCategory, smallestCategory);
 
-            // 尝试从最大组移动顶点到最小组
+            // Try to move vertices from the largest group to the smallest group
             int changableId = findChangableNodeInCategory(biggestCategory, smallestCategory);
             if(changableId == -1)
             {
-                // 最大组无可用顶点，尝试从其他组移动
+                // No available vertices in the largest group; try to move from other groups
                 for(size_t i = 0; i < categories.size(); ++i)
                 {
                     if(i == biggestCategory || i == smallestCategory)
@@ -321,7 +321,7 @@ class McsGraphColoring
                     changableId = findChangableNodeInCategory(i, smallestCategory);
                     if(changableId != -1)
                     {
-                        biggestCategory = i;  // 切换源组
+                        biggestCategory = i;  // Switch source group
                         break;
                     }
                 }
@@ -329,32 +329,32 @@ class McsGraphColoring
 
             if(changableId == -1)
             {
-                // 无法继续优化
+                // Cannot continue optimization
                 std::cout << "Graph optimization stopped. Max/min ratio: " << maxMinRatio
                           << std::endl;
                 return;
             }
-            // 移动顶点到目标组
+            // Move vertex to target group
             changeColor(biggestCategory, changableId, smallestCategory);
 
-        } while(maxMinRatio > goalMaxMinRatio);  // 直到满足目标比例
+        } while(maxMinRatio > goalMaxMinRatio);  // Until the target ratio is met
 
         std::cout << "Graph optimization completed. Max/min ratio: " << maxMinRatio
                   << std::endl;
     }
 
-    // 控制是否打印进度信息
+    // Control whether to print progress information
     void set_verbose(bool v) { verbose = v; }
 
   private:
-    const std::vector<std::vector<int>>& graph;  // 邻接表（引用，不 ownership）
-    std::vector<int>                     graph_colors;  // 颜色数组
-    int                                  num_vertices;  // 顶点总数
-    std::vector<std::vector<int>> categories;  // 新增：每个颜色的顶点列表（color  to  [顶点索引]）
-    bool                                 verbose;       // 是否打印进度
+    const std::vector<std::vector<int>>& graph;  // Adjacency list (reference, no ownership)
+    std::vector<int> graph_colors;               // Color array
+    int              num_vertices;               // Total number of vertices
+    std::vector<std::vector<int>> categories;  // Added: Vertex list for each color (color to [vertex indices])
+    bool verbose;  // Whether to print progress
 
   private:
-    // 1. 计算颜色总数
+    // 1. Calculate total number of colors
     int get_num_colors() const
     {
         int numColors = 0;
@@ -368,7 +368,7 @@ class McsGraphColoring
         return numColors;
     }
 
-    // 2. 验证着色有效性（相邻顶点颜色不同）
+    // 2. Verify coloring validity (adjacent vertices have different colors)
     bool is_valid() const
     {
         if(graph_colors.empty() || graph.size() != graph_colors.size())
@@ -378,7 +378,7 @@ class McsGraphColoring
         for(size_t i = 0; i < graph.size(); ++i)
         {
             if(graph_colors[i] == -1)
-            {  // 假设-1表示未着色
+            {  // Assume -1 indicates uncolored
                 return false;
             }
             for(int neighbor : graph[i])
@@ -392,7 +392,7 @@ class McsGraphColoring
         return true;
     }
 
-    // 3. 将颜色转换为分组（categories）
+    // 3. Convert colors to groups (categories)
     void convertToColoredCategories()
     {
         categories.clear();
@@ -401,11 +401,11 @@ class McsGraphColoring
         for(size_t i = 0; i < graph.size(); ++i)
         {
             int color = graph_colors[i];
-            categories[color].push_back(i);  // 按颜色分组顶点
+            categories[color].push_back(i);  // Group vertices by color
         }
     }
 
-    // 4. 找到最大/最小颜色组
+    // 4. Find the largest/smallest color groups
     float findLargestSmallestCategories(int& biggestCategory, int& smallestCategory) const
     {
         if(categories.empty())
@@ -435,20 +435,20 @@ class McsGraphColoring
         return static_cast<float>(maxSize) / minSize;
     }
 
-    // 5. 检查顶点是否可移动到目标颜色组（与目标颜色的顶点不相邻）
+    // 5. Check if a vertex can be moved to the target color group (not adjacent to vertices of the target color)
     bool changable(int node, int destinationColor) const
     {
         for(int neighbor : graph[node])
         {
             if(graph_colors[neighbor] == destinationColor)
             {
-                return false;  // 邻居有目标颜色，不可移动
+                return false;  // Neighbor has the target color; cannot move
             }
         }
         return true;
     }
 
-    // 6. 在源颜色组中找可移动到目标颜色组的顶点
+    // 6. Find a movable vertex in the source color group to the target color group
     int findChangableNodeInCategory(int sourceColor, int destinationColor) const
     {
         for(size_t i = 0; i < categories[sourceColor].size(); ++i)
@@ -456,13 +456,13 @@ class McsGraphColoring
             int node = categories[sourceColor][i];
             if(changable(node, destinationColor))
             {
-                return i;  // 返回顶点在源组中的索引
+                return i;  // Return the index of the vertex in the source group
             }
         }
-        return -1;  // 无可用顶点
+        return -1;  // No available vertices
     }
 
-    // 7. 移动顶点颜色（从源组到目标组）
+    // 7. Move vertex color (from source group to target group)
     void changeColor(int sourceColor, int nodeIndexInSource, int destinationColor)
     {
         int nodeId           = categories[sourceColor][nodeIndexInSource];
@@ -475,9 +475,9 @@ class McsGraphColoring
         }
 
         //int node = categories[sourceColor][nodeIndexInSource];
-        //// 更新顶点颜色
+        //// Update vertex color
         //graph_colors[node] = destinationColor;
-        //// 更新分组：从源组移除，添加到目标组
+        //// Update groups: remove from source group, add to target group
         //categories[sourceColor].erase(categories[sourceColor].begin() + nodeIndexInSource);
         //categories[destinationColor].push_back(node);
     }
@@ -609,20 +609,20 @@ __forceinline__ __device__ __host__ bool solve3x3_psd_stable(const DType* m,
     return true;
 }
 
-// 从 CPU 端全局梯度向量中提取顶点 vertexId 的局部梯度（3 个分量）
+// Extract the local gradient (3 components) of vertex vertexId from the CPU-side global gradient vector
 Vector3 get_vertex_gradient(const std::vector<Float>& gradients_h, int vertexId)
 {
-    // 计算起始索引（每个顶点占 3 个元素）
+    // Calculate the starting index (each vertex occupies 3 elements)
     size_t start = static_cast<size_t>(vertexId) * 3;
-    // 检查索引是否越界（避免访问错误）
+    // Check if the index is out of bounds (to avoid access errors)
     if(start + 2 >= gradients_h.size())
     {
         throw std::out_of_range("vertexId out of range in gradients_h");
     }
-    // 提取 x/y/z 分量
-    return Vector3(gradients_h[start],      // x 分量
-                gradients_h[start + 1],  // y 分量
-                gradients_h[start + 2]   // z 分量
+    // Extract x/y/z components
+    return Vector3(gradients_h[start],      // x component
+                   gradients_h[start + 1],  // y component
+                   gradients_h[start + 2]   // z component
     );
 }
 
@@ -655,7 +655,7 @@ void FEMLinearSubsystem::Impl::assemble(GlobalLinearSystem::DiagInfo& info)
                    }
                });
 
-    // 4) Clear Fixed Vertex hessian
+    // 4) Clear Fixed Vertex Hessian
     ParallelFor()
         .file_line(__FILE__, __LINE__)
         .apply(info.hessians().triplet_count(),
@@ -677,23 +677,22 @@ void FEMLinearSubsystem::Impl::assemble(GlobalLinearSystem::DiagInfo& info)
 
 void FEMLinearSubsystem::Impl::vertices_Coloring()
 {
-    Timer timer{"Vertex coloring (supports internal fem data or external file)"};
+    Timer timer{"Vertex coloring (supports internal FEM data or external file)"};
 
-    std::vector<std::vector<int>> adjacency;  // 邻接表（统一存储，无论数据源）
-    int num_vertices = 0;                     // 顶点总数（根据数据源动态确定）
+    std::vector<std::vector<int>> adjacency;  // Adjacency list (stored uniformly, regardless of data source)
+    int num_vertices = 0;  // Total number of vertices (dynamically determined based on data source)
     bool use_external_file = false;
-    // 分支1：使用外部文件（.t格式四面体网格）
-    std::string external_filename = 
-        "D:/Programming/Gaia/Simulator/GraphColoring/build/bar990.t";
+    // Branch 1: Use external file (.t format tetrahedral mesh)
+    std::string external_filename = "D:/Programming/Gaia/Simulator/GraphColoring/build/bar990.t";
     if(use_external_file)
     {
         std::cout << "Using external file: " << external_filename
-                  << " to build adjacency" << std::endl;
+                  << " to build adjacency list" << std::endl;
         try
         {
-            // 调用外部文件读取函数（复用之前实现的readTetFileAndBuildAdjacency）
+            // Call external file reading function (reuse previously implemented readTetFileAndBuildAdjacency)
             adjacency = readTetFileAndBuildAdjacency(external_filename);
-            num_vertices = adjacency.size();  // 外部文件的顶点总数由邻接表大小确定
+            num_vertices = adjacency.size();  // Total vertices in external file is determined by adjacency list size
             if(num_vertices == 0)
             {
                 std::cerr << "External file contains no vertices." << std::endl;
@@ -706,24 +705,25 @@ void FEMLinearSubsystem::Impl::vertices_Coloring()
             return;
         }
     }
-    // 分支2：使用内部fem()数据
+    // Branch 2: Use internal FEM data
     else
     {
-        std::cout << "Using internal fem data to build adjacency" << std::endl;
+        std::cout << "Using internal FEM data to build adjacency list" << std::endl;
         const auto& fem_data = fem();
-        num_vertices         = fem_data.xs.size();  // 从内部数据获取顶点总数
+        num_vertices = fem_data.xs.size();  // Get total vertices from internal data
         if(num_vertices == 0)
         {
-            std::cout << "No vertices in internal fem data." << std::endl;
+            std::cout << "No vertices in internal FEM data." << std::endl;
             return;
         }
 
-        adjacency.resize(num_vertices);  // 初始化邻接表
+        adjacency.resize(num_vertices);  // Initialize adjacency list
 
-        // 2.1 处理内部四面体网格
+        // 2.1 Process internal tetrahedral mesh
         if(fem_data.dim_infos[3].primitive_count > 0)
         {
-            std::cout << "Building adjacency from internal tetrahedrons..." << std::endl;
+            std::cout << "Building adjacency list from internal tetrahedrons..."
+                      << std::endl;
             std::vector<Vector4i> tets_host;
             tets_host.resize(fem_data.tets.size());
             fem_data.tets.view().copy_to(tets_host.data());
@@ -746,10 +746,10 @@ void FEMLinearSubsystem::Impl::vertices_Coloring()
                 }
             }
         }
-        // 2.2 处理内部表面网格（三角形）
+        // 2.2 Process internal surface mesh (triangles)
         else if(fem_data.dim_infos[2].primitive_count > 0)
         {
-            std::cout << "Building adjacency from internal surface triangles..."
+            std::cout << "Building adjacency list from internal surface triangles..."
                       << std::endl;
             std::vector<Vector3i> tris_host;
             tris_host.resize(fem_data.codim_2ds.size());
@@ -774,18 +774,18 @@ void FEMLinearSubsystem::Impl::vertices_Coloring()
         }
         else
         {
-            std::cerr << "No valid internal mesh data (tets or codim_2ds) for adjacency building."
+            std::cerr << "No valid internal mesh data (tets or codim_2ds) for adjacency list building."
                       << std::endl;
             return;
         }
     }
 
-    // 3. 调用自定义MCS算法进行着色
+    // 3. Call custom MCS algorithm for coloring
     uipc::backend::cuda::McsGraphColoring mcs(adjacency);
-    mcs.set_verbose(true);       // 打印进度（可选）
-    auto& colors = mcs.color();  // 执行着色
+    mcs.set_verbose(true);       // Print progress (optional)
+    auto& colors = mcs.color();  // Perform coloring
 
-    // 4. 验证着色结果（可选，检查相邻顶点颜色是否冲突）
+    // 4. Verify coloring result (optional, check for color conflicts between adjacent vertices)
     bool valid = true;
     for(int v = 0; v < num_vertices; ++v)
     {
@@ -807,13 +807,13 @@ void FEMLinearSubsystem::Impl::vertices_Coloring()
         std::cout << "Coloring is valid." << std::endl;
     }
 
-    // 替换你的打印逻辑
+    // Replace your printing logic
     std::cout << "Coloring completed. " << std::endl;
     std::cout << "Total vertices: " << num_vertices << std::endl;
-    //std::cout << "Total colors used: " << mcs.get_categories().size() << std::endl;  // 使用categories的大小
+    //std::cout << "Total colors used: " << mcs.get_categories().size() << std::endl;  // Use size of categories
 
     std::cout << "Vertex distribution per color group (with indices):" << std::endl;
-    const auto& categories = mcs.get_categories();  // 获取负载均衡中维护的categories
+    const auto& categories = mcs.get_categories();  // Get categories maintained in load balancing
     for(size_t c = 0; c < categories.size(); ++c)
     {
         const auto& vertices = categories[c];
@@ -826,35 +826,35 @@ void FEMLinearSubsystem::Impl::vertices_Coloring()
         }
         std::cout << "]" << std::endl;
     }
-    vertex_group  = std::move(categories);
-    //// 【关键补充】将着色结果移动到成员变量vertex_colors中
+    vertex_group = std::move(categories);
+    //// [Key addition] Move coloring results to member variable vertex_colors
 
-    vertex_colors = std::move(colors);  // 必须添加这一行！
+    vertex_colors = std::move(colors);  // Must add this line!
 
-    // 5. 统计每个颜色组的顶点数量和具体索引，并输出详细信息
+    // 5. Count the number of vertices and specific indices for each color group, and output detailed information
     int max_color = *std::max_element(vertex_colors.begin(), vertex_colors.end());
     int total_colors = max_color + 1;
 
-    // 存储每个颜色对应的顶点索引（类似GraphColor的categories）
+    // Store vertex indices for each color (similar to GraphColor's categories)
     std::vector<std::vector<int>> color_vertices(total_colors);
     for(int v = 0; v < num_vertices; ++v)
     {
         int color = vertex_colors[v];
-        color_vertices[color].push_back(v);  // 将顶点v加入其颜色对应的组
+        color_vertices[color].push_back(v);  // Add vertex v to its corresponding color group
     }
 
-    // 输出总统计信息
+    // Output total statistics
     std::cout << "Coloring completed. " << std::endl;
     std::cout << "Total vertices: " << num_vertices << std::endl;
     std::cout << "Total colors used: " << total_colors << std::endl;
 
-    // 输出每个颜色组的顶点索引和数量
+    // Output vertex indices and counts for each color group
     std::cout << "Vertex distribution per color group (with indices):" << std::endl;
     for(int c = 0; c < total_colors; ++c)
     {
-        const auto& vertices = color_vertices[c];  // 当前颜色的顶点索引列表
+        const auto& vertices = color_vertices[c];  // List of vertex indices for current color
         std::cout << "  Color " << c << ": " << vertices.size() << " vertices -> [";
-        // 遍历打印顶点索引（用逗号分隔）
+        // Iterate and print vertex indices (separated by commas)
         for(size_t i = 0; i < vertices.size(); ++i)
         {
             std::cout << vertices[i];
@@ -866,7 +866,7 @@ void FEMLinearSubsystem::Impl::vertices_Coloring()
         std::cout << "]" << std::endl;
     }
 
-    // （可选）验证总顶点数是否匹配（用于调试）
+    // (Optional) Verify if total vertex count matches (for debugging)
     //int sum = std::accumulate(color_vertices.begin(),
     //                          color_vertices.end(),
     //                          0,
@@ -889,23 +889,23 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
     //    int jumpOver = 0;
     //}
     vertices_Coloring();
-    // 总函数时间计时
+    // Timer for total function time
     Timer totalTimer{"Total solve_system_vertex time"};
 
     using namespace muda;
-    // 变量声明
-    auto                 N           = fem().xs.size();
-    IndexT               vertex_size = fem().xs.size();
-    auto                 info_x_size = info.x_update().size();
-    auto                 xs_size     = fem().xs.size();
-    std::vector<Float>   x_update_h_3v;
-    std::vector<Float>   xs_update_3v;
-    std::vector<Vector3> x_update_h_global;
-    std::vector<Vector3> xs_previous;
+    // Variable declarations
+    auto                        N           = fem().xs.size();
+    IndexT                      vertex_size = fem().xs.size();
+    auto                        info_x_size = info.x_update().size();
+    auto                        xs_size     = fem().xs.size();
+    std::vector<Float>          x_update_h_3v;
+    std::vector<Float>          xs_update_3v;
+    std::vector<Vector3>        x_update_h_global;
+    std::vector<Vector3>        xs_previous;
     muda::DeviceBuffer<Vector3> xs_previous_gpu;
-    std::vector<Vector3> xs_initial;
-    std::vector<Vector3> xs_temp_global;
-    // 1. 初始化向量（内存分配+数据拷贝）
+    std::vector<Vector3>        xs_initial;
+    std::vector<Vector3>        xs_temp_global;
+    // 1. Initialize vectors (memory allocation + data copy)
     {
         Timer timer{"Initialize vectors (x_update_h_3v, x_update_h_global, xs_previous)"};
         x_update_h_3v.resize(info_x_size);
@@ -913,19 +913,19 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
         x_update_h_global.resize(xs_size, Vector3::Zero());
         xs_previous.resize(xs_size);
         fem().xs.copy_to(xs_previous);
-        xs_previous_gpu = fem().xs;  // 直接拷贝到GPU
+        xs_previous_gpu = fem().xs;  // Direct copy to GPU
         xs_initial.resize(xs_size);
         fem().xs.copy_to(xs_initial);
     }
 
-    // 顶点循环整体计时
+    // Timer for overall vertex loop
     {
         Timer vertexLoopTimer{"Total vertex loop time (all vertices)"};
 
         ////////////////////////
-        //// Host 侧打印该颜色组的顶点索引（注意：大量输出会很慢，可限制条目）
+        //// Print vertex indices of this color group on Host side (Note: A large amount of output will be slow; you can limit the number of entries)
         //{
-        //    const size_t max_print = 64;  // 避免输出过多
+        //    const size_t max_print = 64;  // Avoid excessive output
         //    std::cout << "[Color " << iGroup
         //              << "] size=" << group_indices.size() << " -> [";
         //    for(size_t i = 0; i < group_indices.size() && i < max_print; ++i)
@@ -939,8 +939,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
         //    std::cout << "]" << std::endl;
         //}
         ///////////////////////
-        // 
-        // 组外：一次性累积所有组的位移增量（GPU端）
+        //
+        // Outside the group: Accumulate displacement increments for all groups at once (GPU side)
         {
             //static thread_local bool                        inited = false;
             //static thread_local muda::DeviceBuffer<Vector3> d_x_update_global;
@@ -951,13 +951,13 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
             //    inited = true;
             //}
             bool inited = false;
-            muda::DeviceBuffer<Vector3> d_x_update_global;  // 对应 x_update_h_3v（外部传输用）
-            muda::DeviceBuffer<Vector3> d_x_update_pos;  // 新增：对应 x_update_h_global（位置更新用）
+            muda::DeviceBuffer<Vector3> d_x_update_global;  // Corresponds to x_update_h_3v (for external transmission)
+            muda::DeviceBuffer<Vector3> d_x_update_pos;  // Newly added: Corresponds to x_update_h_global (for position update)
             if(!inited)
             {
                 d_x_update_global.resize((int)xs_size);
                 d_x_update_global.view().fill(Vector3::Zero());
-                d_x_update_pos.resize((int)xs_size);  // 初始化新增缓冲区
+                d_x_update_pos.resize((int)xs_size);  // Initialize new buffer
                 d_x_update_pos.view().fill(Vector3::Zero());
                 inited = true;
             }
@@ -973,20 +973,20 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 }
 
                 auto& parallelGroup = vertex_group[iGroup];
-                // host 转换为 IndexT 并拷到 GPU
+                // Convert to IndexT on Host and copy to GPU
                 std::vector<IndexT> group_indices(parallelGroup.begin(),
                                                   parallelGroup.end());
                 d_color_vertices.resize(static_cast<int>(group_indices.size()));
                 if(!group_indices.empty())
                     d_color_vertices.view().copy_from(group_indices.data());
-                // 3. 组装梯度和海森矩阵（分步骤）
+                // 3. Assemble gradient and Hessian (in steps)
                 {
                     Timer timer{"GPU Assemble producers (all vertices)"};
                     //_assemble_producers(info);
                     _assemble_producers_by_color(info, d_color_vertices);
                 }
                 {
-                    //但是这里的基础的gradient 和 hessian 是之前就计算过了的,再计算也不会变
+                    //However, the basic gradient and Hessian here have been calculated before; recalculating will not change them
                     Timer timer{"Assemble dytopo effect (all vertices)"};
                     _assemble_dytopo_effect(info);
                 }
@@ -995,7 +995,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                     _assemble_animation(info);
                 }
                 ////////////////////////===============after this code we do not need to verify first
-                // 4. 清除固定顶点梯度（并行操作）
+                // 4. Clear Fixed Vertex Gradient (parallel operation)
                 {
                     Timer timer{"Clear Fixed Vertex Gradient (ParallelFor, all vertices)"};
                     ParallelFor()
@@ -1012,9 +1012,9 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                                });
                 }
 
-                // 5. 清除固定顶点海森矩阵（并行操作）
+                // 5. Clear Fixed Vertex Hessian (parallel operation)
                 {
-                    Timer timer{"Clear Fixed Vertex hessian (ParallelFor, all vertices)"};
+                    Timer timer{"Clear Fixed Vertex Hessian (ParallelFor, all vertices)"};
                     ParallelFor()
                         .file_line(__FILE__, __LINE__)
                         .apply(info.hessians().triplet_count(),
@@ -1033,8 +1033,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                         .wait();
                 }
 
-                //////////================================GPU 遍历这些color 中的顶点:
-                // 1) 构建对角 H(ii)（GPU端），避免回传 triplets
+                //////////================================GPU traverse vertices in these colors:
+                // 1) Build diagonal H(ii) (GPU side) to avoid transferring triplets back
                 muda::DeviceBuffer<Matrix3x3> d_Hii;
                 d_Hii.resize((int)xs_size);
                 d_Hii.view().fill(Matrix3x3::Zero());
@@ -1048,8 +1048,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                                auto&& [i, j, H3] = hessians(I).read();
                                if(i == j)
                                {
-                                   // 原子累加 3x3 到 Hii(i)
-                                   // 注意：若 Float 为 float 则 atomicAdd 可用；若为 double 请改为分块规约或使用自定义原子
+                                   // Atomic accumulation of 3x3 into Hii(i)
+                                   // Note: If Float is float, atomicAdd is available; if double, use block reduction or custom atomic operations instead
                                    muda::atomic_add(&Hii(i)(0, 0), H3(0, 0));
                                    muda::atomic_add(&Hii(i)(0, 1), H3(0, 1));
                                    muda::atomic_add(&Hii(i)(0, 2), H3(0, 2));
@@ -1060,9 +1060,10 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                                    muda::atomic_add(&Hii(i)(2, 1), H3(2, 1));
                                    muda::atomic_add(&Hii(i)(2, 2), H3(2, 2));
                                }
-                           }).wait();
-                /////////////=============这里是进一步计算更新方向的问题，其他先不用真的更新gpu中的数据
-                // 2) 对本颜色组的每个顶点并行：计算后同时更新两个数组
+                           })
+                    .wait();
+                /////////////=============This is the problem of further calculating the update direction; no need to actually update the data in GPU for others first
+                // 2) Parallel processing for each vertex in this color group: Calculate and update two arrays simultaneously
                 ParallelFor()
                     .file_line(__FILE__, __LINE__)
                     .apply((int)d_color_vertices.size(),
@@ -1070,17 +1071,17 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                             is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
                             gradients = info.gradients().cviewer().name("gradients"),
                             Hii = d_Hii.cviewer().name("Hii"),
-                            xupd = d_x_update_global.viewer().name("xupd"),  // 对应 x_update_h_3v
-                            xpos = d_x_update_pos.viewer().name("xpos"),  // 对应 x_update_h_global
-                            xs = fem().xs.viewer().name("xs"),
-                            xs_previous = xs_previous_gpu.viewer().name("xs_previous")
-                           ] __device__(int k) mutable  // 用于实时更新顶点位置
+                            xupd = d_x_update_global.viewer().name("xupd"),  // Corresponds to x_update_h_3v
+                            xpos = d_x_update_pos.viewer().name("xpos"),  // Corresponds to x_update_h_global
+                            xs          = fem().xs.viewer().name("xs"),
+                            xs_previous = xs_previous_gpu.viewer().name(
+                                "xs_previous")] __device__(int k) mutable  // For real-time vertex position update
                            {
                                const int v = (int)verts(k);
                                if(v < 0 || is_fixed(v))
                                    return;
 
-                               // 1. 计算 descent（原有逻辑不变）
+                               // 1. Calculate descent (original logic unchanged)
                                const Vector3 G = gradients.segment<3>(v * 3).as_eigen();
                                Vector3   force = -G;
                                Matrix3x3 H     = Hii(v);
@@ -1103,7 +1104,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                                Vector3 descent;
                                if(!solver_success)
                                {
-                                   descent = force;  // 与CPU一致：失败时用force作为方向
+                                   descent = force;  // Consistent with CPU: use force as direction when solving fails
                                    printf("Solver failed at vertex %d (GPU)\n", v);
                                }
                                else
@@ -1111,15 +1112,15 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                                    descent = Vector3(dx[0], dx[1], dx[2]);
                                }
 
-                               // 2. 同步更新两个数组（关键修改）
-                               // 对应 CPU 的 x_update_h_3v：-= descent*2（等价于 += (-descent*2)）
+                               // 2. Synchronously update two arrays (key modification)
+                               // Corresponds to CPU's x_update_h_3v: -= descent*2 (equivalent to += (-descent*2))
                                xupd(v) -= descent * 2;
-                               // 对应 CPU 的 x_update_h_global：+= descent
+                               // Corresponds to CPU's x_update_h_global: += descent
                                xpos(v) += descent;
-                               //// 3. 实时更新顶点位置（延续之前的中间更新逻辑，基于 xpos 的累积）
-                               //xs(v) = xs_previous(v) + xpos(v);  // 注意：xs_previous 需是初始位置的设备副本
+                               //// 3. Update vertex position in real-time (continue previous intermediate update logic, based on accumulated xpos)
+                               //xs(v) = xs_previous(v) + xpos(v);  // Note: xs_previous needs to be a device copy of the initial position
 
-                               //// 10. 更新x_update数组
+                               //// 10. Update x_update arrays
                                //{
                                //    Timer timer{"Update x_update arrays (all vertices)"};
                                //    for(int k = 0; k < 3; ++k)
@@ -1131,7 +1132,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                                //    x_update_h_global[vertexId] += descentDirection;
                                //}
 
-                               //// 11. 更新顶点位置
+                               //// 11. Update vertex position
                                //{
                                //    Timer timer{"Update xs_temp and copy to fem().xs (all vertices)"};
                                //    std::vector<Vector3> xs_temp(xs_previous.size());
@@ -1143,31 +1144,31 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                                //    xs_temp_global = xs_temp;
                                //    fem().xs.copy_from(xs_temp);
                                //}
-                               xs(v) = xs_previous(v) + xpos(v);  // 注意：xs_previous 需是初始位置的设备副本
+                               xs(v) = xs_previous(v) + xpos(v);  // Note: xs_previous needs to be a device copy of the initial position
                            })
                     .wait();
-                
+
                 ////=================================================================
-                //// GPU并行更新完成后，拷贝两个数组到CPU
-                //std::vector<Vector3> gpu_x_update_global;  // 对应CPU的x_update_h_3v（向量形式）
-                //std::vector<Vector3> gpu_x_update_pos;  // 对应CPU的x_update_h_global
+                //// After GPU parallel update is completed, copy two arrays to CPU
+                //std::vector<Vector3> gpu_x_update_global;  // Corresponds to CPU's x_update_h_3v (vector form)
+                //std::vector<Vector3> gpu_x_update_pos;  // Corresponds to CPU's x_update_h_global
                 //{
                 //    Timer timer{"Copy GPU update arrays to CPU"};
                 //    gpu_x_update_global.resize(xs_size);
                 //    gpu_x_update_pos.resize(xs_size);
-                //    d_x_update_global.copy_to(gpu_x_update_global);  // 拷贝GPU的d_x_update_global
-                //    d_x_update_pos.copy_to(gpu_x_update_pos);  // 拷贝GPU的d_x_update_pos
+                //    d_x_update_global.copy_to(gpu_x_update_global);  // Copy GPU's d_x_update_global
+                //    d_x_update_pos.copy_to(gpu_x_update_pos);  // Copy GPU's d_x_update_pos
                 //}
-                //// 我们这里没有分为mesh id 和 vertex id, 直接用vertex id
-                //////////////////////////////////we need to compare gradietn with or without 
-                //// GPU端：组装完梯度后，立即记录gradient结果
-                //std::vector<Float> gpu_gradients;  // 保存GPU计算的梯度
+                //// We don't distinguish between mesh id and vertex id here; directly use vertex id
+                //////////////////////////////////we need to compare gradient with or without
+                //// GPU side: Immediately record gradient results after assembling gradients
+                //std::vector<Float> gpu_gradients;  // Save GPU-calculated gradients
                 //{
                 //    Timer timer{"Save GPU gradients"};
                 //    gpu_gradients.resize(info.gradients().size());
-                //    info.gradients().buffer_view().copy_to(gpu_gradients.data());  // 从GPU拷贝到CPU
+                //    info.gradients().buffer_view().copy_to(gpu_gradients.data());  // Copy from GPU to CPU
                 //}
-                ////GPU端：组装完梯度后，立即记录hessain结果
+                ////GPU side: Immediately record Hessian results after assembling gradients
                 //struct HessianTriplet
                 //{
                 //    IndexT    i;
@@ -1180,7 +1181,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //    int   triplet_count = info.hessians().triplet_count();
                 //    gpu_hessian_triplets.resize(triplet_count);
 
-                //    // 拷贝行、列索引和值
+                //    // Copy row, column indices and values
                 //    std::vector<IndexT>    rows(triplet_count);
                 //    std::vector<IndexT>    cols(triplet_count);
                 //    std::vector<Matrix3x3> values(triplet_count);
@@ -1188,42 +1189,42 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //    info.hessians().col_indices().copy_to(cols.data());
                 //    info.hessians().values().copy_to(values.data());
 
-                //    // 封装为HessianTriplet
+                //    // Encapsulate as HessianTriplet
                 //    for(int i = 0; i < triplet_count; ++i)
                 //    {
                 //        gpu_hessian_triplets[i] = {rows[i], cols[i], values[i]};
                 //    }
                 //}
-                //// 在GPU构建d_Hii之后，拷贝到CPU
+                //// After building d_Hii on GPU, copy to CPU
                 //std::vector<Matrix3x3> gpu_Hii;
                 //{
                 //    Timer timer{"Save GPU Hii"};
                 //    gpu_Hii.resize(xs_size);
-                //    d_Hii.copy_to(gpu_Hii);  // 从GPU拷贝d_Hii到CPU
+                //    d_Hii.copy_to(gpu_Hii);  // Copy d_Hii from GPU to CPU
                 //}
                 //std::vector<Matrix3x3> cpu_Hii(xs_size, Matrix3x3::Zero());
 
-                ////=================================================================CPU逐个处理该颜色组的顶点，重复GPU的组装步骤
-                //for(auto vertexId : group_indices)  // group_indices是当前颜色组的顶点ID列表
+                ////=================================================================CPU processes vertices in this color group one by one, repeating GPU's assembly steps
+                //for(auto vertexId : group_indices)  // group_indices is the list of vertex IDs in the current color group
                 //{
                 //    const int vtttt0 = static_cast<int>(vertexId);
-                //    // 清零梯度，准备CPU验证
+                //    // Clear gradient to prepare for CPU verification
                 //    info.gradients().buffer_view().fill(0);
-                //    info.hessians().values().fill(Matrix3x3::Zero());  // 海森矩阵也需清零，避免干扰
-                //    // 重复GPU的三个组装步骤（确保逻辑完全一致）
+                //    info.hessians().values().fill(Matrix3x3::Zero());  // Hessian also needs to be cleared to avoid interference
+                //    // Repeat the three assembly steps of GPU (ensure logic is completely consistent)
                 //    {
                 //        Timer timer{"CPU Assemble producers (single vertex)"};
-                //        _assemble_producers_by_vertex(info, vertexId);  // CPU逐个顶点组装
+                //        _assemble_producers_by_vertex(info, vertexId);  // CPU assembles vertices one by one
                 //    }
                 //    {
                 //        Timer timer{"CPU Assemble dytopo effect (single vertex)"};
-                //        _assemble_dytopo_effect(info);  // 与GPU步骤一致
+                //        _assemble_dytopo_effect(info);  // Consistent with GPU steps
                 //    }
                 //    {
                 //        Timer timer{"CPU Assemble animation (single vertex)"};
-                //        _assemble_animation(info);  // 与GPU步骤一致
+                //        _assemble_animation(info);  // Consistent with GPU steps
                 //    }
-                //    // 4. 清除固定顶点梯度（并行操作）
+                //    // 4. Clear Fixed Vertex Gradient (parallel operation)
                 //    {
                 //        Timer timer{"Clear Fixed Vertex Gradient (ParallelFor, all vertices)"};
                 //        ParallelFor()
@@ -1240,9 +1241,9 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //                    }
                 //                });
                 //    }
-                //    // 5. 清除固定顶点海森矩阵（并行操作）
+                //    // 5. Clear Fixed Vertex Hessian (parallel operation)
                 //    {
-                //        Timer timer{"Clear Fixed Vertex hessian (ParallelFor, all vertices)"};
+                //        Timer timer{"Clear Fixed Vertex Hessian (ParallelFor, all vertices)"};
                 //        ParallelFor()
                 //            .file_line(__FILE__, __LINE__)
                 //            .apply(info.hessians().triplet_count(),
@@ -1281,7 +1282,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //    }
 
 
-                //    // 6. 提取梯度数据到CPU并计算力
+                //    // 6. Extract gradient data to CPU and compute force
                 //    std::vector<Vector3> force_h;
                 //    std::vector<Float>   gradients_h;
                 //    int                  gradients_size;
@@ -1292,12 +1293,12 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //        gradients_h.resize(gradients_size);
                 //        info.gradients().buffer_view().copy_to(gradients_h.data());
 
-                //        // 提取当前顶点梯度并计算力
+                //        // Extract current vertex gradient and compute force
                 //        Vector3 gradient = get_vertex_gradient(gradients_h, vertexId);
                 //        force_h[vertexId] = -gradient;
                 //    }
 
-                //    // 7. 提取海森矩阵三元组到CPU
+                //    // 7. Extract Hessian triplets to CPU
                 //    IndexT                 triplet_size;
                 //    std::vector<IndexT>    host_rows;
                 //    std::vector<IndexT>    host_cols;
@@ -1315,10 +1316,10 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //        hessian_size = info.hessians().total_triplet_count();
                 //    }
 
-                //    // 8. 遍历三元组获取当前顶点海森矩阵
+                //    // 8. Traverse triplets to get current vertex Hessian
                 //    Matrix3x3 h = Matrix3x3::Zero();
                 //    {
-                //        Timer timer{"Loop through triplets to get hessian h (all vertices)"};
+                //        Timer timer{"Loop through triplets to get Hessian h (all vertices)"};
                 //        for(int I = 0; I < triplet_size; ++I)
                 //        {
                 //            int i_vertex = host_rows[I];
@@ -1330,13 +1331,13 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //        }
                 //    }
 
-                //    // 9. 求解3x3矩阵及相关处理
+                //    // 9. Solve 3x3 matrix and related processing
                 //    {
                 //        Timer  timer{"Solve 3x3 PSD system (all vertices)"};
                 //        auto&  force     = force_h[vertexId];
                 //        double ForceNorm = force.squaredNorm();
 
-                //        if(1)  // 保留原条件
+                //        if(1)  // Keep original condition
                 //        {
                 //            if(force.isZero())
                 //            {
@@ -1371,7 +1372,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //                solverSuccess = solve3x3_psd_stable(H, F, dx);
                 //                descentDirection = Vector3(dx[0], dx[1], dx[2]);
 
-                //                // 验证计算
+                //                // Verify calculation
                 //                auto   TestOuput = h * descentDirection;
                 //                auto   diff      = TestOuput - force;
                 //                double diff_norm = diff.norm();
@@ -1383,10 +1384,10 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //            }
                 //            else
                 //            {
-                //                solverSuccess = false;  // 未使用分支
+                //                solverSuccess = false;  // Unused branch
                 //            }
 
-                //            // 处理求解失败
+                //            // Handle solving failure
                 //            if(!solverSuccess)
                 //            {
                 //                stepSize               = 1;
@@ -1396,7 +1397,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //                          << vertexId << std::endl;
                 //            }
 
-                //            // 检查数值异常
+                //            // Check for numerical anomalies
                 //            if(descentDirection.hasNaN())
                 //            {
                 //                std::cout << "force: " << force.transpose() << "\nHessian:\n"
@@ -1406,7 +1407,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //                std::exit(-1);
                 //            }
 
-                //            // 10. 更新x_update数组
+                //            // 10. Update x_update arrays
                 //            {
                 //                Timer timer{"Update x_update arrays (all vertices)"};
                 //                for(int k = 0; k < 3; ++k)
@@ -1418,7 +1419,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //                x_update_h_global[vertexId] += descentDirection;
                 //            }
 
-                //            // 11. 更新顶点位置
+                //            // 11. Update vertex position
                 //            {
                 //                Timer timer{"Update xs_temp and copy to fem().xs (all vertices)"};
                 //                std::vector<Vector3> xs_temp(xs_previous.size());
@@ -1432,19 +1433,19 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //        }
                 //    }
 
-                //    /////////////////从此之后是比较gradient 和hessian的 差异
-                //    cpu_Hii[vertexId] = h;  // 保存当前顶点的CPU对角Hessian
-                //    // 记录CPU组装后的梯度结果
+                //    /////////////////From here on, compare the differences between gradient and Hessian
+                //    cpu_Hii[vertexId] = h;  // Save current vertex's CPU diagonal Hessian
+                //    // Record CPU-assembled gradient results
                 //    std::vector<Float> cpu_gradients;
                 //    {
                 //        Timer timer{"Save CPU gradients"};
                 //        cpu_gradients.resize(info.gradients().size());
-                //        info.gradients().buffer_view().copy_to(cpu_gradients.data());  // 从设备/内存拷贝（根据info存储位置）
+                //        info.gradients().buffer_view().copy_to(cpu_gradients.data());  // Copy from device/memory (depending on info storage location)
                 //    }
 
-                //    // 仅对当前 vertexId 的3个分量做比较
+                //    // Only compare the 3 components of the current vertexId
                 //    bool        gradients_match = true;
-                //    const Float eps_abs         = 1e6f;  // 绝对误差阈值
+                //    const Float eps_abs         = 1e6f;  // Absolute error threshold
                 //    const int   base = static_cast<int>(vertexId) * 3;
 
                 //    for(int comp = 0; comp < 3; ++comp)
@@ -1468,21 +1469,21 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //        std::cout << "+++++++++++++++++++++Color group " << iGroup << " vertex " << vertexId
                 //                  << " gradients DO NOT match!" << std::endl;
 
-                //    // 对比当前顶点的CPU和GPU对角Hii
+                //    // Compare CPU and GPU diagonal Hii of current vertex
                 //    compare_hessian_hii(vertexId, cpu_Hii[vertexId], gpu_Hii[vertexId]);
                 //    int ContinueCompare = 0;
                 //    // --------------------------
-                //    // 对比 d_x_update_global vs x_update_h_3v
+                //    // Compare d_x_update_global vs x_update_h_3v
                 //    // --------------------------
                 //    const int v = static_cast<int>(vertexId);
                 //    bool xupd_match = true;
-                //    const Vector3& gpu_xupd = gpu_x_update_global[v];  // GPU的向量结果
-                //    // 从CPU的扁平数组中提取当前顶点的3个分量
+                //    const Vector3& gpu_xupd = gpu_x_update_global[v];  // GPU vector result
+                //    // Extract 3 components of current vertex from CPU's flat array
                 //    Vector3 cpu_xupd(x_update_h_3v[v * 3 + 0],
                 //                     x_update_h_3v[v * 3 + 1],
                 //                     x_update_h_3v[v * 3 + 2]);
-                //    // 对比每个分量
-                //    const Float eps_xupd = std::is_same_v<Float, float> ? 1e-5f : 1e-10;  // 精度阈值
+                //    // Compare each component
+                //    const Float eps_xupd = std::is_same_v<Float, float> ? 1e-5f : 1e-10;  // Precision threshold
                 //    for(int comp = 0; comp < 3; ++comp)
                 //    {
                 //        Float diff = std::abs(gpu_xupd[comp] - cpu_xupd[comp]);
@@ -1498,16 +1499,16 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //    }
 
                 //    // --------------------------
-                //    // 对比 d_x_update_pos vs x_update_h_global
+                //    // Compare d_x_update_pos vs x_update_h_global
                 //    // --------------------------
                 //    bool xpos_match = true;
-                //    const Vector3& gpu_xpos = gpu_x_update_pos[v];  // GPU的累积更新
-                //    const Vector3& cpu_xpos = x_update_h_global[v];  // CPU的累积更新
+                //    const Vector3& gpu_xpos = gpu_x_update_pos[v];  // GPU accumulated update
+                //    const Vector3& cpu_xpos = x_update_h_global[v];  // CPU accumulated update
                 //    for(int comp = 0; comp < 3; ++comp)
                 //    {
                 //        Float diff = std::abs(gpu_xpos[comp] - cpu_xpos[comp]);
                 //        if(diff > eps_xupd)
-                //        {  // 同精度阈值
+                //        {  // Same precision threshold
                 //            xpos_match = false;
                 //            std::cout << "x_update_pos mismatch at vertex " << v
                 //                      << ", component " << comp << ": "
@@ -1517,7 +1518,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
                 //        }
                 //    }
 
-                //    // 输出对比结果
+                //    // Output comparison result
                 //    if(xupd_match && xpos_match)
                 //    {
                 //        std::cout << "Vertex " << v << " update arrays match (GPU vs CPU)."
@@ -1535,40 +1536,40 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
             }
 
             int endEachGroup = 0;
-            ///////////==============================gpu 版本的更新逻辑
+            ///////////==============================GPU version update logic
             ParallelFor()
                 .file_line(__FILE__, __LINE__)
-                .apply(fem().xs.size(),  // 按顶点数量启动线程，每个线程处理一个顶点v
+                .apply(fem().xs.size(),  // Launch threads according to the number of vertices, each thread processes one vertex v
                        [d_x_update_global = d_x_update_global.viewer().name("d_x_update_global"),
                         d_x_update_pos = d_x_update_pos.viewer().name("d_x_update_pos"),
-                        x_update = info.x_update().viewer().name("x_update"),  // 扁平float数组
-                        xs_position = info.xs_position().viewer().name("xs_position"),  // 扁平float数组
+                        x_update = info.x_update().viewer().name("x_update"),  // Flat float array
+                        xs_position = info.xs_position().viewer().name("xs_position"),  // Flat float array
                         xs_previous = xs_previous_gpu.viewer().name("xs_previous"),
-                        xs = fem().xs.viewer().name("xs")]  // 顶点位置缓冲区
-                       __device__(int v) mutable  // v：当前处理的顶点索引
+                        xs = fem().xs.viewer().name("xs")]  // Vertex position buffer
+                       __device__(int v) mutable  // v: index of the current processed vertex
                        {
-                           // 1. 扁平化d_x_update_global到info.x_update()（对应CPU的x_update_h_3v）
-                           const Vector3& upd = d_x_update_global(v);  // 取当前顶点的更新量（Vector3）
-                           x_update(v * 3 + 0) = upd.x();  // 存储x分量
-                           x_update(v * 3 + 1) = upd.y();  // 存储y分量
-                           x_update(v * 3 + 2) = upd.z();  // 存储z分量
+                           // 1. Flatten d_x_update_global to info.x_update() (corresponds to CPU's x_update_h_3v)
+                           const Vector3& upd = d_x_update_global(v);  // Get update amount of current vertex (Vector3)
+                           x_update(v * 3 + 0) = upd.x();  // Store x component
+                           x_update(v * 3 + 1) = upd.y();  // Store y component
+                           x_update(v * 3 + 2) = upd.z();  // Store z component
 
-                           // 2. 扁平化xs_previous到info.xs_position()（对应CPU的xs_update_3v）
-                           const Vector3& prev_pos = xs_previous(v);  // 取当前顶点的历史位置
+                           // 2. Flatten xs_previous to info.xs_position() (corresponds to CPU's xs_update_3v)
+                           const Vector3& prev_pos = xs_previous(v);  // Get historical position of current vertex
                            xs_position(v * 3 + 0) = prev_pos.x();
                            xs_position(v * 3 + 1) = prev_pos.y();
                            xs_position(v * 3 + 2) = prev_pos.z();
 
-                           // 3. 更新fem().xs为：历史位置 + 位置更新量（对应CPU的fem().xs.copy_from）
+                           // 3. Update fem().xs to: historical position + position update amount (corresponds to CPU's fem().xs.copy_from)
                            xs(v) = xs_previous(v);
                        })
-                .wait();  // 等待所有线程完成
-            ///////////==============================cpu 版本的更新逻辑
-            //// 1) 从 GPU 读取 d_x_update_global 到 host
+                .wait();  // Wait for all threads to complete
+            ///////////==============================cpu version update logic
+            //// 1) Read d_x_update_global from GPU to host
             //std::vector<Vector3> xupd_host(xs_size);
             //d_x_update_global.copy_to(xupd_host);
 
-            //// 2) 扁平化为 CPU 侧的 x_update_h_3v（3*vertex_size）
+            //// 2) Flatten to CPU-side x_update_h_3v (3*vertex_size)
             //x_update_h_3v.resize(3 * xs_size);
             //for(int i = 0; i < (int)xs_size; ++i)
             //{
@@ -1576,8 +1577,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
             //    x_update_h_3v[i * 3 + 1] = xupd_host[i][1];
             //    x_update_h_3v[i * 3 + 2] = xupd_host[i][2];
             //}
-            ////这里也是组外
-            //// 12. 同步回GPU
+            ////This is also outside the group
+            //// 12. Synchronize back to GPU
             //{
             //    Timer timer{"Copy xs_update_3v to GPU (info.x_update())"};
             //    for(int vertexId = 0; vertexId < vertex_size; ++vertexId)
@@ -1598,7 +1599,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_test(GlobalLinearSystem::Diag
 
 void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagInfo& info)
 {
-    // 顶点染色初始化（单独计时，染色可能耗时）
+    // Vertex coloring initialization (timed separately, coloring may take time)
     bool use_vertex_coloring = true;
     if(use_vertex_coloring && vertex_group.empty())
     {
@@ -1607,52 +1608,52 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
     }
 
     using namespace muda;
-    // 总函数耗时统计
+    // Total function time statistics
     Timer totalTimer{"Total CPU solve_system_vertex time"};
 
     auto N           = fem().xs.size();
     auto vertex_size = N;
     auto info_x_size = info.x_update().size();
 
-    // 1. 同步GPU数据到CPU（分步骤计时，数据传输是CPU版本的关键瓶颈）
+    // 1. Synchronize GPU data to CPU (timed in steps, data transmission is a key bottleneck for the CPU version)
     std::vector<IndexT> is_fixed_host;
     {
         Timer timer{"CPU Sync is_fixed (GPU to CPU)"};
-        fem().is_fixed.copy_to(is_fixed_host);  // 同步固定顶点标记
+        fem().is_fixed.copy_to(is_fixed_host);  // Synchronize fixed vertex flags
     }
 
     std::vector<Vector3> xs_previous;
     {
         Timer timer{"CPU Sync xs_previous (GPU to CPU)"};
-        fem().xs.copy_to(xs_previous);  // 同步初始顶点位置
+        fem().xs.copy_to(xs_previous);  // Synchronize initial vertex positions
     }
 
-    // 初始化CPU端数组（明确大小，计时内存分配）
+    // Initialize CPU-side arrays (explicit size, time memory allocation)
     std::vector<Float>   x_update_h_3v;
     std::vector<Vector3> x_update_h_global;
     {
         Timer timer{"CPU Initialize x_update arrays"};
-        x_update_h_3v.resize(info_x_size, 0.0f);       // 大小为info_x_size
-        x_update_h_global.resize(N, Vector3::Zero());  // 大小为N
+        x_update_h_3v.resize(info_x_size, 0.0f);       // Size is info_x_size
+        x_update_h_global.resize(N, Vector3::Zero());  // Size is N
     }
 
-    // 2. 处理顶点分组（明确计时分组逻辑，尤其是大顶点数时）
+    // 2. Process vertex groups (explicitly time group logic, especially for large number of vertices)
     std::vector<std::vector<IndexT>> groups;
     {
         Timer timer{"CPU Prepare vertex groups"};
         if(use_vertex_coloring && !vertex_group.empty())
         {
-            groups = vertex_group;  // 复用已有分组
+            groups = vertex_group;  // Reuse existing groups
         }
         else
         {
             groups.resize(1);
             groups[0].resize(N);
-            std::iota(groups[0].begin(), groups[0].end(), 0);  // 生成0~N-1
+            std::iota(groups[0].begin(), groups[0].end(), 0);  // Generate 0~N-1
         }
     }
 
-    // 3. 按组处理顶点（每组总耗时统计）
+    // 3. Process vertices by group (total time statistics for each group)
     for(size_t iGroup = 0; iGroup < groups.size(); ++iGroup)
     {
         Timer groupTimer{"CPU Group total time"};
@@ -1661,23 +1662,23 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
         if(group_indices.empty())
             continue;
 
-        // 逐个顶点计算（核心逻辑，总计时）
+        // Calculate vertices one by one (core logic, total timing)
         {
             Timer timer{"CPU Per-vertex computation"};
             for(auto vertexId : group_indices)
             {
-                // 跳过固定顶点（简单判断，无需单独计时）
+                // Skip fixed vertices (simple judgment, no separate timing)
                 if(vertexId < 0 || is_fixed_host[vertexId])
                     continue;
 
-                // 3.1 清除当前梯度和海森矩阵（GPU端操作，计时GPU清零）
+                // 3.1 Clear current gradient and Hessian (GPU-side operation, time GPU clearing)
                 {
                     Timer timer{"CPU Trigger GPU clear Gradient/Hessian (vertex)"};
                     info.gradients().buffer_view().fill(0);
                     info.hessians().values().fill(Matrix3x3::Zero());
                 }
 
-                // 3.2 组装梯度和海森矩阵（分步骤计时CPU组装逻辑）
+                // 3.2 Assemble gradient and Hessian (time CPU assembly logic in steps)
                 {
                     Timer timer{"CPU Assemble producers (vertex)"};
                     _assemble_producers_by_vertex(info, vertexId);
@@ -1691,7 +1692,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
                     _assemble_animation(info);
                 }
 
-                // 3.3 清除固定顶点的梯度（GPU并行操作，计时GPU耗时）
+                // 3.3 Clear gradients of fixed vertices (GPU parallel operation, time GPU time)
                 {
                     Timer timer{"CPU Trigger GPU clear fixed gradients (vertex)"};
                     ParallelFor()
@@ -1707,9 +1708,9 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
                         .wait();
                 }
 
-                // 3.4 清除固定顶点的非对角海森矩阵（GPU并行操作，计时）
+                // 3.4 Clear off-diagonal Hessian of fixed vertices (GPU parallel operation, timing)
                 {
-                    Timer timer{"CPU Trigger GPU clear fixed hessians (vertex)"};
+                    Timer timer{"CPU Trigger GPU clear fixed Hessians (vertex)"};
                     ParallelFor()
                         .file_line(__FILE__, __LINE__)
                         .apply(info.hessians().triplet_count(),
@@ -1723,7 +1724,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
                         .wait();
                 }
 
-                // 3.5.1 提取梯度 to 力（GPU to CPU传输，计时数据传输）
+                // 3.5.1 Extract gradient to force (GPU to CPU transmission, time data transmission)
                 std::vector<Float> gradients_h;
                 {
                     Timer  timer{"CPU Copy gradients (GPU to CPU) (vertex)"};
@@ -1736,12 +1737,12 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
                                  gradients_h[vertexId * 3 + 2]);
                 Vector3 force = -gradient;
 
-                // 3.5.2 提取对角Hessian（GPU to CPU传输+CPU组装，分步骤计时）
+                // 3.5.2 Extract diagonal Hessian (GPU to CPU transmission + CPU assembly, time in steps)
                 std::vector<IndexT>    rows;
                 std::vector<IndexT>    cols;
                 std::vector<Matrix3x3> values;
                 {
-                    Timer  timer{"CPU Copy hessian triplets (GPU to CPU) (vertex)"};
+                    Timer timer{"CPU Copy Hessian triplets (GPU to CPU) (vertex)"};
                     size_t triplet_count = info.hessians().triplet_count();
                     rows.resize(triplet_count);
                     cols.resize(triplet_count);
@@ -1751,7 +1752,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
                     info.hessians().values().copy_to(values.data());
                 }
 
-                // 3.5.2.1 CPU端组装对角Hessian（单独计时计算逻辑）
+                // 3.5.2.1 Assemble diagonal Hii on CPU (separately time calculation logic)
                 Matrix3x3 h = Matrix3x3::Zero();
                 {
                     Timer timer{"CPU Assemble diagonal Hii (vertex)"};
@@ -1764,7 +1765,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
                         h = Matrix3x3::Identity() * 1e-6f;
                 }
 
-                // 3.5.3 求解更新方向（计时线性求解器）
+                // 3.5.3 Solve update direction (time linear solver)
                 Vector3 descentDirection;
                 bool    solverSuccess;
                 {
@@ -1792,12 +1793,12 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
                     }
                 }
 
-                // 3.5.4 更新CPU端数组（简单内存操作，无需单独计时，包含在循环总计时中）
+                // 3.5.4 Update CPU-side arrays (simple memory operation, no separate timing, included in loop total timing)
                 for(int k = 0; k < 3; ++k)
                     x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 2;
                 x_update_h_global[vertexId] += descentDirection;
 
-                // 4.1 实时更新顶点位置（CPU to GPU传输，计时数据回传）
+                // 4.1 Update vertex position in real-time (CPU to GPU transmission, time data return)
                 {
                     Timer timer{"CPU Update vertex positions (CPU to GPU) (vertex)"};
                     std::vector<Vector3> xs_temp(N);
@@ -1809,7 +1810,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
         }
     }
 
-    // 4. 同步结果到info结构（最终数据整理+传输，计时）
+    // 4. Synchronize results to info structure (final data sorting + transmission, timing)
     {
         Timer              timer{"CPU Final sync to info (CPU to GPU)"};
         std::vector<Float> xs_update_3v(3 * N);
@@ -1819,7 +1820,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
             xs_update_3v[i * 3 + 1] = xs_previous[i].y();
             xs_update_3v[i * 3 + 2] = xs_previous[i].z();
         }
-        fem().xs.copy_from(xs_previous);  // 恢复初始位置
+        fem().xs.copy_from(xs_previous);  // Restore initial position
         info.xs_position().buffer_view().copy_from(xs_update_3v.data());
         info.x_update().buffer_view().copy_from(x_update_h_3v.data());
     }
@@ -1827,7 +1828,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_cpu(GlobalLinearSystem::DiagI
 
 void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagInfo& info)
 {
-    // 顶点染色控制（按需执行）
+    // Vertex coloring control (execute on demand)
     bool use_vertex_coloring = true;
     if(use_vertex_coloring && vertex_group.empty())
     {
@@ -1835,51 +1836,51 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
         vertices_Coloring();
     }
 
-    // 总函数耗时统计
+    // Total function time statistics
     Timer totalTimer{"Total solve_system_vertex_gpu time"};
 
     using namespace muda;
-    auto vertex_size = fem().xs.size();         // 顶点总数
-    auto info_x_size = info.x_update().size();  // info更新数组大小
+    auto vertex_size = fem().xs.size();         // Total number of vertices
+    auto info_x_size = info.x_update().size();  // Size of info update array
 
-    // 1. 初始化关键设备缓冲区（存储初始顶点位置）
+    // 1. Initialize key device buffer (stores initial vertex positions)
     muda::DeviceBuffer<Vector3> xs_previous_gpu;
     {
         Timer timer{"Initialize xs_previous_gpu (GPU memory + copy)"};
-        xs_previous_gpu = fem().xs;  // 从fem().xs拷贝初始位置到设备缓冲区
+        xs_previous_gpu = fem().xs;  // Copy initial positions from fem().xs to device buffer
     }
 
-    // 顶点循环整体耗时统计
+    // Overall time statistics for vertex loop
     {
         Timer vertexLoopTimer{"Total vertex loop time (all groups)"};
 
-        // 2. 初始化更新用设备缓冲区（x_update_h_3v和x_update_h_global的GPU对应）
-        muda::DeviceBuffer<Vector3> d_x_update_global;  // 对应CPU的x_update_h_3v
-        muda::DeviceBuffer<Vector3> d_x_update_pos;  // 对应CPU的x_update_h_global
+        // 2. Initialize device buffers for updates (GPU counterparts of x_update_h_3v and x_update_h_global)
+        muda::DeviceBuffer<Vector3> d_x_update_global;  // Corresponds to CPU's x_update_h_3v
+        muda::DeviceBuffer<Vector3> d_x_update_pos;  // Corresponds to CPU's x_update_h_global
         {
             Timer timer{"Initialize d_x_update buffers (resize + zero fill)"};
             d_x_update_global.resize((int)vertex_size);
-            d_x_update_global.view().fill(Vector3::Zero());  // 初始化为零
+            d_x_update_global.view().fill(Vector3::Zero());  // Initialize to zero
             d_x_update_pos.resize((int)vertex_size);
-            d_x_update_pos.view().fill(Vector3::Zero());  // 初始化为零
+            d_x_update_pos.view().fill(Vector3::Zero());  // Initialize to zero
         }
 
-        // 设备缓冲区：存储当前颜色组的顶点索引
+        // Device buffer: stores vertex indices of current color group
         muda::DeviceBuffer<IndexT> d_color_vertices;
 
-        // 3. 按颜色组遍历顶点
+        // 3. Traverse vertices by color group
         for(size_t iGroup = 0; iGroup < vertex_group.size(); ++iGroup)
         {
             Timer groupTimer{"Group total time"};
 
-            // 3.1 清除当前组的梯度和海森矩阵（GPU全局清零）
+            // 3.1 Clear gradients and Hessians for current group (GPU global zero fill)
             {
-                Timer timer{"Clear gradient and hessian (GPU fill zero)"};
-                info.gradients().buffer_view().fill(0);            // 梯度清零
-                info.hessians().values().fill(Matrix3x3::Zero());  // 海森矩阵值清零
+                Timer timer{"Clear gradient and Hessian (GPU fill zero)"};
+                info.gradients().buffer_view().fill(0);  // Zero out gradients
+                info.hessians().values().fill(Matrix3x3::Zero());  // Zero out Hessian values
             }
 
-            // 3.2 处理当前颜色组的顶点索引（CPU to GPU拷贝）
+            // 3.2 Process vertex indices of current color group (CPU to GPU copy)
             auto&               parallelGroup = vertex_group[iGroup];
             std::vector<IndexT> group_indices(parallelGroup.begin(),
                                               parallelGroup.end());
@@ -1887,24 +1888,24 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                 Timer timer{"Copy group indices to GPU (d_color_vertices)"};
                 d_color_vertices.resize(static_cast<int>(group_indices.size()));
                 if(!group_indices.empty())
-                    d_color_vertices.view().copy_from(group_indices.data());  // CPU to GPU拷贝
+                    d_color_vertices.view().copy_from(group_indices.data());  // CPU to GPU copy
             }
 
-            // 3.3 组装梯度和海森矩阵（分步骤计时）
+            // 3.3 Assemble gradients and Hessians (timed in steps)
             {
                 Timer timer{"Assemble producers (by color group)"};
-                _assemble_producers_by_color(info, d_color_vertices);  // 按颜色组并行组装
+                _assemble_producers_by_color(info, d_color_vertices);  // Parallel assembly by color group
             }
             {
                 Timer timer{"Assemble dytopo effect"};
-                _assemble_dytopo_effect(info);  // 动态拓扑影响组装
+                _assemble_dytopo_effect(info);  // Assemble dynamic topology effects
             }
             {
                 Timer timer{"Assemble animation effect"};
-                _assemble_animation(info);  // 动画影响组装
+                _assemble_animation(info);  // Assemble animation effects
             }
 
-            // 3.4 清除固定顶点的梯度（GPU并行）
+            // 3.4 Clear gradients of fixed vertices (GPU parallel)
             {
                 Timer timer{"Clear fixed vertex gradients (GPU ParallelFor)"};
                 ParallelFor()
@@ -1913,15 +1914,15 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                            [is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
                             gradients = info.gradients().viewer().name("gradients")] __device__(int i)
                            {
-                               if(is_fixed(i))  // 固定顶点梯度置零
+                               if(is_fixed(i))  // Zero out gradients of fixed vertices
                                    gradients.segment<3>(i * 3).as_eigen().setZero();
                            })
-                    .wait();  // 等待GPU操作完成
+                    .wait();  // Wait for GPU operation to complete
             }
 
-            // 3.5 清除固定顶点的非对角海森矩阵（GPU并行）
+            // 3.5 Clear off-diagonal Hessians of fixed vertices (GPU parallel)
             {
-                Timer timer{"Clear fixed vertex non-diag hessians (GPU ParallelFor)"};
+                Timer timer{"Clear fixed vertex non-diag Hessians (GPU ParallelFor)"};
                 ParallelFor()
                     .file_line(__FILE__, __LINE__)
                     .apply(info.hessians().triplet_count(),
@@ -1930,19 +1931,19 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                            {
                                auto&& [i, j, H3] = hessians(I).read();
                                if((is_fixed(i) || is_fixed(j)) && i != j)
-                                   hessians(I).write(i, j, Matrix3x3::Zero());  // 非对角项置零
+                                   hessians(I).write(i, j, Matrix3x3::Zero());  // Zero out off-diagonal terms
                            })
-                    .wait();  // 等待GPU操作完成
+                    .wait();  // Wait for GPU operation to complete
             }
 
-            // 3.6 构建对角Hessian矩阵Hii（初始化+原子累加）
+            // 3.6 Build diagonal Hessian matrix Hii (initialization + atomic accumulation)
             muda::DeviceBuffer<Matrix3x3> d_Hii;
             {
                 Timer timer{"Build diagonal Hii (resize + fill + atomic add)"};
                 d_Hii.resize((int)vertex_size);
-                d_Hii.view().fill(Matrix3x3::Zero());  // 初始化Hii为零
+                d_Hii.view().fill(Matrix3x3::Zero());  // Initialize Hii to zero
 
-                // 并行累加对角项到Hii
+                // Parallel accumulation of diagonal terms into Hii
                 ParallelFor()
                     .file_line(__FILE__, __LINE__)
                     .apply(info.hessians().triplet_count(),
@@ -1950,9 +1951,9 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                             Hii = d_Hii.viewer().name("Hii")] __device__(int I)
                            {
                                auto&& [i, j, H3] = hessians(I).read();
-                               if(i == j)  // 仅处理对角项
+                               if(i == j)  // Process only diagonal terms
                                {
-                                   // 原子累加3x3矩阵（适配float类型）
+                                   // Atomic accumulation of 3x3 matrix (adapted for float type)
                                    atomic_add(&Hii(i)(0, 0), H3(0, 0));
                                    atomic_add(&Hii(i)(0, 1), H3(0, 1));
                                    atomic_add(&Hii(i)(0, 2), H3(0, 2));
@@ -1967,7 +1968,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                     .wait();
             }
 
-            // 3.7 并行计算更新方向并更新数组（当前颜色组）
+            // 3.7 Parallel compute update direction and update arrays (current color group)
             {
                 Timer timer{"Compute descent & update arrays (GPU ParallelFor)"};
                 ParallelFor()
@@ -1977,26 +1978,26 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                             is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
                             gradients = info.gradients().cviewer().name("gradients"),
                             Hii = d_Hii.cviewer().name("Hii"),
-                            xupd = d_x_update_global.viewer().name("xupd"),  // 对应x_update_h_3v
-                            xpos = d_x_update_pos.viewer().name("xpos"),  // 对应x_update_h_global
+                            xupd = d_x_update_global.viewer().name("xupd"),  // Corresponds to x_update_h_3v
+                            xpos = d_x_update_pos.viewer().name("xpos"),  // Corresponds to x_update_h_global
                             xs          = fem().xs.viewer().name("xs"),
                             xs_previous = xs_previous_gpu.viewer().name(
-                                "xs_previous")] __device__(int k)  // k：当前组内顶点索引
+                                "xs_previous")] __device__(int k)  // k: index of vertex within current group
                            {
-                               const int v = (int)verts(k);  // 全局顶点ID
+                               const int v = (int)verts(k);  // Global vertex ID
                                if(v < 0 || is_fixed(v))
-                                   return;  // 跳过固定顶点
+                                   return;  // Skip fixed vertices
 
-                               // 提取梯度并计算力
+                               // Extract gradient and compute force
                                const Vector3 G = gradients.segment<3>(v * 3).as_eigen();
                                Vector3 force = -G;
 
-                               // 提取对角Hessian（Hii）
+                               // Extract diagonal Hessian (Hii)
                                Matrix3x3 H = Hii(v);
                                if(H.isZero())
-                                   H = Matrix3x3::Identity() * 1e-6f;  // 避免奇异矩阵
+                                   H = Matrix3x3::Identity() * 1e-6f;  // Avoid singular matrix
 
-                               // 求解3x3线性系统（获取更新方向）
+                               // Solve 3x3 linear system (obtain update direction)
                                Float m[9]  = {H(0, 0),
                                               H(1, 0),
                                               H(2, 0),
@@ -2014,7 +2015,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                                Vector3 descent;
                                if(!solver_success)
                                {
-                                   descent = force;  // 求解失败时用 force 作为方向
+                                   descent = force;  // Use force as direction when solving fails
                                    printf("Solver failed at vertex %d (GPU)\n", v);
                                }
                                else
@@ -2022,18 +2023,18 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                                    descent = Vector3(dx[0], dx[1], dx[2]);
                                }
 
-                               // 更新两个全局数组
-                               xupd(v) -= descent * 2;  // 对应CPU的x_update_h_3v
-                               xpos(v) += descent;  // 对应CPU的x_update_h_global
+                               // Update two global arrays
+                               xupd(v) -= descent * 2;  // Corresponds to CPU's x_update_h_3v
+                               xpos(v) += descent;  // Corresponds to CPU's x_update_h_global
 
-                               // 实时更新顶点位置（VBD迭代依赖）
+                               // Update vertex position in real-time (VBD iteration dependency)
                                xs(v) = xs_previous(v) + xpos(v);
                            })
-                    .wait();  // 等待当前组计算完成
+                    .wait();  // Wait for current group computation to complete
             }
         }
 
-        // 4. 最终同步结果到info结构（GPU内并行操作）
+        // 4. Final sync results to info structure (GPU parallel operation)
         {
             Timer timer{"Sync results to info (x_update + xs_position)"};
             ParallelFor()
@@ -2046,22 +2047,22 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
                         xs_previous = xs_previous_gpu.viewer().name("xs_previous"),
                         xs = fem().xs.viewer().name("xs")] __device__(int v)
                        {
-                           // 1. 同步x_update（扁平float数组）
+                           // 1. Sync x_update (flat float array)
                            const Vector3& upd  = d_x_update_global(v);
                            x_update(v * 3 + 0) = upd.x();
                            x_update(v * 3 + 1) = upd.y();
                            x_update(v * 3 + 2) = upd.z();
 
-                           // 2. 同步xs_position（初始位置的扁平数组）
+                           // 2. Sync xs_position (flat array of initial positions)
                            const Vector3& prev_pos = xs_previous(v);
                            xs_position(v * 3 + 0)  = prev_pos.x();
                            xs_position(v * 3 + 1)  = prev_pos.y();
                            xs_position(v * 3 + 2)  = prev_pos.z();
 
-                           // 3. 恢复fem().xs为初始位置（仅保留更新方向，不修改原始位置）
+                           // 3. Restore fem().xs to initial position (only retain update direction, do not modify original position)
                            xs(v) = xs_previous(v);
                        })
-                .wait();  // 等待所有同步操作完成
+                .wait();  // Wait for all sync operations to complete
         }
     }
 
@@ -2069,37 +2070,37 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //if(use_vertex_coloring && vertex_group.empty())
     //    vertices_Coloring();
 
-    //// 总函数时间计时
+    //// Total function time timing
     //Timer totalTimer{"Total solve_system_vertex time"};
 
     //using namespace muda;
-    //// 变量声明
+    //// Variable declarations
     //auto                        vertex_size = fem().xs.size();
     //auto                        info_x_size = info.x_update().size();
     //muda::DeviceBuffer<Vector3> xs_previous_gpu;
-    //// 1. 初始化向量（内存分配+数据拷贝）
+    //// 1. Initialize vectors (memory allocation + data copy)
     //{
     //    Timer timer{"Initialize vectors (xs_previous)"};
-    //    xs_previous_gpu = fem().xs;  // 直接拷贝到GPU
+    //    xs_previous_gpu = fem().xs;  // Direct copy to GPU
     //}
 
-    //// 顶点循环整体计时
+    //// Overall timing for vertex loop
     //{
     //    Timer vertexLoopTimer{"Total vertex loop time (all vertices)"};
     //    {
-    //        muda::DeviceBuffer<Vector3> d_x_update_global;  // 对应 x_update_h_3v（外部传输用）
-    //        muda::DeviceBuffer<Vector3> d_x_update_pos;  // 新增：对应 x_update_h_global（位置更新用）
+    //        muda::DeviceBuffer<Vector3> d_x_update_global;  // Corresponds to x_update_h_3v (for external transmission)
+    //        muda::DeviceBuffer<Vector3> d_x_update_pos;  // New: corresponds to x_update_h_global (for position update)
     //        {
     //            d_x_update_global.resize((int)vertex_size);
     //            d_x_update_global.view().fill(Vector3::Zero());
-    //            d_x_update_pos.resize((int)vertex_size);  // 初始化新增缓冲区
+    //            d_x_update_pos.resize((int)vertex_size);  // Initialize new buffer
     //            d_x_update_pos.view().fill(Vector3::Zero());
     //        }
 
     //        muda::DeviceBuffer<IndexT> d_color_vertices;
     //        for(size_t iGroup = 0; iGroup < vertex_group.size(); iGroup++)
     //        {
-    //            // 2. clear gradient and hessian
+    //            // 2. Clear gradient and Hessian
     //            {
     //                Timer timer{"Clear Gradient (all vertices)"};
     //                info.gradients().buffer_view().fill(0);
@@ -2107,20 +2108,20 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //            }
 
     //            auto& parallelGroup = vertex_group[iGroup];
-    //            // host 转换为 IndexT 并拷到 GPU
+    //            // Convert to IndexT on host and copy to GPU
     //            std::vector<IndexT> group_indices(parallelGroup.begin(),
     //                                              parallelGroup.end());
     //            d_color_vertices.resize(static_cast<int>(group_indices.size()));
     //            if(!group_indices.empty())
     //                d_color_vertices.view().copy_from(group_indices.data());
-    //            // 3. 组装梯度和海森矩阵（分步骤）
+    //            // 3. Assemble gradient and Hessian (in steps)
     //            {
     //                Timer timer{"GPU Assemble producers (all vertices)"};
     //                //_assemble_producers(info);
     //                _assemble_producers_by_color(info, d_color_vertices);
     //            }
     //            {
-    //                //但是这里的基础的gradient 和 hessian 是之前就计算过了的,再计算也不会变
+    //                // However, the basic gradient and Hessian here were calculated before; recalculating won't change them
     //                Timer timer{"Assemble dytopo effect (all vertices)"};
     //                _assemble_dytopo_effect(info);
     //            }
@@ -2128,8 +2129,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                Timer timer{"Assemble animation (all vertices)"};
     //                _assemble_animation(info);
     //            }
-    //            ////////////////////////===============after this code we do not need to verify first
-    //            // 4. 清除固定顶点梯度（并行操作）
+    //            ////////////////////////===============After this code, we don't need to verify first
+    //            // 4. Clear fixed vertex gradients (parallel operation)
     //            {
     //                Timer timer{"Clear Fixed Vertex Gradient (ParallelFor, all vertices)"};
     //                ParallelFor()
@@ -2146,9 +2147,9 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                           });
     //            }
 
-    //            // 5. 清除固定顶点海森矩阵（并行操作）
+    //            // 5. Clear fixed vertex Hessians (parallel operation)
     //            {
-    //                Timer timer{"Clear Fixed Vertex hessian (ParallelFor, all vertices)"};
+    //                Timer timer{"Clear Fixed Vertex Hessian (ParallelFor, all vertices)"};
     //                ParallelFor()
     //                    .file_line(__FILE__, __LINE__)
     //                    .apply(info.hessians().triplet_count(),
@@ -2167,8 +2168,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                    .wait();
     //            }
 
-    //            //////////================================GPU 遍历这些color 中的顶点:
-    //            // 1) 构建对角 H(ii)（GPU端），避免回传 triplets
+    //            //////////================================GPU traverse vertices in these colors:
+    //            // 1) Build diagonal H(ii) (GPU side) to avoid transferring triplets back
     //            muda::DeviceBuffer<Matrix3x3> d_Hii;
     //            d_Hii.resize((int)vertex_size);
     //            d_Hii.view().fill(Matrix3x3::Zero());
@@ -2182,8 +2183,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                           auto&& [i, j, H3] = hessians(I).read();
     //                           if(i == j)
     //                           {
-    //                               // 原子累加 3x3 到 Hii(i)
-    //                               // 注意：若 Float 为 float 则 atomicAdd 可用；若为 double 请改为分块规约或使用自定义原子
+    //                               // Atomic accumulation of 3x3 into Hii(i)
+    //                               // Note: If Float is float, atomicAdd is available; if double, use block reduction or custom atomic operations
     //                               muda::atomic_add(&Hii(i)(0, 0), H3(0, 0));
     //                               muda::atomic_add(&Hii(i)(0, 1), H3(0, 1));
     //                               muda::atomic_add(&Hii(i)(0, 2), H3(0, 2));
@@ -2196,8 +2197,8 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                           }
     //                       })
     //                .wait();
-    //            /////////////=============这里是进一步计算更新方向的问题，其他先不用真的更新gpu中的数据
-    //            // 2) 对本颜色组的每个顶点并行：计算后同时更新两个数组
+    //            /////////////=============This is about further calculating the update direction; no need to actually update GPU data for others first
+    //            // 2) Parallel process each vertex in this color group: Update two arrays simultaneously after calculation
     //            ParallelFor()
     //                .file_line(__FILE__, __LINE__)
     //                .apply((int)d_color_vertices.size(),
@@ -2205,17 +2206,17 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                        is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
     //                        gradients = info.gradients().cviewer().name("gradients"),
     //                        Hii = d_Hii.cviewer().name("Hii"),
-    //                        xupd = d_x_update_global.viewer().name("xupd"),  // 对应 x_update_h_3v
-    //                        xpos = d_x_update_pos.viewer().name("xpos"),  // 对应 x_update_h_global
+    //                        xupd = d_x_update_global.viewer().name("xupd"),  // Corresponds to x_update_h_3v
+    //                        xpos = d_x_update_pos.viewer().name("xpos"),  // Corresponds to x_update_h_global
     //                        xs          = fem().xs.viewer().name("xs"),
     //                        xs_previous = xs_previous_gpu.viewer().name(
-    //                            "xs_previous")] __device__(int k) mutable  // 用于实时更新顶点位置
+    //                            "xs_previous")] __device__(int k) mutable  // For real-time vertex position update
     //                       {
     //                           const int v = (int)verts(k);
     //                           if(v < 0 || is_fixed(v))
     //                               return;
 
-    //                           // 1. 计算 descent（原有逻辑不变）
+    //                           // 1. Calculate descent (original logic unchanged)
     //                           const Vector3 G = gradients.segment<3>(v * 3).as_eigen();
     //                           Vector3   force = -G;
     //                           Matrix3x3 H     = Hii(v);
@@ -2238,7 +2239,7 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                           Vector3 descent;
     //                           if(!solver_success)
     //                           {
-    //                               descent = force;  // 与CPU一致：失败时用force作为方向
+    //                               descent = force;  // Consistent with CPU: use force as direction when solving fails
     //                               printf("Solver failed at vertex %d (GPU)\n", v);
     //                           }
     //                           else
@@ -2246,47 +2247,47 @@ void FEMLinearSubsystem::Impl::solve_system_vertex_gpu(GlobalLinearSystem::DiagI
     //                               descent = Vector3(dx[0], dx[1], dx[2]);
     //                           }
 
-    //                           // 2. 同步更新两个数组（关键修改）
-    //                           // 对应 CPU 的 x_update_h_3v：-= descent*2（等价于 += (-descent*2)）
+    //                           // 2. Synchronously update two arrays (key modification)
+    //                           // Corresponds to CPU's x_update_h_3v: -= descent*2 (equivalent to += (-descent*2))
     //                           xupd(v) -= descent * 2;
-    //                           // 对应 CPU 的 x_update_h_global：+= descent
+    //                           // Corresponds to CPU's x_update_h_global: += descent
     //                           xpos(v) += descent;
-    //                           //// 3. 实时更新顶点位置（延续之前的中间更新逻辑，基于 xpos 的累积）
-    //                           xs(v) = xs_previous(v) + xpos(v);  // 注意：xs_previous 需是初始位置的设备副本
+    //                           //// 3. Update vertex position in real-time (continue previous intermediate update logic, based on accumulated xpos)
+    //                           xs(v) = xs_previous(v) + xpos(v);  // Note: xs_previous must be a device copy of initial positions
     //                       })
     //                .wait();
     //            int StopColorEnd = 0;
     //        }
 
     //        int endEachGroup = 0;
-    //        ///////////==============================gpu 版本的更新逻辑
+    //        ///////////==============================GPU version update logic
     //        ParallelFor()
     //            .file_line(__FILE__, __LINE__)
-    //            .apply(fem().xs.size(),  // 按顶点数量启动线程，每个线程处理一个顶点v
+    //            .apply(fem().xs.size(),  // Launch threads by number of vertices, each thread processes one vertex v
     //                   [d_x_update_global = d_x_update_global.viewer().name("d_x_update_global"),
     //                    d_x_update_pos = d_x_update_pos.viewer().name("d_x_update_pos"),
-    //                    x_update = info.x_update().viewer().name("x_update"),  // 扁平float数组
-    //                    xs_position = info.xs_position().viewer().name("xs_position"),  // 扁平float数组
+    //                    x_update = info.x_update().viewer().name("x_update"),  // Flat float array
+    //                    xs_position = info.xs_position().viewer().name("xs_position"),  // Flat float array
     //                    xs_previous = xs_previous_gpu.viewer().name("xs_previous"),
-    //                    xs = fem().xs.viewer().name("xs")]  // 顶点位置缓冲区
-    //                   __device__(int v) mutable  // v：当前处理的顶点索引
+    //                    xs = fem().xs.viewer().name("xs")]  // Vertex position buffer
+    //                   __device__(int v) mutable  // v: index of current processed vertex
     //                   {
-    //                       // 1. 扁平化d_x_update_global到info.x_update()（对应CPU的x_update_h_3v）
-    //                       const Vector3& upd = d_x_update_global(v);  // 取当前顶点的更新量（Vector3）
-    //                       x_update(v * 3 + 0) = upd.x();  // 存储x分量
-    //                       x_update(v * 3 + 1) = upd.y();  // 存储y分量
-    //                       x_update(v * 3 + 2) = upd.z();  // 存储z分量
+    //                       // 1. Flatten d_x_update_global to info.x_update() (corresponds to CPU's x_update_h_3v)
+    //                       const Vector3& upd = d_x_update_global(v);  // Get update amount of current vertex (Vector3)
+    //                       x_update(v * 3 + 0) = upd.x();  // Store x component
+    //                       x_update(v * 3 + 1) = upd.y();  // Store y component
+    //                       x_update(v * 3 + 2) = upd.z();  // Store z component
 
-    //                       // 2. 扁平化xs_previous到info.xs_position()（对应CPU的xs_update_3v）
-    //                       const Vector3& prev_pos = xs_previous(v);  // 取当前顶点的历史位置
+    //                       // 2. Flatten xs_previous to info.xs_position() (corresponds to CPU's xs_update_3v)
+    //                       const Vector3& prev_pos = xs_previous(v);  // Get historical position of current vertex
     //                       xs_position(v * 3 + 0) = prev_pos.x();
     //                       xs_position(v * 3 + 1) = prev_pos.y();
     //                       xs_position(v * 3 + 2) = prev_pos.z();
 
-    //                       // 3. 更新fem().xs为：历史位置 + 位置更新量（对应CPU的fem().xs.copy_from）
+    //                       // 3. Update fem().xs to: historical position + position update amount (corresponds to CPU's fem().xs.copy_from)
     //                       xs(v) = xs_previous(v);
     //                   })
-    //            .wait();  // 等待所有线程完成
+    //            .wait();  // Wait for all threads to complete
     //    }
     //}
 }
@@ -2301,7 +2302,7 @@ void FEMLinearSubsystem::Impl::update_info(GlobalLinearSystem::DiagInfo& info)
     std::vector<Vector3> x_update_h_global;
     std::vector<Vector3> xs_initial;
     std::vector<Vector3> dxs_initial;
-    // 1. 初始化向量（内存分配+数据拷贝）
+    // 1. Initialize vectors (memory allocation + data copy)
     {
         Timer timer{"Initialize vectors (x_update_h_3v, x_update_h_global, xs_previous)"};
         dxs_update_h_3v.resize(info_x_size);
@@ -2320,7 +2321,7 @@ void FEMLinearSubsystem::Impl::update_info(GlobalLinearSystem::DiagInfo& info)
         {
             for(int k = 0; k < 3; ++k)
             {
-                xs_update_3v[vertexId * 3 + k] = xs_initial[vertexId][k];
+                xs_update_3v[vertexId * 3 + k]    = xs_initial[vertexId][k];
                 dxs_update_h_3v[vertexId * 3 + k] = dxs_initial[vertexId][k];
             }
         }
@@ -2343,7 +2344,7 @@ void FEMLinearSubsystem::Impl::_assemble_producers(GlobalLinearSystem::DiagInfo&
 
     using namespace muda;
 
-    // need to assemble doublet gradient to dense gradient
+    // Need to assemble doublet gradient to dense gradient
     const auto& producer_gradients = fem().energy_producer_gradients;
     ParallelFor()
         .file_line(__FILE__, __LINE__)
@@ -2351,12 +2352,13 @@ void FEMLinearSubsystem::Impl::_assemble_producers(GlobalLinearSystem::DiagInfo&
                [dst_gradient = info.gradients().viewer().name("dst_gradient"),
                 src_gradient = producer_gradients.viewer().name("src_gradient")] __device__(int I) mutable
                {
-                   auto&& [i, G3] = src_gradient(I);  // i是当前梯度所属的顶点索引
+                   auto&& [i, G3] = src_gradient(I);  // i is the index of the vertex to which the current gradient belongs
                    dst_gradient.segment<3>(i * 3).atomic_add(G3);
                });
 }
 
-void FEMLinearSubsystem::Impl::_assemble_producers_by_vertex(GlobalLinearSystem::DiagInfo& info, IndexT vertexId)
+void FEMLinearSubsystem::Impl::_assemble_producers_by_vertex(GlobalLinearSystem::DiagInfo& info,
+                                                             IndexT vertexId)
 {
     FiniteElementEnergyProducer::AssemblyInfo assembly_info;
     assembly_info.hessians = info.hessians().subview(energy_producer_hessian_offset,
@@ -2369,7 +2371,7 @@ void FEMLinearSubsystem::Impl::_assemble_producers_by_vertex(GlobalLinearSystem:
         //producer->assemble_gradient_hessian(assembly_info);
 
         //auto& info_fem = producer->m_impl.finite_element_method;
-        ////// 这里需要构造一个只包含当前vertexId的info
+        ////// Need to construct an info containing only the current vertexId here
 
         ////producer->m_impl.finite_element_method->is_fixed();
         //////ComputeGradientHessianInfo this_info{info.dt,
@@ -2417,7 +2419,7 @@ void FEMLinearSubsystem::Impl::_assemble_producers_by_vertex(GlobalLinearSystem:
 
     using namespace muda;
 
-    // need to assemble doublet gradient to dense gradient
+    // Need to assemble doublet gradient to dense gradient
     const auto& producer_gradients = fem().energy_producer_gradients;
     ParallelFor()
         .file_line(__FILE__, __LINE__)
@@ -2425,13 +2427,14 @@ void FEMLinearSubsystem::Impl::_assemble_producers_by_vertex(GlobalLinearSystem:
                [dst_gradient = info.gradients().viewer().name("dst_gradient"),
                 src_gradient = producer_gradients.viewer().name("src_gradient")] __device__(int I) mutable
                {
-                   auto&& [i, G3] = src_gradient(I);  // i是当前梯度所属的顶点索引
+                   auto&& [i, G3] = src_gradient(I);  // i is the index of the vertex to which the current gradient belongs
                    dst_gradient.segment<3>(i * 3).atomic_add(G3);
                });
 }
 
-void FEMLinearSubsystem::Impl::_assemble_producers_by_color(GlobalLinearSystem::DiagInfo& info, muda::CBufferView<IndexT> color_vertices)
-        {
+void FEMLinearSubsystem::Impl::_assemble_producers_by_color(GlobalLinearSystem::DiagInfo& info,
+                                                            muda::CBufferView<IndexT> color_vertices)
+{
     FiniteElementEnergyProducer::AssemblyInfo assembly_info;
     assembly_info.hessians = info.hessians().subview(energy_producer_hessian_offset,
                                                      energy_producer_hessian_count);
@@ -2440,13 +2443,13 @@ void FEMLinearSubsystem::Impl::_assemble_producers_by_color(GlobalLinearSystem::
     for(auto& producer : fem().energy_producers)
     {
         //producer->assemble_gradient_hessian_by_vertex(assembly_info, vertexId);
-        //oducer->assemble_gradient_hessian(assembly_info);
+        //producer->assemble_gradient_hessian(assembly_info);
         producer->assemble_gradient_hessian_by_color(assembly_info, color_vertices);
     }
 
     using namespace muda;
 
-    // need to assemble doublet gradient to dense gradient
+    // Need to assemble doublet gradient to dense gradient
     const auto& producer_gradients = fem().energy_producer_gradients;
     ParallelFor()
         .file_line(__FILE__, __LINE__)
@@ -2454,31 +2457,31 @@ void FEMLinearSubsystem::Impl::_assemble_producers_by_color(GlobalLinearSystem::
                [dst_gradient = info.gradients().viewer().name("dst_gradient"),
                 src_gradient = producer_gradients.viewer().name("src_gradient")] __device__(int I) mutable
                {
-                   auto&& [i, G3] = src_gradient(I);  // i是当前梯度所属的顶点索引
+                   auto&& [i, G3] = src_gradient(I);  // i is the index of the vertex to which the current gradient belongs
                    dst_gradient.segment<3>(i * 3).atomic_add(G3);
                });
 
     ///////////===========================================
-    //std::vector<Float> gpu_gradients;  // 保存GPU计算的梯度
+    //std::vector<Float> gpu_gradients;  // Save GPU-calculated gradients
     //{
     //    Timer timer{"Save GPU gradients"};
     //    gpu_gradients.resize(info.gradients().size());
-    //    info.gradients().buffer_view().copy_to(gpu_gradients.data());  // 从GPU拷贝到CPU
+    //    info.gradients().buffer_view().copy_to(gpu_gradients.data());  // Copy from GPU to CPU
     //}
-    //// 对比梯度结果
+    //// Compare gradient results
     //bool        gradients_match = true;
-    //const Float eps             = 1e-6f;  // 浮点误差容忍度
+    //const Float eps             = 1e-6f;  // Floating-point error tolerance
     //for(size_t i = 0; i < gpu_gradients.size(); ++i)
     //{
     //    gradients_match = false;
-    //    // 输出差异位置和数值（方便定位）
-    //    int vertexId = i / 3;  // 假设梯度按顶点存储，每个顶点3个分量
+    //    // Output mismatch positions and values (for easy localization)
+    //    int vertexId = i / 3;  // Assume gradients are stored per vertex, 3 components per vertex
     //    int comp     = i % 3;
     //    std::cout << "Gradient mismatch at vertex " << vertexId
     //              << ", component " << comp << ": "
     //              << "GPU=" << gpu_gradients[i] << std::endl;
     //}
- }
+}
 
 void FEMLinearSubsystem::Impl::_assemble_dytopo_effect(GlobalLinearSystem::DiagInfo& info)
 {
@@ -2610,222 +2613,3 @@ void FEMLinearSubsystem::do_receive_init_dof_info(GlobalLinearSystem::InitDofInf
 }
 
 }  // namespace uipc::backend::cuda
-
-
-        /////////////////////////========================================///cpu side  vertex loop
-//{
-//    for(int vertexId = 0; vertexId < vertex_size; ++vertexId)
-//    {
-//        // 2. 清除梯度 和hessian????
-//        {
-//            Timer timer{"Clear Gradient (all vertices)"};
-//            info.gradients().buffer_view().fill(0);
-//            //fill hessians also with matrix 0
-//            info.hessians().values().fill(Matrix3x3::Zero());
-//        }
-
-//        // 3. 组装梯度和海森矩阵（分步骤）
-//        {
-//            Timer timer{"Assemble producers (all vertices)"};
-//            //_assemble_producers(info);
-//            _assemble_producers_by_vertex(info, vertexId);
-//        }
-//        {
-//            //但是这里的基础的gradient 和 hessian 是之前就计算过了的,再计算也不会变
-//            Timer timer{"Assemble dytopo effect (all vertices)"};
-//            _assemble_dytopo_effect(info);
-//        }
-//        {
-//            Timer timer{"Assemble animation (all vertices)"};
-//            _assemble_animation(info);
-//        }
-
-//        // 4. 清除固定顶点梯度（并行操作）
-//        {
-//            Timer timer{"Clear Fixed Vertex Gradient (ParallelFor, all vertices)"};
-//            ParallelFor()
-//                .file_line(__FILE__, __LINE__)
-//                .apply(fem().xs.size(),
-//                       [is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
-//                        gradients = info.gradients().viewer().name(
-//                            "gradients")] __device__(int i) mutable
-//                       {
-//                           if(is_fixed(i))
-//                           {
-//                               gradients.segment<3>(i * 3).as_eigen().setZero();
-//                           }
-//                       });
-//        }
-
-//        // 5. 清除固定顶点海森矩阵（并行操作）
-//        {
-//            Timer timer{"Clear Fixed Vertex hessian (ParallelFor, all vertices)"};
-//            ParallelFor()
-//                .file_line(__FILE__, __LINE__)
-//                .apply(info.hessians().triplet_count(),
-//                       [is_fixed = fem().is_fixed.cviewer().name("is_fixed"),
-//                        hessians = info.hessians().viewer().name(
-//                            "hessians")] __device__(int I) mutable
-//                       {
-//                           auto&& [i, j, H3] = hessians(I).read();
-
-//                           if(is_fixed(i) || is_fixed(j))
-//                           {
-//                               if(i != j)
-//                                   hessians(I).write(i, j, Matrix3x3::Zero());
-//                           }
-//                       })
-//                .wait();
-//        }
-
-//        // 6. 提取梯度数据到CPU并计算力
-//        std::vector<Vector3> force_h;
-//        std::vector<Float>   gradients_h;
-//        int                  gradients_size;
-//        {
-//            Timer timer{"Extract gradients to CPU and compute force (all vertices)"};
-//            force_h.resize(vertex_size);
-//            gradients_size = info.gradients().size();
-//            gradients_h.resize(gradients_size);
-//            info.gradients().buffer_view().copy_to(gradients_h.data());
-
-//            // 提取当前顶点梯度并计算力
-//            Vector3 gradient = get_vertex_gradient(gradients_h, vertexId);
-//            force_h[vertexId] = -gradient;
-//        }
-
-//        // 7. 提取海森矩阵三元组到CPU
-//        IndexT                 triplet_size;
-//        std::vector<IndexT>    host_rows;
-//        std::vector<IndexT>    host_cols;
-//        std::vector<Matrix3x3> host_values;
-//        int                    hessian_size;
-//        {
-//            Timer timer{"Extract Hessian triplets to CPU (all vertices)"};
-//            triplet_size = info.hessians().row_indices().size();
-//            host_rows.resize(triplet_size);
-//            host_cols.resize(triplet_size);
-//            host_values.resize(triplet_size);
-//            info.hessians().row_indices().copy_to(host_rows.data());
-//            info.hessians().col_indices().copy_to(host_cols.data());
-//            info.hessians().values().copy_to(host_values.data());
-//            hessian_size = info.hessians().total_triplet_count();
-//        }
-
-//        // 8. 遍历三元组获取当前顶点海森矩阵
-//        Matrix3x3 h = Matrix3x3::Zero();
-//        {
-//            Timer timer{"Loop through triplets to get hessian h (all vertices)"};
-//            for(int I = 0; I < triplet_size; ++I)
-//            {
-//                int i_vertex = host_rows[I];
-//                int j_vertex = host_cols[I];
-//                if(i_vertex == vertexId && j_vertex == vertexId)
-//                {
-//                    h += host_values[I];
-//                }
-//            }
-//        }
-
-//        // 9. 求解3x3矩阵及相关处理
-//        {
-//            Timer  timer{"Solve 3x3 PSD system (all vertices)"};
-//            auto&  force     = force_h[vertexId];
-//            double ForceNorm = force.squaredNorm();
-
-//            if(1)  // 保留原条件
-//            {
-//                if(force.isZero())
-//                {
-//                    continue;
-//                }
-//                if(h.isZero())
-//                {
-//                    h = Matrix3x3::Identity() * 1e-6;
-//                    continue;
-//                }
-
-//                Vector3 descentDirection;
-//                Float   stepSize               = 1;
-//                Float   lineSearchShrinkFactor = 0.8;
-//                bool    solverSuccess;
-
-//                bool useDouble3x3 = 1;
-//                if(useDouble3x3)
-//                {
-//                    double H[9] = {h(0, 0),
-//                                   h(1, 0),
-//                                   h(2, 0),
-//                                   h(0, 1),
-//                                   h(1, 1),
-//                                   h(2, 1),
-//                                   h(0, 2),
-//                                   h(1, 2),
-//                                   h(2, 2)};
-
-//                    double F[3]      = {force(0), force(1), force(2)};
-//                    double dx[3]     = {0, 0, 0};
-//                    solverSuccess    = solve3x3_psd_stable(H, F, dx);
-//                    descentDirection = Vector3(dx[0], dx[1], dx[2]);
-
-//                    // 验证计算
-//                    auto   TestOuput = h * descentDirection;
-//                    auto   diff      = TestOuput - force;
-//                    double diff_norm = diff.norm();
-//                    if(diff_norm > 1e-6)
-//                    {
-//                        std::cout << "Warning: h * descentDirection does not match force (diff_norm = "
-//                                  << diff_norm << ")" << std::endl;
-//                    }
-//                }
-//                else
-//                {
-//                    solverSuccess = false;  // 未使用分支
-//                }
-
-//                // 处理求解失败
-//                if(!solverSuccess)
-//                {
-//                    stepSize               = 1;
-//                    descentDirection       = force;
-//                    lineSearchShrinkFactor = 0.8;
-//                    std::cout << "Solver failed at vertex " << vertexId
-//                              << std::endl;
-//                }
-
-//                // 检查数值异常
-//                if(descentDirection.hasNaN())
-//                {
-//                    std::cout << "force: " << force.transpose() << "\nHessian:\n"
-//                              << h;
-//                    std::cout << "descentDirection has NaN at vertex "
-//                              << vertexId << std::endl;
-//                    std::exit(-1);
-//                }
-
-//                // 10. 更新x_update数组
-//                {
-//                    Timer timer{"Update x_update arrays (all vertices)"};
-//                    for(int k = 0; k < 3; ++k)
-//                    {
-//                        //x_update_h_3v[vertexId * 3 + k] -= descentDirection[k];
-//                        x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 2;
-//                    }
-//                    x_update_h_global[vertexId] += descentDirection;
-//                }
-
-//                // 11. 更新顶点位置
-//                {
-//                    Timer timer{"Update xs_temp and copy to fem().xs (all vertices)"};
-//                    std::vector<Vector3> xs_temp(xs_previous.size());
-//                    for(size_t i = 0; i < xs_previous.size(); ++i)
-//                    {
-//                        xs_temp[i] = xs_previous[i] + x_update_h_global[i];
-//                    }
-//                    xs_temp_global = xs_temp;
-//                    fem().xs.copy_from(xs_temp);
-//                }
-//            }
-//        }
-//    }
-//}

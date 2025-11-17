@@ -11,7 +11,9 @@ class TrajectoryFilter : public SimSystem
 
   protected:
     virtual void do_detect(GlobalTrajectoryFilter::DetectInfo& info) = 0;
+    virtual void do_detect_ogc(GlobalTrajectoryFilter::DetectInfo& info) = 0;
     virtual void do_filter_active(GlobalTrajectoryFilter::FilterActiveInfo& info) = 0;
+    virtual void do_filter_active_ogc(GlobalTrajectoryFilter::FilterActiveInfo& info) = 0;
     virtual void do_filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info) = 0;
     virtual void do_record_friction_candidates(GlobalTrajectoryFilter::RecordFrictionCandidatesInfo&) = 0;
     virtual void do_label_active_vertices(GlobalTrajectoryFilter::LabelActiveVerticesInfo& info) = 0;
@@ -20,7 +22,9 @@ class TrajectoryFilter : public SimSystem
     friend class GlobalTrajectoryFilter;
 
     void detect(GlobalTrajectoryFilter::DetectInfo& info);
+    void detect_ogc(GlobalTrajectoryFilter::DetectInfo& info);
     void filter_active(GlobalTrajectoryFilter::FilterActiveInfo& info);
+    void filter_active_ogc(GlobalTrajectoryFilter::FilterActiveInfo& info);
     void filter_toi(GlobalTrajectoryFilter::FilterTOIInfo& info);
     void record_friction_candidates(GlobalTrajectoryFilter::RecordFrictionCandidatesInfo& info);
     void label_active_vertices(GlobalTrajectoryFilter::LabelActiveVerticesInfo& info);

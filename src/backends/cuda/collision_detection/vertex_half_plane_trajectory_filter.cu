@@ -25,6 +25,14 @@ void VertexHalfPlaneTrajectoryFilter::do_detect(GlobalTrajectoryFilter::DetectIn
     do_detect(this_info);  // call the derived class implementation
 }
 
+void VertexHalfPlaneTrajectoryFilter::do_detect_ogc(GlobalTrajectoryFilter::DetectInfo& info)
+{
+    DetectInfo this_info{&m_impl};
+    this_info.m_alpha = info.alpha();
+
+    do_detect_ogc(this_info);  // call the derived class implementation
+}
+
 void VertexHalfPlaneTrajectoryFilter::Impl::label_active_vertices(
     GlobalTrajectoryFilter::LabelActiveVerticesInfo& info)
 {
@@ -47,6 +55,14 @@ void VertexHalfPlaneTrajectoryFilter::do_filter_active(GlobalTrajectoryFilter::F
 {
     FilterActiveInfo this_info{&m_impl};
     do_filter_active(this_info);
+
+    spdlog::info("VertexHalfPlaneTrajectoryFilter PHs: {}.", m_impl.PHs.size());
+}
+
+void VertexHalfPlaneTrajectoryFilter::do_filter_active_ogc(GlobalTrajectoryFilter::FilterActiveInfo& info)
+{
+    FilterActiveInfo this_info{&m_impl};
+    do_filter_active_ogc(this_info);
 
     spdlog::info("VertexHalfPlaneTrajectoryFilter PHs: {}.", m_impl.PHs.size());
 }

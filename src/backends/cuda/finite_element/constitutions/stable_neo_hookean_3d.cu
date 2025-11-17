@@ -275,191 +275,135 @@ class StableNeoHookean3D final : public FEM3DConstitution
                    });
     }
 
-
-    virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info, IndexT vertexId) override
+        virtual void do_compute_gradient_hessian_by_vertex(ComputeGradientHessianInfo& info,
+                                                       IndexT vertexId) override
     {
-        //gpu 并行化 四面体的处理？？？？感觉没有必要，暂时先用cpu的思路，遍历与该顶点相关的四面体
-        //using namespace muda;
-        //namespace SNH = sym::stable_neo_hookean_3d;
-
-        //if(vertexId < 0)
-        //    return;
-        //if(!v2t_built_)
-        //    build_v2t_on_device_serial(info);  // 保持前面用 Launch(1,1) 的序列化构建
-
-        //// 用很小的 host 读回获取 begin/end（仅2个int），然后用 ParallelFor
-        //int off2[2] = {0, 0};
-        //// 读取 offsets[vertexId], offsets[vertexId+1]
-        //d_v2t_offsets.view().subview(static_cast<int>(vertexId), 2).copy_to(off2);
-        //const int begin = off2[0];
-        //const int end   = off2[1];
-        //const int cnt   = end - begin;
-        //if(cnt <= 0)
-        //    return;
-
-        //ParallelFor()
-        //    .file_line(__FILE__, __LINE__)
-        //    .apply(cnt,
-        //           [mus      = mus.cviewer().name("mus"),
-        //            lambdas  = lambdas.cviewer().name("lambdas"),
-        //            indices  = info.indices().viewer().name("indices"),
-        //            xs       = info.xs().viewer().name("xs"),
-        //            Dm_invs  = info.Dm_invs().viewer().name("Dm_invs"),
-        //            G3s      = info.gradients().viewer().name("gradients"),
-        //            H3x3s    = info.hessians().viewer().name("hessians"),
-        //            volumes  = info.rest_volumes().viewer().name("volumes"),
-        //            dt       = info.dt(),
-        //            v2t_list = d_v2t_list.cviewer().name("v2t_list"),
-        //            begin] __device__(int k) mutable
-        //           {
-        //               const int I = v2t_list(begin + k);  // incident tet index
-
-        //               const Vector4i&  tet    = indices(I);
-        //               const Matrix3x3& Dm_inv = Dm_invs(I);
-        //               const Float      mu     = mus(I);
-        //               const Float      lambda = lambdas(I);
-
-        //               const Vector3& x0 = xs(tet(0));
-        //               const Vector3& x1 = xs(tet(1));
-        //               const Vector3& x2 = xs(tet(2));
-        //               const Vector3& x3 = xs(tet(3));
-
-        //               const auto F    = fem::F(x0, x1, x2, x3, Dm_inv);
-        //               const auto Vdt2 = volumes(I) * dt * dt;
-
-        //               Matrix3x3 dEdF;
-        //               Matrix9x9 ddEddF;
-        //               SNH::dEdVecF(dEdF, mu, lambda, F);
-        //               SNH::ddEddVecF(ddEddF, mu, lambda, F);
-
-        //               auto VecdEdF = flatten(dEdF);
-        //               VecdEdF *= Vdt2;
-        //               ddEddF *= Vdt2;
-
-        //               make_spd(ddEddF);
-        //               Matrix9x12  dFdx = fem::dFdx(Dm_inv);
-        //               Vector12    G    = dFdx.transpose() * VecdEdF;
-        //               Matrix12x12 H    = dFdx.transpose() * ddEddF * dFdx;
-
-        //               DoubletVectorAssembler DVA{G3s};
-        //               DVA.segment<4>(I * 4).write(tet, G);
-
-        //               TripletMatrixAssembler TMA{H3x3s};
-        //               TMA.block<4, 4>(I * 16).write(tet, H);
-        //           });
-
-        //在gpu中暂时先用cpu的思路，遍历与该顶点相关的四面体
+        // GPU processing for tetrahedrons associated with a specific vertex
+        // Temporarily adopts CPU-like logic: iterate over tetrahedrons related to the target vertex
         using namespace muda;
         namespace SNH = sym::stable_neo_hookean_3d;
 
         if(vertexId < 0)
             return;
         if(!v2t_built_)
-            build_v2t_on_device_serial(info);  // 确保已在 GPU 上构建 v2t
+            build_v2t_on_device_serial(info);  // Ensure vertex-to-tetrahedron mapping is built on GPU
 
+        // Launch a single GPU thread to process tetrahedrons associated with the target vertex (serial execution)
         Launch(1, 1)
             .file_line(__FILE__, __LINE__)
             .apply(
-                [mus      = mus.cviewer().name("mus"),
-                 lambdas  = lambdas.cviewer().name("lambdas"),
-                 indices  = info.indices().viewer().name("indices"),
-                 xs       = info.xs().viewer().name("xs"),
-                 Dm_invs  = info.Dm_invs().viewer().name("Dm_invs"),
-                 G3s      = info.gradients().viewer().name("gradients"),
-                 H3x3s    = info.hessians().viewer().name("hessians"),
-                 volumes  = info.rest_volumes().viewer().name("volumes"),
-                 dt       = info.dt(),
-                 v2t_offs = d_v2t_offsets.cviewer().name("v2t_offs"),
-                 v2t_list = d_v2t_list.cviewer().name("v2t_list"),
-                 vId      = static_cast<int>(vertexId)] __device__() mutable
+                [mus = mus.cviewer().name("mus"),  // Material parameter: shear modulus
+                 lambdas = lambdas.cviewer().name("lambdas"),  // Material parameter: Lame's first parameter
+                 indices = info.indices().viewer().name("indices"),  // Tetrahedron vertex indices (4 vertices per tetrahedron)
+                 xs = info.xs().viewer().name("xs"),  // Current vertex positions
+                 Dm_invs = info.Dm_invs().viewer().name("Dm_invs"),  // Inverse of reference deformation gradient
+                 G3s = info.gradients().viewer().name("gradients"),  // Gradient buffer (to be assembled)
+                 H3x3s = info.hessians().viewer().name("hessians"),  // Hessian matrix buffer (to be assembled)
+                 volumes = info.rest_volumes().viewer().name("volumes"),  // Rest volumes of tetrahedrons
+                 dt = info.dt(),  // Time step
+                 v2t_offs = d_v2t_offsets.cviewer().name("v2t_offs"),  // Offsets for vertex-to-tetrahedron mapping
+                 v2t_list = d_v2t_list.cviewer().name("v2t_list"),  // List of tetrahedrons for each vertex
+                 vId = static_cast<int>(vertexId)] __device__() mutable  // Target vertex ID
                 {
+                    // Get the range of tetrahedrons associated with the target vertex
                     const int begin = v2t_offs(vId);
                     const int end   = v2t_offs(vId + 1);
-                    if(end <= begin)
+                    if(end <= begin)  // No associated tetrahedrons, exit early
                         return;
 
+                    // Iterate over all tetrahedrons associated with the target vertex
                     for(int k = begin; k < end; ++k)
                     {
-                        const int I = v2t_list(k);  // incident tet index
+                        const int I = v2t_list(k);  // Index of the current incident tetrahedron
 
-                        const Vector4i&  tet    = indices(I);
-                        const Matrix3x3& Dm_inv = Dm_invs(I);
-                        const Float      mu     = mus(I);
-                        const Float      lambda = lambdas(I);
+                        const Vector4i& tet = indices(I);  // 4 vertices of the current tetrahedron
+                        const Matrix3x3& Dm_inv = Dm_invs(I);  // Inverse reference deformation gradient of the tetrahedron
+                        const Float mu = mus(I);  // Shear modulus of the tetrahedron
+                        const Float lambda = lambdas(I);  // Lame's parameter of the tetrahedron
 
+                        // Current positions of the tetrahedron's vertices
                         const Vector3& x0 = xs(tet(0));
                         const Vector3& x1 = xs(tet(1));
                         const Vector3& x2 = xs(tet(2));
                         const Vector3& x3 = xs(tet(3));
 
-                        const auto F    = fem::F(x0, x1, x2, x3, Dm_inv);
+                        // Compute deformation gradient F
+                        const auto F = fem::F(x0, x1, x2, x3, Dm_inv);
+                        // Compute volume scaling factor (rest volume * dt square)
                         const auto Vdt2 = volumes(I) * dt * dt;
 
-                        Matrix3x3 dEdF;
-                        Matrix9x9 ddEddF;
-                        SNH::dEdVecF(dEdF, mu, lambda, F);
-                        SNH::ddEddVecF(ddEddF, mu, lambda, F);
+                        // Compute first and second derivatives of strain energy w.r.t. F
+                        Matrix3x3 dEdF;  // First derivative (Cauchy stress related)
+                        Matrix9x9 ddEddF;  // Second derivative (stiffness related)
+                        SNH::dEdVecF(dEdF, mu, lambda, F);  // Compute dEdF using stable neo-Hookean model
+                        SNH::ddEddVecF(ddEddF, mu, lambda, F);  // Compute ddEddF using stable neo-Hookean model
 
-                        auto VecdEdF = flatten(dEdF);
+                        // Scale derivatives by volume and time step factor
+                        auto VecdEdF = flatten(dEdF);  // Flatten 3x3 matrix to 9x1 vector
                         VecdEdF *= Vdt2;
                         ddEddF *= Vdt2;
 
+                        // Ensure the Hessian is symmetric positive definite
                         make_spd(ddEddF);
-                        Matrix9x12  dFdx = fem::dFdx(Dm_inv);
-                        Vector12    G    = dFdx.transpose() * VecdEdF;
-                        Matrix12x12 H    = dFdx.transpose() * ddEddF * dFdx;
+                        // Compute derivative of F w.r.t. vertex positions (9x12 matrix)
+                        Matrix9x12 dFdx = fem::dFdx(Dm_inv);
+                        // Compute gradient (12x1 vector: 3 components per vertex in the tetrahedron)
+                        Vector12 G = dFdx.transpose() * VecdEdF;
+                        // Compute Hessian (12x12 matrix: second derivatives between vertices)
+                        Matrix12x12 H = dFdx.transpose() * ddEddF * dFdx;
 
+                        // Assemble gradient into global buffer
                         DoubletVectorAssembler DVA{G3s};
-                        DVA.segment<4>(I * 4).write(tet, G);
+                        DVA.segment<4>(I * 4).write(tet, G);  // Write gradient for the 4 vertices of the tetrahedron
 
+                        // Assemble Hessian into global buffer
                         TripletMatrixAssembler TMA{H3x3s};
-                        TMA.block<4, 4>(I * 16).write(tet, H);
+                        TMA.block<4, 4>(I * 16).write(tet, H);  // Write Hessian block for the tetrahedron's vertices
                     }
                 });
 
-        ////// 旧的实现：遍历所有四面体，跳过不包含目标顶点的四面体
+        ////// Old implementation: Iterate all tetrahedrons, skip those not containing the target vertex
         //using namespace muda;
         //namespace SNH = sym::stable_neo_hookean_3d;
 
-        ////// 仅计算与指定顶点（vertexId）相关的四面体
+        ////// Only compute for tetrahedrons containing the specified vertex (vertexId)
         //Launch(1, 1)
         //    .apply(
         //        [mus     = mus.cviewer().name("mus"),
         //         lambdas = lambdas.cviewer().name("lambdas"),
-        //         indices = info.indices().viewer().name("indices"),  // 四面体顶点索引（每个四面体含4个顶点）
+        //         indices = info.indices().viewer().name("indices"),  // Tetrahedron vertex indices (4 per tetrahedron)
         //         xs       = info.xs().viewer().name("xs"),
         //         Dm_invs  = info.Dm_invs().viewer().name("Dm_invs"),
         //         G3s      = info.gradients().viewer().name("gradients"),
         //         H3x3s    = info.hessians().viewer().name("hessians"),
         //         volumes  = info.rest_volumes().viewer().name("volumes"),
         //         dt       = info.dt(),
-        //         vertexId = vertexId,                             // 目标顶点ID
-        //         n = info.indices().size()] __device__() mutable  // n为四面体总数
+        //         vertexId = vertexId,                             // Target vertex ID
+        //         n = info.indices().size()] __device__() mutable  // Total number of tetrahedrons
         //        {
-        //            // 边界检查：确保目标顶点ID有效（假设顶点ID范围是0~max_vertex）
-        //            // （若有顶点总数信息，可添加 vertexId < max_vertex 检查）
+        //            // Boundary check: Ensure target vertex ID is valid
         //            if(vertexId < 0)
         //            {
         //                print("Invalid vertexId+++++++++++++++++++++++++++++++++++++++++++++++++++++++++: %d\n", vertexId);
         //                return;
         //            }
 
-        //            // 遍历所有四面体，仅处理包含目标顶点（vertexId）的四面体
-        //            for(int I = 0; I < n; ++I)  // I是四面体索引
+        //            // Iterate all tetrahedrons, process only those containing the target vertex
+        //            for(int I = 0; I < n; ++I)  // I is tetrahedron index
         //            {
-        //                // 获取当前四面体的4个顶点索引
+        //                // Get 4 vertex indices of the current tetrahedron
         //                const Vector4i& tet = indices(I);
 
-        //                // 检查当前四面体是否包含目标顶点（vertexId）
+        //                // Check if current tetrahedron contains the target vertex
         //                bool contains_target =
         //                    (tet(0) == vertexId) || (tet(1) == vertexId)
         //                    || (tet(2) == vertexId) || (tet(3) == vertexId);
 
-        //                // 若不包含目标顶点，跳过当前四面体
+        //                // Skip if no target vertex
         //                if(!contains_target)
         //                    continue;
 
-        //                // 以下是原ParallelFor中针对包含目标顶点的四面体的计算逻辑
+        //                // Computation logic for tetrahedrons containing the target vertex
         //                const Matrix3x3& Dm_inv = Dm_invs(I);
         //                Float            mu     = mus(I);
         //                Float            lambda = lambdas(I);
@@ -488,7 +432,7 @@ class StableNeoHookean3D final : public FEM3DConstitution
         //                Vector12    G    = dFdx.transpose() * VecdEdF;
         //                Matrix12x12 H    = dFdx.transpose() * ddEddF * dFdx;
 
-        //                // 组装梯度和Hessian（仅针对包含目标顶点的四面体）
+        //                // Assemble gradient and Hessian (only for target-containing tetrahedrons)
         //                DoubletVectorAssembler DVA{G3s};
         //                DVA.segment<4>(I * 4).write(tet, G);
 
@@ -552,94 +496,107 @@ class StableNeoHookean3D final : public FEM3DConstitution
     }
 
     virtual void do_compute_gradient_hessian_by_color(ComputeGradientHessianInfo& info,
-                                                       muda::CBufferView<IndexT> color_vertices) override
+                                                      muda::CBufferView<IndexT> color_vertices) override
     {
 
-        // 并行维度：color_vertices 中的每个顶点各一个线程
+        // Parallel dimension: one thread per vertex in color_vertices
         using namespace muda;
         namespace SNH = sym::stable_neo_hookean_3d;
 
         const int m = static_cast<int>(color_vertices.size());
-        if(m == 0)
+        if(m == 0)  // No vertices in the color group, exit early
             return;
         if(!v2t_built_)
-            build_v2t_on_device_serial(info);  // 确保已在 GPU 上构建 v2t
+            build_v2t_on_device_serial(info);  // Ensure vertex-to-tetrahedron mapping is built on GPU
 
+        // Launch parallel threads: each thread processes one vertex in the color group
         ParallelFor()
             .file_line(__FILE__, __LINE__)
             .apply(m,
-                   [mus      = mus.cviewer().name("mus"),
-                    lambdas  = lambdas.cviewer().name("lambdas"),
-                    indices  = info.indices().viewer().name("indices"),
-                    xs       = info.xs().viewer().name("xs"),
-                    Dm_invs  = info.Dm_invs().viewer().name("Dm_invs"),
-                    G3s      = info.gradients().viewer().name("gradients"),
-                    H3x3s    = info.hessians().viewer().name("hessians"),
-                    volumes  = info.rest_volumes().viewer().name("volumes"),
-                    dt       = info.dt(),
-                    v2t_offs = d_v2t_offsets.cviewer().name("v2t_offs"),
-                    v2t_list = d_v2t_list.cviewer().name("v2t_list"),
-                    verts = color_vertices.viewer().name("verts")] __device__(int ki) mutable
+                   [mus = mus.cviewer().name("mus"),  // Shear modulus array
+                    lambdas = lambdas.cviewer().name("lambdas"),  // Lame's first parameter array
+                    indices = info.indices().viewer().name("indices"),  // Tetrahedron vertex indices
+                    xs = info.xs().viewer().name("xs"),  // Current vertex positions
+                    Dm_invs = info.Dm_invs().viewer().name("Dm_invs"),  // Inverse reference deformation gradients
+                    G3s = info.gradients().viewer().name("gradients"),  // Gradient buffer
+                    H3x3s = info.hessians().viewer().name("hessians"),  // Hessian buffer
+                    volumes = info.rest_volumes().viewer().name("volumes"),  // Rest volumes of tetrahedrons
+                    dt = info.dt(),  // Time step
+                    v2t_offs = d_v2t_offsets.cviewer().name("v2t_offs"),  // Vertex-to-tetrahedron offsets
+                    v2t_list = d_v2t_list.cviewer().name("v2t_list"),  // Vertex-to-tetrahedron list
+                    verts = color_vertices.viewer().name("verts")] __device__(int ki) mutable  // Index in color_vertices
                    {
-                       const int v = static_cast<int>(verts(ki));
-                       if(v < 0)
+                       const int v = static_cast<int>(verts(ki));  // Global ID of the current vertex in color group
+                       if(v < 0)  // Invalid vertex ID, skip
                            return;
 
+                       // Get the range of tetrahedrons associated with the current vertex
                        const int begin = v2t_offs(v);
                        const int end   = v2t_offs(v + 1);
-                       if(end <= begin)
+                       if(end <= begin)  // No associated tetrahedrons, skip
                            return;
 
-                       // 遍历该顶点的一环四面体并装配
+                       // Iterate over all first-ring tetrahedrons of the vertex and assemble gradients/Hessians
                        for(int p = begin; p < end; ++p)
                        {
-                           const int I = v2t_list(p);  // 该顶点相邻的四面体索引
+                           const int I = v2t_list(p);  // Index of the tetrahedron adjacent to the current vertex
 
-                           const Vector4i&  tet    = indices(I);
-                           const Matrix3x3& Dm_inv = Dm_invs(I);
-                           const Float      mu     = mus(I);
-                           const Float      lambda = lambdas(I);
+                           const Vector4i& tet = indices(I);  // 4 vertices of the tetrahedron
+                           const Matrix3x3& Dm_inv = Dm_invs(I);  // Inverse reference deformation gradient
+                           const Float mu = mus(I);  // Shear modulus of the tetrahedron
+                           const Float lambda = lambdas(I);  // Lame's parameter of the tetrahedron
 
+                           // Current positions of the tetrahedron's vertices
                            const Vector3& x0 = xs(tet(0));
                            const Vector3& x1 = xs(tet(1));
                            const Vector3& x2 = xs(tet(2));
                            const Vector3& x3 = xs(tet(3));
 
-                           const auto F    = fem::F(x0, x1, x2, x3, Dm_inv);
+                           // Compute deformation gradient F
+                           const auto F = fem::F(x0, x1, x2, x3, Dm_inv);
+                           // Volume scaling factor (rest volume * dt square)
                            const auto Vdt2 = volumes(I) * dt * dt;
 
-                           Matrix3x3 dEdF;
-                           Matrix9x9 ddEddF;
-                           SNH::dEdVecF(dEdF, mu, lambda, F);
-                           SNH::ddEddVecF(ddEddF, mu, lambda, F);
+                           // Compute first and second derivatives of strain energy
+                           Matrix3x3 dEdF;    // First derivative (dEnergy/dF)
+                           Matrix9x9 ddEddF;  // Second derivative (d squareEnergy/dF square)
+                           SNH::dEdVecF(dEdF, mu, lambda, F);  // Compute using stable neo-Hookean model
+                           SNH::ddEddVecF(ddEddF, mu, lambda, F);  // Compute using stable neo-Hookean model
 
-                           auto VecdEdF = flatten(dEdF);
+                           // Scale derivatives by volume and time step
+                           auto VecdEdF = flatten(dEdF);  // Flatten 3x3 to 9x1 vector
                            VecdEdF *= Vdt2;
                            ddEddF *= Vdt2;
 
+                           // Ensure Hessian is symmetric positive definite
                            make_spd(ddEddF);
-                           Matrix9x12  dFdx = fem::dFdx(Dm_inv);
-                           Vector12    G    = dFdx.transpose() * VecdEdF;
-                           Matrix12x12 H    = dFdx.transpose() * ddEddF * dFdx;
+                           // Derivative of F w.r.t. vertex positions (9x12 matrix)
+                           Matrix9x12 dFdx = fem::dFdx(Dm_inv);
+                           // Gradient vector (12x1: 3 components for each of 4 vertices)
+                           Vector12 G = dFdx.transpose() * VecdEdF;
+                           // Hessian matrix (12x12: second derivatives between vertices)
+                           Matrix12x12 H = dFdx.transpose() * ddEddF * dFdx;
 
-                           // 假设颜色组内不会出现同一四面体的多个顶点（无写冲突）
+                           // Assume no write conflicts for tetrahedrons in the same color group
+                           // Assemble gradient into global buffer
                            DoubletVectorAssembler DVA{G3s};
                            DVA.segment<4>(I * 4).write(tet, G);
 
+                           // Assemble Hessian into global buffer
                            TripletMatrixAssembler TMA{H3x3s};
                            TMA.block<4, 4>(I * 4 * 4).write(tet, H);
                        }
                    })
-            .wait();
+            .wait();  // Wait for all threads in the color group to complete
 
-        ////在gpu中暂时先用cpu的思路，遍历与该顶点相关的四面体
+        //// GPU implementation using CPU-like logic: iterate over tetrahedrons related to vertices in the color group
         //using namespace muda;
         //namespace SNH = sym::stable_neo_hookean_3d;
 
         //if(vertexId < 0)
         //    return;
         //if(!v2t_built_)
-        //    build_v2t_on_device_serial(info);  // 确保已在 GPU 上构建 v2t
+        //    build_v2t_on_device_serial(info);  // Ensure vertex-to-tetrahedron mapping is built on GPU
 
         //Launch(1, 1)
         //    .file_line(__FILE__, __LINE__)

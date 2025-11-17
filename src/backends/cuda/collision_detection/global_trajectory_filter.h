@@ -103,7 +103,9 @@ class GlobalTrajectoryFilter final : public SimSystem
     friend class SimEngine;
     friend class ContactExporterManager;
     void detect(Float alpha);  // called by SimEngine and ContactExporterManager
+    void detect_ogc(Float alpha);  // called by SimEngine and ContactExporterManager
     void filter_active();      // called by SimEngine and ContactExporterManager
+    void filter_active_ogc();      // called by SimEngine and ContactExporterManager
 
     Float filter_toi(Float alpha);       // only called by SimEngine
     std::vector<Float> filter_d_bv(Float alpha);  // only called by SimEngine

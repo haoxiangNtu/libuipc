@@ -36,14 +36,14 @@ void FiniteElementEnergyProducer::compute_energy(LineSearcher::EnergyInfo& info)
 void FiniteElementEnergyProducer::do_compute_gradient_hessian_by_vertex(
     ComputeGradientHessianInfo& info, IndexT vertexId)
 {
-    // 默认回退到 element-wise 的梯度 Hessian 计算
+    // By default, fall back to element-wise gradient/Hessian computation
     do_compute_gradient_hessian(info);
 }
 
 void FiniteElementEnergyProducer::do_compute_gradient_hessian_by_color(
     ComputeGradientHessianInfo& info, muda::CBufferView<IndexT> color_vertices)
 {
-    // 默认回退到 element-wise 的梯度 Hessian 计算
+    // By default, fall back to element-wise gradient/Hessian computation
     do_compute_gradient_hessian(info);
 }
 

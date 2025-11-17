@@ -81,50 +81,18 @@ void GlobalLinearSystem::solve()
 
 void GlobalLinearSystem::solve_by_vertex()
 {
-
-    //// 3. Copy x_update to another host vector after the call
-    //std::vector<Float> x_update_before(m_impl.xs_position.size());
-    //m_impl.xs_position.buffer_view().copy_to(x_update_before.data());
-
-    //// 3. Copy x_update to another host vector after the call
-    //std::vector<Float> x_update_after(m_impl.xs_position.size());
-    //m_impl.xs_position.buffer_view().copy_to(x_update_after.data());
-
-    //// 4. Compare the two vectors
-    //bool modified = !std::equal(
-    //    x_update_before.begin(), x_update_before.end(), x_update_after.begin());
-
-    //if(modified)
-    //    std::cout << "xs_position has been modified." << std::endl;
-    //else
-    //    std::cout << "xs_position has not been modified." << std::endl;
-
-    //#####################################################
+    ///////########################################
     //m_impl.build_linear_system();
+    //// if the system is empty, skip the following steps
     //if(m_impl.empty_system) [[unlikely]]
     //    return;
-    //// reset x_update to initial previous position for sub system;
-
-    //m_impl.xs_position.view();
-    //SolvingInfo info{this};
-    //info.m_b = b.cview();
-    //info.m_x = x_update.view();
-
     //m_impl.solve_linear_system();
     //m_impl.distribute_solution();
-
-    ///////########################################
-    m_impl.build_linear_system();
-    // if the system is empty, skip the following steps
+    //#####################################################
+    m_impl.solve_system_by_vertex();
     if(m_impl.empty_system) [[unlikely]]
         return;
-    m_impl.solve_linear_system();
     m_impl.distribute_solution();
-    //#####################################################
-    //m_impl.build_linear_system_by_vertex();
-    //if(m_impl.empty_system) [[unlikely]]
-    //    return;
-    //m_impl.distribute_solution();
 }
 
 void GlobalLinearSystem::Impl::init()
@@ -236,41 +204,8 @@ void GlobalLinearSystem::Impl::build_linear_system()
     _assemble_preconditioner();
 }
 
-void GlobalLinearSystem::Impl::build_linear_system_by_vertex()
+void GlobalLinearSystem::Impl::solve_system_by_vertex()
 {
-    //Timer timer{"Build Linear System"};
-    //empty_system = !_update_subsystem_extent();
-    //// if empty, skip the following steps
-    //if(empty_system) [[unlikely]]
-    //    return;
-
-    //_update_info();
-    //// 1. Copy x_update to a host vector before the call
-    //std::vector<Float> xs_position_before(xs_position.size());
-    //xs_position.buffer_view().copy_to(xs_position_before.data());
-
-    ////2. Call the function that may modify x_update
-    //_assemble_linear_system_by_vertex();
-    //converter.ge2sym(triplet_A);
-    //converter.convert(triplet_A, bcoo_A);
-
-    //_assemble_preconditioner();
-
-    ////_update_info();
-    //// 3. Copy x_update to another host vector after the call
-    //std::vector<Float> xs_position_after(xs_position.size());
-    //xs_position.buffer_view().copy_to(xs_position_after.data());
-
-    //// 4. Compare the two vectors
-    //bool modified = !std::equal(xs_position_before.begin(),
-    //                            xs_position_before.end(),
-    //                            xs_position_after.begin());
-
-    //if(modified)
-    //    std::cout << "xs_position has been modified." << std::endl;
-    //else
-    //    std::cout << "xs_position has not been modified." << std::endl;
-
     Timer timer{"Build Linear System"};
     empty_system = !_update_subsystem_extent();
     // if empty, skip the following steps
@@ -278,51 +213,11 @@ void GlobalLinearSystem::Impl::build_linear_system_by_vertex()
         return;
 
     _update_info();
-
-    // 1. 复制 xs_position 和 x_update（dxs）到主机端（调用函数前）
-    std::vector<Float> xs_position_before(xs_position.size());
-    xs_position.buffer_view().copy_to(xs_position_before.data());
-
-    // 假设 x_update 是需要比较的变量（若变量名是 dxs，此处替换为 dxs 即可）
-    std::vector<Float> x_update_before(x_update.size());  // 或 dxs_before(dxs.size())
-    x_update.buffer_view().copy_to(x_update_before.data());  // 或 dxs.buffer_view().copy_to(...)
-
-    // 2. 调用可能修改 xs_position 和 x_update 的函数
-    _assemble_linear_system_by_vertex();
+    _solve_linear_system_by_vertex();
+    //_assemble_linear_system_by_vertex();
     converter.ge2sym(triplet_A);
     converter.convert(triplet_A, bcoo_A);
-
     _assemble_preconditioner();
-
-    // 3. 复制 xs_position 和 x_update 到主机端（调用函数后）
-    std::vector<Float> xs_position_after(xs_position.size());
-    xs_position.buffer_view().copy_to(xs_position_after.data());
-
-    std::vector<Float> x_update_after(x_update.size());  // 或 dxs_after(dxs.size())
-    x_update.buffer_view().copy_to(x_update_after.data());  // 或 dxs.buffer_view().copy_to(...)
-
-    // 4. 分别比较两个变量的前后值
-    bool modified_xs_position = !std::equal(xs_position_before.begin(),
-                                            xs_position_before.end(),
-                                            xs_position_after.begin());
-
-    bool modified_x_update = !std::equal(  // 或 modified_dxs
-        x_update_before.begin(),
-        x_update_before.end(),
-        x_update_after.begin());
-
-    //// 输出比较结果
-    //if(modified_xs_position)
-    //    std::cout << "xs_position has been modified." << std::endl;
-    //else
-    //    std::cout << "xs_position has not been modified." << std::endl;
-
-
-
-    //if(modified_x_update)  // 或 modified_dxs
-    //    std::cout << "x_update (dxs) has been modified." << std::endl;
-    //else
-    //    std::cout << "x_update (dxs) has not been modified." << std::endl;
 }
 
 bool GlobalLinearSystem::Impl::_update_subsystem_extent()
@@ -501,7 +396,7 @@ void GlobalLinearSystem::Impl::_assemble_linear_system()
     }
 }
 
-void GlobalLinearSystem::Impl::_assemble_linear_system_by_vertex()
+void GlobalLinearSystem::Impl::_solve_linear_system_by_vertex()
 {
     auto HA = triplet_A.view();
     auto B  = b.view();
@@ -676,77 +571,6 @@ void GlobalLinearSystem::Impl::solve_linear_system()
         info.m_x = x_update.view();
         iterative_solver->solve(info);
         spdlog::info("Iterative linear solver iteration count: {}", info.m_iter_count);
-    }
-}
-
-void GlobalLinearSystem::Impl::solve_system_by_vertex()
-{
-    int TestStart = 0;
-
-    Timer timer{"Solve System by vertex"};
-    empty_system = !_update_subsystem_extent();
-    // if empty, skip the following steps
-    //if(empty_system) [[unlikely]]
-    //    return;
-    //_assemble_linear_system();
-    //converter.ge2sym(triplet_A);
-    //converter.convert(triplet_A, bcoo_A);
-    //_assemble_preconditioner();
-    //Timer timer{"Solve Linear System"};
-    if(iterative_solver)
-    {
-        SolvingInfo info{this};
-        info.m_b = b.cview();
-        info.m_x = x_update.view();
-
-        ////直接update x_update 或者是info.m_x ??????????
-        //
-
-        //// 这里要是修改x_update 的话注意只对对应于FEM的 sub system 进行修改
-        ////////////这里直接对info.m_x 进行修改:
-
-        //auto diag_subsystem_view = diag_subsystems.view();
-        //auto diag_dof_counts     = diag_dof_offsets_counts.counts();
-        //auto diag_dof_offsets    = diag_dof_offsets_counts.offsets();
-
-        //// distribute the solution to all diag subsystems
-        //for(auto&& [i, diag_subsystem] : enumerate(diag_subsystems.view()))
-        //{
-        //    auto dxs_fem = x_update.view().subview(diag_dof_offsets[i], diag_dof_counts[i]);
-        //    if(diag_dof_offsets.size() > 1000)
-        //    {
-        //        //dxs(i) = -result.segment<3>(i * 3).as_eigen();
-
-        //        dxs_fem.viewer().segment<3>(i * 3);
-        //        dxs_fem.<3>(i * 3).
-        //        dxs_fem.viewer().segment()
-        //    }
-        //    
-        //    //diag_subsystem.
-        //    SolutionInfo info{this};
-        //    info.m_solution =
-        //        x_update.view().subview(diag_dof_offsets[i], diag_dof_counts[i]);
-        //    diag_subsystem->retrieve_solution(info);
-        //}
-
-        ////info.m_x
-        //iterative_solver->solve(info);
-
-        ///////this is the way to use bcoo_A or the gradients info
-        //bcoo_A;
-
-        //spmv(p.cview(), Ap.view());
-
-        //// alpha = rz / dot(p.cview(), Ap.cview());
-        //alpha = rz / ctx().dot(p.cview(), Ap.cview());
-
-        //// x = x + alpha * p
-        //ctx().axpby(alpha, p.cview(), Float{1}, x);
-
-        //// r = r - alpha * Ap
-        //ctx().axpby(-alpha, Ap.cview(), Float{1}, r.view());
-
-        //spdlog::info("Iterative linear solver iteration count: {}", info.m_iter_count);
     }
 }
 

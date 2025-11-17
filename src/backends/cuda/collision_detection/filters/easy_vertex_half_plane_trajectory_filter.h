@@ -33,7 +33,9 @@ class EasyVertexHalfPlaneTrajectoryFilter final : public VertexHalfPlaneTrajecto
     // Inherited via VertexHalfPlaneTrajectoryFilter
 
     virtual void do_detect(DetectInfo& info) override;
+    virtual void do_detect_ogc(DetectInfo& info) override;
     virtual void do_filter_active(FilterActiveInfo& info) override;
+    virtual void do_filter_active_ogc(FilterActiveInfo& info) override;
     virtual void do_filter_toi(FilterTOIInfo& info) override;
     virtual void do_filter_d_v(FilterActiveInfo& info, std::vector<Float>& d_bv) override;
 };

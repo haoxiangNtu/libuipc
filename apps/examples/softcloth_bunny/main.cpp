@@ -178,7 +178,7 @@ int main(int argc, char** argv)
 
 
     cloth_obj->geometries().create(cloth_mesh);
-    //cloth_obj->geometries().create(cloth_mesh_2);
+    cloth_obj->geometries().create(cloth_mesh_2);
     S<Object> bunny_obj = scene.objects().create("bunny");
     Transform T1         = Transform::Identity();
     T1.translate(Vector3::UnitX() + Vector3::UnitZ());
@@ -241,11 +241,15 @@ int main(int argc, char** argv)
         Stnh.apply_to(ground, parm1, 500);
         //abd.apply_to(ground, 10.0_MPa);
 
-        //////这里如果不固定平面，我们的vbd求解不出来，原因是更新的默认方向对应的步长太小，会被直接判定为收敛，
-        // 但是如果方大后，又需要很多次进行线搜索，后续需要处理vbd 方向对应的默认步长问题
-        //x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 1000; 的问题
-
-        // 还有那个步长的问题，vbd 默认求解的方向对应的步长太小了，我们需要x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 2;后线搜索才能求解
+        ////// If we don't fix the plane here, our vbd cannot be solved. 
+        // The reason is that the step size corresponding to the default update direction is too small, 
+        // which will be directly judged as converged.
+        // // However, if enlarged, it requires many line searches. We need to handle the issue of the 
+        // default step size corresponding to the vbd direction later.
+        //Issue with x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 1000;
+        // Also, regarding the step size issue: the step size corresponding to the 
+        // default solution direction of vbd is too small. 
+        // We need x_update_h_3v[vertexId * 3 + k] -= descentDirection[k] * 2; for the line search to work.
         auto is_fixed      = ground.vertices().find<IndexT>(builtin::is_fixed);
         std::ranges::fill(view(*is_fixed), 1);
 
