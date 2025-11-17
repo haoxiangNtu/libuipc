@@ -31,4 +31,14 @@ bin/
 .clangd
 .idea/
 .vscode/
+
+# clion
+cmake-build-*/
+
 addiinfo.txt
+buildGPU/
+buildGUI/
+buildpy/
+
+# vsxmake
+vsxmake*/

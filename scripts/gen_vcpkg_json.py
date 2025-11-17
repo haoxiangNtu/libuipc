@@ -5,7 +5,7 @@ import os
 VCPKG_TAG = '2025.7.25'
 VCPKG_BASE_LINE = 'dd3097e305afa53f7b4312371f62058d2e665320'
 
-SPIRI_VCPKG_BASE_LINE = '8043849983962d748974dfbcecf2b66c0468958f'
+SPIRI_VCPKG_BASE_LINE = '7a5a8167ff2159564076a3e0f4b025695e9df91e'
 
 # vcpkg.json
 base_vcpkg_json = {
@@ -23,7 +23,7 @@ base_vcpkg_json = {
         },
         {
             'name': 'libigl',
-            'version>=': '2.5.0'
+            'version>=': '2.6.0'
         },
         {
             'name': 'spdlog',
@@ -66,8 +66,8 @@ base_vcpkg_json = {
             'version>=': '0.8.3'
         },
         {
-            'name': 'muda',
-            'version>=': '2025.10.3#1'
+            'name':'octree',
+            'version>=': '2025.10.7'
         }
     ],
     
@@ -99,7 +99,7 @@ base_vcpkg_configuration = {
             'reference': 'master',
             'baseline': SPIRI_VCPKG_BASE_LINE,
             'packages': [
-                'muda'
+                'muda', 'octree', 'ftetwild', 'pxr-boost-python'
             ]
         }
     ]
@@ -114,6 +114,7 @@ def is_enabled(arg):
 
 def gen_vcpkg_json(args):
     deps = base_vcpkg_json['dependencies']
+    overrides = base_vcpkg_json['overrides']
     
     if is_enabled(args.build_gui):
         deps.append({
@@ -136,16 +137,21 @@ def gen_vcpkg_json(args):
             'name': 'bgfx',
             'version>=': '1.127.8725-469'
         })
-    if is_enabled(args.with_usd_support):
-        deps.append({
-            'name': 'usd',
-            'version>=': '25.5.1'
-        })
+    # if is_enabled(args.with_usd_support):
+    #     deps.append({
+    #         'name': 'usd',
+    #         'version>=': '25.5.1'
+    #     })
     if is_enabled(args.with_vdb_support):
         deps.append({
             'name': 'openvdb',
             'version>=': '12.0.1',
-            'features': ['nanovdb']
+            'features': ["nanovdb"] if is_enabled(args.with_cuda_backend) else []
+        })
+    if is_enabled(args.with_cuda_backend):
+        deps.append({
+            'name': 'muda',
+            'version>=': '2025.10.9'
         })
 
 def print_deps():
@@ -163,11 +169,43 @@ def print_basic_info(args):
         print(f'    * {K}: {V}')
     print('[libuipc] Vcpkg Tag:', VCPKG_TAG)
 
+
+class JsonFileWriter:
+    @staticmethod
+    def write_json(file_path, data):
+        is_new = not os.path.exists(file_path)
+        changed = False
+        if not is_new:
+            with open(file_path, 'r') as f:
+                old_json = json.load(f)
+                changed = str(old_json) != str(data)
+        
+        if changed or is_new:
+            with open(file_path, 'w') as f:
+                json.dump(data, f, indent=4)
+        
+        return is_new, changed
+        
+
+
 def write_vcpkg_configuration(args):
     config_path = f'{args.output_dir}/vcpkg-configuration.json'
-    with open(config_path, 'w') as f:
-        json.dump(base_vcpkg_configuration, f, indent=4)
-    print(f'[libuipc] Generated vcpkg-configuration.json at:\n    {config_path}')
+
+    is_dev_mode = is_enabled(args.dev_mode)
+    
+    is_new, changed = JsonFileWriter.write_json(config_path, base_vcpkg_configuration)
+
+    if is_new:
+        print(f'[libuipc] Generated vcpkg-configuration.json at:\n    {config_path}')
+        return 1
+    
+    if changed:
+        print(f'[libuipc] vcpkg-configuration.json content has changed, overwriting:\n    {config_path}')
+        return 1
+    
+    if is_dev_mode:
+        print(f'[libuipc] vcpkg-configuration.json content is unchanged, skipping:\n    {config_path}')
+        return 0
 
 def write_vcpkg_json(args):
     json_path = f'{args.output_dir}/vcpkg.json'
@@ -176,18 +214,8 @@ def write_vcpkg_json(args):
     
     is_dev_mode = is_enabled(args.dev_mode)
     
-    is_new = not os.path.exists(json_path)
-    # if json_path exists, compare the content
-    changed = False
-    
-    if not is_new:
-        with open(json_path, 'r') as f:
-            old_json = json.load(f)
-            changed = str(old_json) != str(base_vcpkg_json)
-    
-    with open(json_path, 'w') as f:
-        json.dump(base_vcpkg_json, f, indent=4)
-        
+    is_new, changed = JsonFileWriter.write_json(json_path, base_vcpkg_json)
+      
     if is_new:
         print(f'[libuipc] Generated vcpkg.json at:\n    {json_path}')
         print_deps()
@@ -202,11 +230,11 @@ def write_vcpkg_json(args):
         print(f'[libuipc] vcpkg.json content is unchanged, skipping:\n    {json_path}')
         print_deps()
         return 0
-    
-    print('[libuipc] User mode always try to install dependencies. '
-          'If you want to skip, please define `-DUIPC_DEV_MODE=ON` when configuring CMake.')
-    print_deps()
-    return 1
+    else:
+        print('[libuipc] User mode always try to install dependencies. '
+            'If you want to skip, please define `-DUIPC_DEV_MODE=ON` when configuring CMake.')
+        print_deps()
+        return 1
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate vcpkg.json for libuipc.')
@@ -215,12 +243,18 @@ if __name__ == '__main__':
     parser.add_argument('--dev_mode', type=str, default=False, help='Enable development mode.')
     parser.add_argument('--with_usd_support', type=str, default=False, help='Enable USD support.')
     parser.add_argument('--with_vdb_support', type=str, default=False, help='Enable VDB support.')
+    # backends
+    parser.add_argument('--with_cuda_backend', type=str, default=False, help='Enable CUDA backend support.')
     args = parser.parse_args()
 
     print_basic_info(args)
     
-    write_vcpkg_configuration(args)
+    config_change = write_vcpkg_configuration(args)
     
-    ret_code = write_vcpkg_json(args)
+    deps_change = write_vcpkg_json(args)
+
+    ret_code = 0
+    if config_change or deps_change:
+        ret_code = 1
     
     exit(ret_code)

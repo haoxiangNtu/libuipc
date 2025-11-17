@@ -53,14 +53,15 @@ void EasyVertexHalfPlaneTrajectoryFilter::Impl::filter_active(FilterActiveInfo& 
             .file_line(__FILE__, __LINE__)
             .apply(info.surf_vertices().size(),
                    [num = num_collisions.viewer().name("num_collisions"),
-                    plane_vertex_offset = info.plane_vertex_global_offset(),
+                    plane_vertex_offset = info.half_plane_vertex_offset(),
                     surf_vertices = info.surf_vertices().viewer().name("surf_vertices"),
                     positions = info.positions().viewer().name("positions"),
                     thicknesses = info.thicknesses().viewer().name("thicknesses"),
                     contact_element_ids = info.contact_element_ids().viewer().name("contact_element_ids"),
                     subscene_element_ids = info.subscene_element_ids().viewer().name("contact_element_ids"),
                     contact_mask_tabular = info.contact_mask_tabular().viewer().name("contact_mask_tabular"),
-                    subscene_mask_tabular = info.subscene_mask_tabular().viewer().name("subscene_mask_tabular"),
+                    subscene_mask_tabular =
+                        info.subscene_mask_tabular().viewer().name("subscene_mask_tabular"),
                     half_plane_positions = info.plane_positions().viewer().name("plane_positions"),
                     half_plane_normals = info.plane_normals().viewer().name("plane_normals"),
                     PHs       = PHs.viewer().name("PHs"),
@@ -115,6 +116,7 @@ void EasyVertexHalfPlaneTrajectoryFilter::Impl::filter_active(FilterActiveInfo& 
     };
 
     query();
+
     h_num_collisions = num_collisions;
 
     if(h_num_collisions > PHs.size())
@@ -150,7 +152,7 @@ void EasyVertexHalfPlaneTrajectoryFilter::Impl::filter_toi(FilterTOIInfo& info)
         .file_line(__FILE__, __LINE__)
         .apply(info.surf_vertices().size(),
                [surf_vertices = info.surf_vertices().viewer().name("surf_vertices"),
-                plane_vertex_offset = info.plane_vertex_global_offset(),
+                plane_vertex_offset = info.half_plane_vertex_offset(),
                 positions   = info.positions().viewer().name("positions"),
                 thicknesses = info.thicknesses().viewer().name("thicknesses"),
                 contact_element_ids = info.contact_element_ids().viewer().name("contact_element_ids"),
@@ -206,15 +208,6 @@ void EasyVertexHalfPlaneTrajectoryFilter::Impl::filter_toi(FilterTOIInfo& info)
                        Float this_toi = t0 / t * (1 - eta);
 
                        min_toi = std::min(min_toi, this_toi);
-
-                       //if constexpr(PrintDebugInfo)
-                       //{
-                       //    if(this_toi < 1.0)
-                       //    {
-                       //        cout << "vI: " << vI << ", pI: " << j
-                       //             << ", toi: " << this_toi << " d0: " << -t0 << "\n";
-                       //    }
-                       //}
                    }
 
                    tois(i) = min_toi;

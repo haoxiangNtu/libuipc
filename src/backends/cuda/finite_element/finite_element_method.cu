@@ -27,7 +27,8 @@
 #include <finite_element/finite_element_diff_parm_reporter.h>
 #include <finite_element/finite_element_constitution_diff_parm_reporter.h>
 #include <finite_element/finite_element_extra_constitution_diff_parm_reporter.h>
-
+// features
+#include <finite_element/finite_element_state_accessor_feature.h>
 
 namespace uipc::backend
 {
@@ -671,7 +672,7 @@ void FiniteElementMethod::Impl::_build_on_host(WorldVisitor& world)
 
                     transview[0].setIdentity();
 
-                    spdlog::warn(R"(FEM Geometry ID={} has non-identity transform. The transform is applied to the positions and reset to identity.
+                    logger::warn(R"(FEM Geometry ID={} has non-identity transform. The transform is applied to the positions and reset to identity.
 To avoid this warning, please apply the transform to the positions mannally. https://github.com/spiriMirror/libuipc/issues/152)");
                 }
 

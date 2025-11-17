@@ -101,7 +101,7 @@ void SimplexTrajectoryFilter::do_filter_active(GlobalTrajectoryFilter::FilterAct
     FilterActiveInfo this_info{&m_impl};
     do_filter_active(this_info);
 
-    spdlog::info("SimplexTrajectoryFilter PTs: {}, EEs: {}, PEs: {}, PPs: {}",
+    logger::info("SimplexTrajectoryFilter PTs: {}, EEs: {}, PEs: {}, PPs: {}",
                  m_impl.PTs.size(),
                  m_impl.EEs.size(),
                  m_impl.PEs.size(),
@@ -161,7 +161,7 @@ void SimplexTrajectoryFilter::Impl::record_friction_candidates(
     loose_resize(friction_PP, PPs.size());
     friction_PP.view().copy_from(PPs);
 
-    spdlog::info("SimplexTrajectoryFilter Friction PT: {}, EE: {}, PE: {}, PP: {}",
+    logger::info("SimplexTrajectoryFilter Friction PT: {}, EE: {}, PE: {}, PP: {}",
                  friction_PT.size(),
                  friction_EE.size(),
                  friction_PE.size(),

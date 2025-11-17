@@ -24,26 +24,37 @@ World::World(internal::Engine& e) noexcept
 
 void World::init(internal::Scene& s)
 {
+    // 1. Record Scene Pointer
     if(m_scene)
         return;
-
-    sanity_check(s);
-
-    if(!m_valid)
-    {
-        spdlog::error("World is not valid, skipping init.");
-        return;
-    }
     m_scene = s.shared_from_this();
-    m_scene->init(*this);
 
     auto engine = lock(m_engine);
 
+    // 2. Sanity Check Before Init
+    // initialize sanity checker
+    m_sanity_checker = uipc::make_shared<SanityChecker>(s, engine->workspace());
+    auto& config     = m_scene->config();
+    auto  sanity_check_enable_attr = config.find<IndexT>("sanity_check/enable");
+    if(sanity_check_enable_attr->view()[0])
+    {
+        _sanity_check();
+    }
+    if(!m_valid)
+    {
+        logger::error("World is not valid, skipping init.");
+        return;
+    }
+
+    // 3. Init Scene
+    m_scene->init(*this);
+
+    // 4. Init Engine
     engine->init(*this);
 
     if(engine->status().has_error())
     {
-        spdlog::error("Engine has error after init, world becomes invalid.");
+        logger::error("Engine has error after init, world becomes invalid.");
         m_valid = false;
     }
 }
@@ -52,7 +63,7 @@ void World::advance()
 {
     if(!m_valid)
     {
-        spdlog::error("World is not valid, skipping advance.");
+        logger::error("World is not valid, skipping advance.");
         return;
     }
 
@@ -62,7 +73,7 @@ void World::advance()
 
     if(engine->status().has_error())
     {
-        spdlog::error("Engine has error after advance, world becomes invalid.");
+        logger::error("Engine has error after advance, world becomes invalid.");
         m_valid = false;
     }
 }
@@ -71,7 +82,7 @@ void World::sync()
 {
     if(!m_valid)
     {
-        spdlog::error("World is not valid, skipping sync.");
+        logger::error("World is not valid, skipping sync.");
         return;
     }
 
@@ -81,7 +92,7 @@ void World::sync()
 
     if(engine->status().has_error())
     {
-        spdlog::error("Engine has error after sync, world becomes invalid.");
+        logger::error("Engine has error after sync, world becomes invalid.");
         m_valid = false;
     }
 }
@@ -90,7 +101,7 @@ void World::retrieve()
 {
     if(!m_valid)
     {
-        spdlog::error("World is not valid, skipping retrieve.");
+        logger::error("World is not valid, skipping retrieve.");
         return;
     }
 
@@ -100,7 +111,7 @@ void World::retrieve()
 
     if(engine->status().has_error())
     {
-        spdlog::error("Engine has error after retrieve, world becomes invalid.");
+        logger::error("Engine has error after retrieve, world becomes invalid.");
         m_valid = false;
     }
 }
@@ -109,7 +120,7 @@ bool World::dump()
 {
     if(!m_valid)
     {
-        spdlog::error("World is not valid, skipping dump.");
+        logger::error("World is not valid, skipping dump.");
         return false;
     }
 
@@ -119,7 +130,7 @@ bool World::dump()
     bool has_error = engine->status().has_error();
     if(has_error)
     {
-        spdlog::error("Engine has error after dump, world becomes invalid.");
+        logger::error("Engine has error after dump, world becomes invalid.");
         m_valid = false;
     }
 
@@ -130,13 +141,13 @@ bool World::recover(SizeT aim_frame)
 {
     if(!m_scene)
     {
-        spdlog::warn("Scene has not been set, skipping recover. Hint: you may call World::init() first.");
+        logger::warn("Scene has not been set, skipping recover. Hint: you may call World::init() first.");
         return false;
     }
 
     if(!m_valid)
     {
-        spdlog::error("World is not valid, skipping recover.");
+        logger::error("World is not valid, skipping recover.");
         return false;
     }
 
@@ -147,7 +158,7 @@ bool World::recover(SizeT aim_frame)
 
     if(has_error)
     {
-        spdlog::error("Engine has error after recover, world becomes invalid.");
+        logger::error("Engine has error after recover, world becomes invalid.");
         m_valid = false;
     }
 
@@ -173,7 +184,7 @@ SizeT World::frame() const
 
     if(!m_valid)
     {
-        spdlog::error("World is not valid, frame set to 0.");
+        logger::error("World is not valid, frame set to 0.");
         return 0;
     }
     return engine->frame();
@@ -185,22 +196,25 @@ const FeatureCollection& World::features() const
     return engine->features();
 }
 
-void World::sanity_check(Scene& s)
+SanityChecker& World::sanity_checker()
 {
-    auto engine = lock(m_engine);
+    UIPC_ASSERT(m_sanity_checker, "SanityChecker is not initialized. You should call World::init() first.");
+    return *m_sanity_checker;
+}
 
-    auto& config                   = s.config();
-    auto  sanity_check_enable_attr = config.find<IndexT>("sanity_check/enable");
-    if(sanity_check_enable_attr->view()[0])
-    {
-        auto result = s.sanity_checker().check(engine->workspace());
+const SanityChecker& World::sanity_checker() const
+{
+    UIPC_ASSERT(m_sanity_checker, "SanityChecker is not initialized. You should call World::init() first.");
+    return *m_sanity_checker;
+}
 
-        if(result != SanityCheckResult::Success)
-        {
-            s.sanity_checker().report();
-        }
-
-        m_valid = (result == SanityCheckResult::Success);
-    }
+void World::_sanity_check()
+{
+    auto  engine         = lock(m_engine);
+    auto& sanity_checker = *m_sanity_checker;
+    auto  result         = sanity_checker.check();
+    if(result != SanityCheckResult::Success)
+        sanity_checker.report();
+    m_valid = (result == SanityCheckResult::Success);
 }
 }  // namespace uipc::core::internal

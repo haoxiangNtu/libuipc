@@ -166,7 +166,7 @@ void SimEngine::do_advance()
             cfl_alpha = m_global_contact_manager->compute_cfl_condition();
             if(cfl_alpha < alpha)
             {
-                spdlog::info("CFL Filter: {} < {}", cfl_alpha, alpha);
+                logger::info("CFL Filter: {} < {}", cfl_alpha, alpha);
                 return cfl_alpha;
             }
         }
@@ -182,7 +182,7 @@ void SimEngine::do_advance()
             ccd_alpha = m_global_trajectory_filter->filter_toi(alpha);
             if(ccd_alpha < alpha)
             {
-                spdlog::info("CCD Filter: {} < {}", ccd_alpha, alpha);
+                logger::info("CCD Filter: {} < {}", ccd_alpha, alpha);
                 return ccd_alpha;
             }
         }
@@ -246,7 +246,7 @@ void SimEngine::do_advance()
         if(m_global_animator)
         {
             m_global_animator->compute_substep_ratio(newton_iter);
-            spdlog::info("Animation Substep Ratio: {}", m_global_animator->substep_ratio());
+            logger::info("Animation Substep Ratio: {}", m_global_animator->substep_ratio());
         }
     };
 
@@ -297,7 +297,7 @@ void SimEngine::do_advance()
     {
         if(iter >= m_line_searcher->max_iter())
         {
-            spdlog::warn("Line Search Exits with Max Iteration: {} (Frame={})",
+            logger::warn("Line Search Exits with Max Iteration: {} (Frame={})",
                          m_line_searcher->max_iter(),
                          m_current_frame);
 
@@ -312,7 +312,7 @@ void SimEngine::do_advance()
     {
         if(iter >= m_newton_max_iter->view()[0])
         {
-            spdlog::warn("Newton Iteration Exits with Max Iteration: {} (Frame={})",
+            logger::warn("Newton Iteration Exits with Max Iteration: {} (Frame={})",
                          m_newton_max_iter->view()[0],
                          m_current_frame);
 
@@ -323,7 +323,7 @@ void SimEngine::do_advance()
         }
         else
         {
-            spdlog::info("Newton Iteration Converged with Iteration Count: {}, Bound: [{}, {}]",
+            logger::info("Newton Iteration Converged with Iteration Count: {}, Bound: [{}, {}]",
                          iter,
                          m_newton_min_iter->view()[0],
                          m_newton_max_iter->view()[0]);
@@ -384,7 +384,7 @@ void SimEngine::do_advance()
 
         ++m_current_frame;
 
-        spdlog::info(R"(>>> Begin Frame: {})", m_current_frame);
+        logger::info(R"(>>> Begin Frame: {})", m_current_frame);
 
         // Rebuild Scene
         {
@@ -409,15 +409,14 @@ void SimEngine::do_advance()
         // Simulation:
         {
             Timer timer{"Simulation"};
-            // 1. Adaptive Parameter Calculation
-            AABB vertex_bounding_box =
-                m_global_vertex_manager->compute_vertex_bounding_box();
+            // 1. Record Friction Candidates at the beginning of the frame
+            record_friction_candidates();
+            m_global_vertex_manager->update_attributes();
+            m_global_vertex_manager->record_prev_positions();
+
+            // 2. Adaptive Parameter Calculation
             detect_dcd_candidates();
             compute_adaptive_kappa();
-
-            // 2. Record Friction Candidates at the beginning of the frame
-            record_friction_candidates();
-            m_global_vertex_manager->record_prev_positions();
 
             // 3. Predict Motion => x_tilde = x + v * dt
             m_state = SimEngineState::PredictMotion;
@@ -425,8 +424,6 @@ void SimEngine::do_advance()
             step_animation();
 
             // 4. Nonlinear-Newton Iteration
-            Float box_size = vertex_bounding_box.diagonal().norm();
-            Float tol      = m_newton_scene_tol * box_size;
             m_newton_tolerance_manager->pre_newton(m_current_frame);
 
             auto newton_max_iter     = m_newton_max_iter->view()[0];
@@ -441,14 +438,18 @@ void SimEngine::do_advance()
                 // 1) Compute animation substep ratio
                 compute_animation_substep_ratio(newton_iter);
 
+
                 // 2) Build Collision Pairs
                 if(newton_iter > 0)
                     detect_dcd_candidates();
 
+
                 // 3) Compute Dynamic Topo Effect Gradient and Hessian => G:Vector3, H:Matrix3x3
-                //    Including Contact Effect
+                //    - Contact Effect
+                //    - Other DyTopo Effects
                 m_state = SimEngineState::ComputeDyTopoEffect;
                 compute_dytopo_effect();
+
 
                 // 4) Solve Global Linear System => dx = A^-1 * b
                 // Call functions that may modify xs_position and x_update
@@ -639,6 +640,211 @@ void SimEngine::do_advance()
                 // 5) Collect Vertex Displacements Globally,
                 // Recalculate the update direction????
                 // As long as the update direction dxs is small enough, is it called convergence??????????
+
+                m_global_vertex_manager->collect_vertex_displacements();
+
+
+                // 6) Check Termination Condition
+                bool converged  = convergence_check(newton_iter);
+                bool terminated = converged && (newton_iter >= newton_min_iter);
+                auto testCC     = newton_iter;
+                if(terminated)
+                    break;
+
+                // 7) Begin Line Search
+                auto line_search_iter_global = 0;
+                m_state                      = SimEngineState::LineSearch;
+                {
+                    Timer timer{"Line Search"};
+
+                    // Reset Alpha
+                    alpha = 1.0;
+
+                    // Record Current State x to x_0
+                    m_line_searcher->record_start_point();
+                    m_global_vertex_manager->record_start_point();
+                    detect_trajectory_candidates(alpha);
+
+                    // Compute Current Energy => E_0
+                    Float E0 = m_line_searcher->compute_energy(true);  // initial energy
+                    // spdlog::info("Initial Energy: {}", E0);
+
+                    // CCD filter
+                    alpha = filter_toi(alpha);
+
+                    // CFL Condition
+                    alpha = cfl_condition(alpha);
+
+                    // * Step Forward => x = x_0 + alpha * dx
+                    // Compute Test Energy => E
+                    Float E = compute_energy(alpha);
+
+                    if(!converged)
+                    {
+                        SizeT line_search_iter = 0;
+                        while(line_search_iter < m_line_searcher->max_iter())
+                        {
+                            Timer timer{"Line Search Iteration"};
+
+                            // Check Energy Decrease
+                            // TODO: maybe better condition like Wolfe condition/Armijo condition in the future
+                            bool energy_decrease = (E <= E0);
+
+                            // Check Inversion
+                            // TODO: Inversion check if needed
+                            bool no_inversion = true;
+
+                            bool success = energy_decrease && no_inversion;
+
+                            if(success)
+                                break;
+
+                            // If not success, then shrink alpha
+                            alpha /= 2;
+                            E                 = compute_energy(alpha);
+                            Itres_Energy_each = E;
+                            line_search_iter++;
+                        }
+
+                        // Check Line Search Iteration
+                        // report warnings or throw exceptions if needed
+                        check_line_search_iter(line_search_iter);
+                        line_search_iter_global = line_search_iter;
+                    }
+                }
+                Iters_line_search.push_back(line_search_iter_global);
+            }
+            newton_iters_record.push_back(newton_iter);
+            Iters_energy.push_back(Itres_Energy_each);
+            // 5. Update Velocity => v = (x - x_0) / dt
+            m_state = SimEngineState::UpdateVelocity;
+            {
+                Timer timer{"Update Velocity"};
+                m_time_integrator_manager->update_state();
+            }
+                        //std::cout << "Newton iteration counts: [";
+            //for(size_t i = 0; i < newton_iters_record.size(); ++i)
+            //{
+            //    std::cout << newton_iters_record[i];
+            //    if(i + 1 < newton_iters_record.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
+
+            //std::cout << "Line search counts: [";
+            //for(size_t i = 0; i < Iters_line_search.size(); ++i)
+            //{
+            //    std::cout << Iters_line_search[i];
+            //    if(i + 1 < Iters_line_search.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
+
+            //std::cout << "Energy iteration counts: [";
+            //for(size_t i = 0; i < Iters_energy.size(); ++i)
+            //{
+            //    std::cout << Iters_energy[i];
+            //    if(i + 1 < Iters_energy.size())
+            //        std::cout << ", ";
+            //}
+            //std::cout << "]" << std::endl;
+            // Check Newton Iteration
+            // report warnings or throw exceptions if needed
+            check_newton_iter(newton_iter);
+        }
+
+        logger::info("<<< End Frame: {}", m_current_frame);
+    };
+
+    auto pipeline_vbd_ipc_contact = [&]() noexcept(AbortOnException)
+    {
+        Timer timer{"Pipeline"};
+
+        ++m_current_frame;
+
+        spdlog::info(R"(>>> Begin Frame: {})", m_current_frame);
+
+        // Rebuild Scene
+        {
+            Timer timer{"Rebuild Scene"};
+            // Trigger the rebuild_scene event, systems register their actions will be called here
+            m_state = SimEngineState::RebuildScene;
+            {
+                event_rebuild_scene();
+
+                // TODO: rebuild the vertex and surface info
+                // m_global_vertex_manager->rebuild_vertex_info();
+                // m_global_surface_manager->rebuild_surface_info();
+            }
+
+            // After the rebuild_scene event, the pending creation or deletion can be solved
+            world().scene().solve_pending();
+
+            // Update the diff parms
+            update_diff_parm();
+        }
+
+        // Simulation:
+        {
+            //auto subtimestep_iter = 0;
+            //auto subtiemstep_max = 10;
+            //for(; subtimestep_iter < subtiemstep_max; ++subtimestep_iter)
+            //{
+            //}
+            Timer timer{"Simulation"};
+            // 1. Adaptive Parameter Calculation
+            AABB vertex_bounding_box =
+                m_global_vertex_manager->compute_vertex_bounding_box();
+            detect_dcd_candidates();
+            compute_adaptive_kappa();
+
+            // 2. Record Friction Candidates at the beginning of the frame
+            record_friction_candidates();
+            m_global_vertex_manager->record_prev_positions();
+
+            // 3. Predict Motion => x_tilde = x + v * dt
+            m_state = SimEngineState::PredictMotion;
+            m_time_integrator_manager->predict_dof();
+            step_animation();
+
+            // 4. Nonlinear-Newton Iteration
+            Float box_size = vertex_bounding_box.diagonal().norm();
+            Float tol      = m_newton_scene_tol * box_size;
+            m_newton_tolerance_manager->pre_newton(m_current_frame);
+
+            auto newton_max_iter     = m_newton_max_iter->view()[0];
+            auto newton_min_iter     = m_newton_min_iter->view()[0];
+            newton_max_iter          = 20;
+            IndexT newton_iter       = 0;
+            Float  Itres_Energy_each = 0;
+            for(; newton_iter < newton_max_iter; ++newton_iter)
+            {
+                Timer timer{"Newton Iteration"};
+
+                // 1) Compute animation substep ratio
+                compute_animation_substep_ratio(newton_iter);
+
+                // 2) Build Collision Pairs
+                if(newton_iter > 0)
+                    detect_dcd_candidates();
+
+                // 3) Compute Dynamic Topo Effect Gradient and Hessian => G:Vector3, H:Matrix3x3
+                //    Including Contact Effect
+                m_state = SimEngineState::ComputeDyTopoEffect;
+                compute_dytopo_effect();
+
+                // 4) Solve Global Linear System => dx = A^-1 * b
+                // Call functions that may modify xs_position and x_update
+                m_state = SimEngineState::SolveGlobalLinearSystem;
+                {
+                    Timer timer{"Solve Global Linear System"};
+                    //m_global_linear_system->solve();
+                    m_global_linear_system->solve_by_vertex();
+                }
+
+                // 5) Collect Vertex Displacements Globally,
+                // Recalculate the update direction????
+                // As long as the update direction dxs is small enough, is it called convergence??????????
                 m_global_vertex_manager->collect_vertex_displacements();
 
 
@@ -666,7 +872,6 @@ void SimEngine::do_advance()
 
                     // Compute Current Energy => E_0
                     Float E0 = m_line_searcher->compute_energy(true);  // initial energy
-                    // spdlog::info("Initial Energy: {}", E0);
 
                     // CCD filter
                     alpha = filter_toi(alpha);
@@ -753,7 +958,7 @@ void SimEngine::do_advance()
             check_newton_iter(newton_iter);
         }
 
-        spdlog::info("<<< End Frame: {}", m_current_frame);
+        logger::info("<<< End Frame: {}", m_current_frame);
     };
 
     auto pipeline_vbd_ogc = [&]() noexcept(AbortOnException)
@@ -951,7 +1156,7 @@ void SimEngine::do_advance()
     }
     catch(const SimEngineException& e)
     {
-        spdlog::error("Engine Advance Error: {}", e.what());
+        logger::error("Engine Advance Error: {}", e.what());
         status().push_back(core::EngineStatus::error(e.what()));
     }
 }

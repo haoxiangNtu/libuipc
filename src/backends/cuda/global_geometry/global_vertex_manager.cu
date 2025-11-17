@@ -3,6 +3,7 @@
 #include <uipc/common/range.h>
 #include <muda/cub/device/device_reduce.h>
 #include <global_geometry/vertex_reporter.h>
+#include <sim_engine.h>
 #include <finite_element/finite_element_vertex_reporter.h> 
 /*************************************************************************************************
 * Core Implementation
@@ -47,7 +48,7 @@ void GlobalVertexManager::Impl::init()
     rest_positions.resize(total_count);
     safe_positions.resize(total_count);
     contact_element_ids.resize(total_count, 0);
-    contact_subscene_element_ids.resize(total_count, 0);
+    subscene_element_ids.resize(total_count, 0);
     thicknesses.resize(total_count, 0.0);
     dimensions.resize(total_count, 3);  // default 3D
     displacements.resize(total_count, Vector3::Zero());
@@ -59,7 +60,11 @@ void GlobalVertexManager::Impl::init()
     //    so that each reporter can write to its own subview
     for(auto&& [i, R] : enumerate(vertex_reporter_view))
     {
-        VertexAttributeInfo attributes{this, i};
+        VertexAttributeInfo attributes{
+            this,
+            i,
+            0  // frame = 0 for initialization
+        };
         R->report_attributes(attributes);
     }
 
@@ -69,6 +74,17 @@ void GlobalVertexManager::Impl::init()
 
     // 6) Other initializations
     axis_max_disp = 0.0;
+}
+
+void GlobalVertexManager::Impl::update_attributes(SizeT frame)
+{
+    auto vertex_reporter_view = vertex_reporters.view();
+
+    for(auto&& [i, R] : enumerate(vertex_reporter_view))
+    {
+        VertexAttributeInfo attributes{this, i, frame};
+        R->report_attributes(attributes);
+    }
 }
 
 void GlobalVertexManager::Impl::rebuild()
@@ -257,9 +273,10 @@ void GlobalVertexManager::VertexCountInfo::changeable(bool is_changable) noexcep
     m_changable = is_changable;
 }
 
-GlobalVertexManager::VertexAttributeInfo::VertexAttributeInfo(Impl* impl, SizeT index) noexcept
+GlobalVertexManager::VertexAttributeInfo::VertexAttributeInfo(Impl* impl, SizeT index, SizeT frame) noexcept
     : m_impl(impl)
     , m_index(index)
+    , m_frame(frame)
 {
 }
 
@@ -293,9 +310,9 @@ muda::BufferView<IndexT> GlobalVertexManager::VertexAttributeInfo::contact_eleme
     return m_impl->subview(m_impl->contact_element_ids, m_index);
 }
 
-muda::BufferView<IndexT> GlobalVertexManager::VertexAttributeInfo::contact_subscene_element_ids() const noexcept
+muda::BufferView<IndexT> GlobalVertexManager::VertexAttributeInfo::subscene_element_ids() const noexcept
 {
-    return m_impl->subview(m_impl->contact_subscene_element_ids, m_index);
+    return m_impl->subview(m_impl->subscene_element_ids, m_index);
 }
 
 muda::BufferView<IndexT> GlobalVertexManager::VertexAttributeInfo::body_ids() const noexcept
@@ -306,6 +323,11 @@ muda::BufferView<IndexT> GlobalVertexManager::VertexAttributeInfo::body_ids() co
 muda::BufferView<Float> GlobalVertexManager::VertexAttributeInfo::d_hats() const noexcept
 {
     return m_impl->subview(m_impl->d_hats, m_index);  // Assuming d_hats are stored in thicknesses
+}
+
+SizeT GlobalVertexManager::VertexAttributeInfo::frame() const noexcept
+{
+    return m_frame;
 }
 
 GlobalVertexManager::VertexDisplacementInfo::VertexDisplacementInfo(Impl* impl, SizeT index) noexcept
@@ -347,6 +369,11 @@ void GlobalVertexManager::do_clear_recover(RecoverInfo& info)
 void GlobalVertexManager::init()
 {
     m_impl.init();
+}
+
+void GlobalVertexManager::update_attributes()
+{
+    m_impl.update_attributes(engine().frame());
 }
 
 void GlobalVertexManager::rebuild()
@@ -406,7 +433,7 @@ muda::CBufferView<IndexT> GlobalVertexManager::contact_element_ids() const noexc
 
 muda::CBufferView<IndexT> GlobalVertexManager::subscene_element_ids() const noexcept
 {
-    return m_impl.contact_subscene_element_ids;
+    return m_impl.subscene_element_ids;
 }
 
 muda::CBufferView<Vector3> GlobalVertexManager::displacements() const noexcept
